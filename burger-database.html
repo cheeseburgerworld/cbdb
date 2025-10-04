@@ -245,7 +245,8 @@
         .card-image img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain;
+            background: #f5f5f5;
         }
 
         .card-content {
@@ -344,12 +345,67 @@
             border: 1px inset #808080;
             margin-bottom: 15px;
             overflow: hidden;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .detail-image:hover::after {
+            content: '🔍 Click to view full size';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 8px;
+            font-size: 10px;
+            text-align: center;
         }
 
         .detail-image img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain;
+            background: #f5f5f5;
+        }
+
+        /* Full-size image overlay */
+        .fullsize-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.9);
+            z-index: 500;
+            cursor: pointer;
+            padding: 20px;
+        }
+
+        .fullsize-overlay.active {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .fullsize-image {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+        }
+
+        .fullsize-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: white;
+            border: 2px solid #000;
+            padding: 8px 15px;
+            font-size: 14px;
+            cursor: pointer;
+            font-family: 'ChicagoFLF', monospace;
         }
 
         .detail-section {
@@ -537,6 +593,12 @@
         <div class="detail-content" id="detailContent"></div>
     </div>
 
+    <!-- Full-size image overlay -->
+    <div class="fullsize-overlay" id="fullsizeOverlay" onclick="closeFullsizeImage()">
+        <button class="fullsize-close" onclick="closeFullsizeImage(); event.stopPropagation();">Close</button>
+        <img id="fullsizeImage" class="fullsize-image" src="" alt="">
+    </div>
+
     <script src="burger-data.js"></script>
     <script>
         function updateTime() {
@@ -631,7 +693,7 @@
             title.textContent = burger.name;
 
             content.innerHTML = `
-                <div class="detail-image">
+                <div class="detail-image" onclick="openFullsizeImage('${burger.imageUrl}', '${burger.name}')">
                     <img src="${burger.imageUrl}" alt="${burger.name}">
                 </div>
                 <div class="detail-section">
@@ -670,6 +732,18 @@
             
             document.getElementById('burgerDetail').classList.remove('active');
             document.getElementById('modalOverlay').classList.remove('active');
+        }
+
+        // Full-size image functions
+        function openFullsizeImage(imageUrl, altText) {
+            event.stopPropagation();
+            document.getElementById('fullsizeImage').src = imageUrl;
+            document.getElementById('fullsizeImage').alt = altText;
+            document.getElementById('fullsizeOverlay').classList.add('active');
+        }
+
+        function closeFullsizeImage() {
+            document.getElementById('fullsizeOverlay').classList.remove('active');
         }
 
         // Check for hash on page load to open specific burger
