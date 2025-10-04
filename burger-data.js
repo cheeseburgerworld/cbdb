@@ -63,5 +63,15 @@ const burgerDatabase = [
         style: "Slider",
         notes: "Excellent burger in a cocktail lounge setting - quality ingredients, solid sides, and a ~vibey~ atmosphere. A bit pricey for what you get, but worth it for the experience.",
         imageUrl: "https://i.ibb.co/PZMFh3gc/abigailhall.jpg"
+    },
+    {
+        id: 8,
+        name: "Wolf's Head",
+        location: "Portland, OR",
+        rating: 8,
+        style: "Smash",
+        notes: "Delicious smash burger under the Hawthorne Bridge. Juicy patty with a nice sauce, pickles, and caramelized onions. Sides are solid and the value is great, but you might want to pay extra for some lettuce.",
+        imageUrl: "https://i.ibb.co/c9hWF5z/wolfshead.jpg"
     }
+    
 ];
