@@ -1,6 +1,5 @@
 // Burger Database
 // This file contains all your burger reviews
-
 const burgerDatabase = [
     {
         id: 1,
@@ -8,7 +7,7 @@ const burgerDatabase = [
         location: "Portland, OR",
         rating: 9,
         style: "Classic",
-        notes: "Killer Burger offers nine signature burgers in three sizes: pint, original, or double. Personally, I think the pint size is perfect with the fries, but you do you. Every burger comes with bacon and fries included in the price, making Killer Burger a solid choice for value.,
+        notes: "Killer Burger offers nine signature burgers in three sizes: pint, original, or double. Personally, I think the pint size is perfect with the fries, but you do you. Every burger comes with bacon and fries included in the price, making Killer Burger a solid choice for value.",
         imageUrl: "https://i.ibb.co/ksLc7DZ9/killerburger.png"
     },
     {
@@ -46,7 +45,7 @@ const burgerDatabase = [
         style: "Fast Food",
         notes: "Classic drive-in fare. The burger-to-bun ratio isn't great but you're not here just for the burger, you're here for the overall experience and it works.",
         imageUrl: "https://i.ibb.co/0jLNQg18/mikes.png"
-    }
+    },
     {
         id: 6,
         name: "Sure Shot Burger",
@@ -55,7 +54,7 @@ const burgerDatabase = [
         style: "Smash",
         notes: "Excellent smash burger — perfectly cooked, high-quality ingredients, and great value from a well-run food cart with ample seating.",
         imageUrl: "https://i.ibb.co/YJQT5S4/sureshot.jpg"
-    }
+    },
     {
         id: 7,
         name: "Abigail Hall",
