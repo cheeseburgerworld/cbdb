@@ -56,4 +56,13 @@ const burgerDatabase = [
         notes: "Excellent smash burger — perfectly cooked, high-quality ingredients, and great value from a well-run food cart with ample seating.",
         imageUrl: "https://i.ibb.co/YJQT5S4/sureshot.jpg"
     }
+    {
+        id: 7,
+        name: "Abigail Hall",
+        location: "Portland, OR",
+        rating: 8,
+        style: "Slider",
+        notes: "Excellent burger in a cocktail lounge setting - quality ingredients, solid sides, and a ~vibey~ atmosphere. A bit pricey for what you get, but worth it for the experience.",
+        imageUrl: "https://i.ibb.co/PZMFh3gc/abigailhall.jpg"
+    }
 ];
