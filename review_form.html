@@ -389,6 +389,8 @@
             text-decoration: none;
             border-radius: 6px;
             font-size: 13px;
+            cursor: pointer;
+            border: none;
         }
 
         .upload-status {
@@ -434,7 +436,7 @@
                 <div class="success-icon">✅</div>
                 <h2>Review Submitted Successfully!</h2>
                 <p>Thank you for your contribution! Your review has been submitted and will be reviewed by our team. We'll notify you once it's approved and live on the site.</p>
-                <a href="#" class="back-link" onclick="resetForm(); return false;">Submit Another Review</a>
+                <button class="back-link" onclick="resetForm()">Submit Another Review</button>
             </div>
 
             <form id="burgerReviewForm" name="burger-review" method="POST" data-netlify="true" onsubmit="handleSubmit(event)">
@@ -469,8 +471,8 @@
                             <select id="price" name="price" required>
                                 <option value="">Select price range</option>
                                 <option value="$">$ (Under $10)</option>
-                                <option value="$">$ ($10-17)</option>
-                                <option value="$$">$$ (Over $17)</option>
+                                <option value="$$">$$ ($10-17)</option>
+                                <option value="$$$">$$$ (Over $17)</option>
                             </select>
                         </div>
                     </div>
@@ -485,7 +487,7 @@
                             <option value="Gourmet">Gourmet</option>
                             <option value="Smash">Smash</option>
                             <option value="Sliders">Sliders</option>
-                            <option value="Speciality/Regional">Specialty/Regional</option>
+                            <option value="Specialty/Regional">Specialty/Regional</option>
                         </select>
                         <div id="styleInfo" class="style-info" style="display: none;"></div>
                     </div>
@@ -696,7 +698,7 @@
             fetch('https://api.imgur.com/3/image', {
                 method: 'POST',
                 headers: {
-                    'Authorization': 'Client-ID 534b9f30d1d3e26' // Imgur anonymous upload client ID (public, safe to expose)
+                    'Authorization': 'Client-ID 534b9f30d1d3e26'
                 },
                 body: formData
             })
