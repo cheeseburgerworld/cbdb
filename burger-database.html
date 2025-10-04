@@ -24,7 +24,6 @@
             color: #000;
         }
 
-        /* CRT Effect - subtle */
         body::before {
             content: " ";
             display: block;
@@ -46,7 +45,6 @@
             margin: 0 auto;
         }
 
-        /* Menu Bar */
         .menu-bar {
             background: #FFF;
             border-bottom: 2px solid #000;
@@ -75,7 +73,6 @@
             color: #666;
         }
 
-        /* Desktop View */
         .desktop {
             display: none;
         }
@@ -86,16 +83,19 @@
 
         .desktop-title {
             text-align: center;
-            font-size: 18px;
-            margin-bottom: 20px;
+            font-size: 16px;
+            margin-bottom: 25px;
             text-shadow: 1px 1px 0 rgba(255,255,255,0.5);
+            color: #333;
         }
 
         .folder-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-            gap: 25px;
+            grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+            gap: 20px;
             padding: 20px;
+            max-width: 700px;
+            margin: 0 auto;
         }
 
         .folder-icon {
@@ -155,7 +155,6 @@
             text-shadow: 1px 1px 0 rgba(255,255,255,0.5);
         }
 
-        /* List View */
         .list-view {
             display: none;
             background: #FFF;
@@ -212,7 +211,6 @@
             transform: translateY(1px);
         }
 
-        /* Index Cards */
         .index-cards {
             display: grid;
             grid-template-columns: 1fr;
@@ -266,7 +264,16 @@
             margin-bottom: 3px;
         }
 
-        /* Modal */
+        .card-price {
+            display: inline-block;
+            background: #4a90e2;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 10px;
+            margin-top: 5px;
+        }
+
         .modal-overlay {
             display: none;
             position: fixed;
@@ -294,6 +301,11 @@
             border: 2px outset #FFFFFF;
             box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.5);
             z-index: 300;
+            display: none;
+        }
+
+        .burger-detail.active {
+            display: block;
         }
 
         .detail-title-bar {
@@ -350,7 +362,6 @@
             margin-bottom: 3px;
         }
 
-        /* Mobile Responsive */
         @media (max-width: 768px) {
             body {
                 padding: 10px;
@@ -374,12 +385,26 @@
 
             .folder-grid {
                 grid-template-columns: repeat(3, 1fr);
-                gap: 15px;
+                gap: 12px;
                 padding: 15px;
+            }
+
+            .folder-image {
+                width: 56px;
+                height: 56px;
+            }
+
+            .folder-emoji {
+                font-size: 24px;
+            }
+
+            .folder-label {
+                font-size: 10px;
             }
 
             .desktop-title {
                 font-size: 14px;
+                margin-bottom: 20px;
             }
 
             .window-body {
@@ -409,119 +434,111 @@
         @media (max-width: 480px) {
             .folder-grid {
                 grid-template-columns: repeat(2, 1fr);
-                gap: 12px;
+                gap: 15px;
             }
 
             .folder-image {
-                width: 56px;
-                height: 56px;
+                width: 60px;
+                height: 60px;
             }
 
             .folder-emoji {
-                font-size: 24px;
+                font-size: 26px;
             }
 
             .folder-label {
-                font-size: 10px;
+                font-size: 11px;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Menu Bar -->
-    <div class="menu-bar">
-        <div class="menu-left">
-            <span class="logo-text">CB⚡DB</span>
-            <span>|</span>
-            <span>Burger Database</span>
-        </div>
-        <div class="menu-right">
-            <span id="currentTime"></span>
-        </div>
-    </div>
-
-    <!-- Desktop Folder View -->
-    <div class="desktop active" id="desktopView">
-        <div class="desktop-title">Select a folder to browse burgers</div>
-        
-        <div class="folder-grid">
-            <div class="folder-icon" onclick="browseAll()">
-                <div class="folder-image">
-                    <div class="folder-emoji">🍔</div>
-                </div>
-                <div class="folder-label">All Burgers</div>
+    <div class="container">
+        <div class="menu-bar">
+            <div class="menu-left">
+                <span class="logo-text">CB⚡DB</span>
+                <span>|</span>
+                <span>Burger Database</span>
             </div>
-
-            <div class="folder-icon" onclick="browseByRating()">
-                <div class="folder-image">
-                    <div class="folder-emoji">⭐</div>
-                </div>
-                <div class="folder-label">By Rating</div>
-            </div>
-
-            <div class="folder-icon" onclick="browseByLocation()">
-                <div class="folder-image">
-                    <div class="folder-emoji">📍</div>
-                </div>
-                <div class="folder-label">By Location</div>
-            </div>
-
-            <div class="folder-icon" onclick="browseByStyle()">
-                <div class="folder-image">
-                    <div class="folder-emoji">🍽️</div>
-                </div>
-                <div class="folder-label">By Style</div>
-            </div>
-
-            <div class="folder-icon" onclick="randomBurger()">
-                <div class="folder-image">
-                    <div class="folder-emoji">🎲</div>
-                </div>
-                <div class="folder-label">Random</div>
-            </div>
-
-            <div class="folder-icon" onclick="window.location.href='index.html'">
-                <div class="folder-image">
-                    <div class="folder-emoji">🏠</div>
-                </div>
-                <div class="folder-label">Home</div>
+            <div class="menu-right">
+                <span id="currentTime"></span>
             </div>
         </div>
-    </div>
 
-    <!-- List View Window -->
-    <div class="list-view" id="listView">
-        <div class="window-title-bar">
-            <span id="windowTitle">Burgers</span>
-            <div class="window-controls">
-                <div class="window-btn"></div>
+        <div class="desktop active" id="desktopView">
+            <div class="desktop-title">Browse the database</div>
+            
+            <div class="folder-grid">
+                <div class="folder-icon" onclick="browseAll()">
+                    <div class="folder-image">
+                        <div class="folder-emoji">🍔</div>
+                    </div>
+                    <div class="folder-label">All</div>
+                </div>
+
+                <div class="folder-icon" onclick="browseByRating()">
+                    <div class="folder-image">
+                        <div class="folder-emoji">⭐</div>
+                    </div>
+                    <div class="folder-label">Rating</div>
+                </div>
+
+                <div class="folder-icon" onclick="browseByPrice()">
+                    <div class="folder-image">
+                        <div class="folder-emoji">💰</div>
+                    </div>
+                    <div class="folder-label">Price</div>
+                </div>
+
+                <div class="folder-icon" onclick="browseByLocation()">
+                    <div class="folder-image">
+                        <div class="folder-emoji">📍</div>
+                    </div>
+                    <div class="folder-label">Location</div>
+                </div>
+
+                <div class="folder-icon" onclick="browseByStyle()">
+                    <div class="folder-image">
+                        <div class="folder-emoji">🍽️</div>
+                    </div>
+                    <div class="folder-label">Style</div>
+                </div>
+
+                <div class="folder-icon" onclick="randomBurger()">
+                    <div class="folder-image">
+                        <div class="folder-emoji">🎲</div>
+                    </div>
+                    <div class="folder-label">Random</div>
+                </div>
             </div>
         </div>
-        <div class="window-body">
-            <button class="back-button" onclick="backToDesktop()">← Back to Desktop</button>
-            <div class="index-cards" id="burgerCards">
-                <!-- Cards populate here -->
+
+        <div class="list-view" id="listView">
+            <div class="window-title-bar">
+                <span id="windowTitle">Burgers</span>
+                <div class="window-controls">
+                    <div class="window-btn"></div>
+                </div>
+            </div>
+            <div class="window-body">
+                <button class="back-button" onclick="backToDesktop()">← Back to Desktop</button>
+                <div class="index-cards" id="burgerCards"></div>
             </div>
         </div>
     </div>
 
-    <!-- Modal Overlay -->
     <div class="modal-overlay" id="modalOverlay" onclick="closeModal()"></div>
 
-    <!-- Burger Detail Modal -->
-    <div class="burger-detail" id="burgerDetail" style="display: none;">
+    <div class="burger-detail" id="burgerDetail">
         <div class="detail-title-bar">
             <span id="detailTitle">Burger Info</span>
             <div class="close-button" onclick="closeModal()">×</div>
         </div>
-        <div class="detail-content" id="detailContent">
-            <!-- Details populate here -->
-        </div>
+        <div class="detail-content" id="detailContent"></div>
     </div>
 
     <script src="burger-data.js"></script>
     <script>
-        // Update time
         function updateTime() {
             const now = new Date();
             document.getElementById('currentTime').textContent = 
@@ -530,7 +547,6 @@
         setInterval(updateTime, 1000);
         updateTime();
 
-        // Navigation
         function showDesktop() {
             document.getElementById('desktopView').classList.add('active');
             document.getElementById('listView').classList.remove('active');
@@ -546,24 +562,29 @@
             showDesktop();
         }
 
-        // Browse functions
         function browseAll() {
             displayBurgers(burgerDatabase, 'All Burgers');
         }
 
         function browseByRating() {
             const sorted = [...burgerDatabase].sort((a, b) => b.rating - a.rating);
-            displayBurgers(sorted, 'Burgers by Rating');
+            displayBurgers(sorted, 'By Rating');
+        }
+
+        function browseByPrice() {
+            const priceOrder = { '$': 1, '$$': 2, '$$$': 3 };
+            const sorted = [...burgerDatabase].sort((a, b) => priceOrder[a.price] - priceOrder[b.price]);
+            displayBurgers(sorted, 'By Price');
         }
 
         function browseByLocation() {
             const sorted = [...burgerDatabase].sort((a, b) => a.location.localeCompare(b.location));
-            displayBurgers(sorted, 'Burgers by Location');
+            displayBurgers(sorted, 'By Location');
         }
 
         function browseByStyle() {
             const sorted = [...burgerDatabase].sort((a, b) => a.style.localeCompare(b.style));
-            displayBurgers(sorted, 'Burgers by Style');
+            displayBurgers(sorted, 'By Style');
         }
 
         function randomBurger() {
@@ -571,7 +592,6 @@
             showBurgerDetail(random);
         }
 
-        // Display burgers
         function displayBurgers(burgers, title) {
             const container = document.getElementById('burgerCards');
             container.innerHTML = '';
@@ -587,9 +607,10 @@
                     </div>
                     <div class="card-content">
                         <div class="card-title">${burger.name}</div>
-                        <div class="card-detail">Location: ${burger.location}</div>
-                        <div class="card-detail">Rating: ${burger.rating}/10</div>
-                        <div class="card-detail">Style: ${burger.style}</div>
+                        <div class="card-detail">📍 ${burger.location}</div>
+                        <div class="card-detail">⭐ ${burger.rating}/10</div>
+                        <div class="card-detail">🍽️ ${burger.style}</div>
+                        <div class="card-price">${burger.price}</div>
                     </div>
                 `;
 
@@ -599,7 +620,6 @@
             showList(title);
         }
 
-        // Show detail modal
         function showBurgerDetail(burger) {
             const modal = document.getElementById('burgerDetail');
             const title = document.getElementById('detailTitle');
@@ -624,6 +644,10 @@
                     <div>${burger.rating}/10</div>
                 </div>
                 <div class="detail-section">
+                    <div class="detail-label">Price:</div>
+                    <div>${burger.price}</div>
+                </div>
+                <div class="detail-section">
                     <div class="detail-label">Style:</div>
                     <div>${burger.style}</div>
                 </div>
@@ -633,12 +657,12 @@
                 </div>
             `;
 
-            modal.style.display = 'block';
+            modal.classList.add('active');
             document.getElementById('modalOverlay').classList.add('active');
         }
 
         function closeModal() {
-            document.getElementById('burgerDetail').style.display = 'none';
+            document.getElementById('burgerDetail').classList.remove('active');
             document.getElementById('modalOverlay').classList.remove('active');
         }
     </script>
