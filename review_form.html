@@ -509,7 +509,7 @@
                             <img id="previewImg" src="" alt="Preview">
                         </div>
                         <div class="upload-status" id="uploadStatus"></div>
-                        <div class="helper-text">Pro tip: Natural lighting works best! Capture the burger from a slight angle.</div>
+                        <div class="helper-text">Capture the burger from a slight angle. Burger/sides only - no people in the photo, please!</div>
                     </div>
                 </div>
 
@@ -695,28 +695,29 @@
             const formData = new FormData();
             formData.append('image', file);
 
-            fetch('https://api.imgur.com/3/image', {
+            // Using imgbb.com for reliable free image hosting
+            const IMGBB_API_KEY = '8aab62948e5df62b106e5f8ce46a14ae';
+            
+            fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
                 method: 'POST',
-                headers: {
-                    'Authorization': 'Client-ID 534b9f30d1d3e26'
-                },
                 body: formData
             })
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    const imageUrl = data.data.link;
+                    const imageUrl = data.data.url;
                     document.getElementById('photoUrl').value = imageUrl;
                     showUploadStatus('success', '✅ Image uploaded successfully!');
                     console.log('Image uploaded to:', imageUrl);
                 } else {
-                    throw new Error('Upload failed');
+                    throw new Error('Upload failed: ' + (data.error?.message || 'Unknown error'));
                 }
             })
             .catch(error => {
                 console.error('Upload error:', error);
                 showUploadStatus('error', '❌ Upload failed. Please try again or use a different image.');
                 document.getElementById('photoUpload').value = '';
+                document.getElementById('photoUrl').value = '';
             });
         }
 
@@ -779,4 +780,5 @@
         document.getElementById('visitDate').max = new Date().toISOString().split('T')[0];
     </script>
 </body>
+</html>
 </html>
