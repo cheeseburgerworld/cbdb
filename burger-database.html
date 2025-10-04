@@ -621,6 +621,9 @@
         }
 
         function showBurgerDetail(burger) {
+            // Set URL hash for direct linking
+            window.location.hash = `burger-${burger.id}`;
+            
             const modal = document.getElementById('burgerDetail');
             const title = document.getElementById('detailTitle');
             const content = document.getElementById('detailContent');
@@ -662,9 +665,24 @@
         }
 
         function closeModal() {
+            // Clear hash when closing modal
+            history.pushState("", document.title, window.location.pathname + window.location.search);
+            
             document.getElementById('burgerDetail').classList.remove('active');
             document.getElementById('modalOverlay').classList.remove('active');
         }
+
+        // Check for hash on page load to open specific burger
+        window.addEventListener('load', function() {
+            const hash = window.location.hash;
+            if (hash.startsWith('#burger-')) {
+                const burgerId = parseInt(hash.replace('#burger-', ''));
+                const burger = burgerDatabase.find(b => b.id === burgerId);
+                if (burger) {
+                    showBurgerDetail(burger);
+                }
+            }
+        });
     </script>
 </body>
 </html>
