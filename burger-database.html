@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CB⚡DB - Burger Database</title>
+    <style>
+        @font-face {
+            font-family: 'ChicagoFLF';
+            src: url('https://cdnjs.cloudflare.com/ajax/libs/Chicago-Font/1.0.0/ChicagoFLF.ttf') format('truetype');
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'ChicagoFLF', 'Chicago', monospace;
+            background: #BDBDBD;
+            min-height: 100vh;
+            padding: 20px;
+            color: #000;
+        }
+
+        /* CRT Effect - subtle */
+        body::before {
+            content: " ";
+            display: block;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: -1;
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+            opacity: 0.15;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* Menu Bar */
+        .menu-bar {
+            background: #FFF;
+            border-bottom: 2px solid #000;
+            padding: 5px 10px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 2px 2px 0 rgba(0,0,0,0.2);
+        }
+
+        .menu-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 12px;
+        }
+
+        .logo-text {
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .menu-right {
+            font-size: 10px;
+            color: #666;
+        }
+
+        /* Desktop View */
+        .desktop {
+            display: none;
+        }
+
+        .desktop.active {
+            display: block;
+        }
+
+        .desktop-title {
+            text-align: center;
+            font-size: 18px;
+            margin-bottom: 20px;
+            text-shadow: 1px 1px 0 rgba(255,255,255,0.5);
+        }
+
+        .folder-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 25px;
+            padding: 20px;
+        }
+
+        .folder-icon {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.1s;
+            user-select: none;
+        }
+
+        .folder-icon:hover {
+            transform: translateY(-2px);
+        }
+
+        .folder-icon:active {
+            transform: scale(0.98);
+        }
+
+        .folder-image {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(145deg, #F0E68C, #DAA520);
+            border: 1px solid #B8860B;
+            border-radius: 5px 5px 0 0;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 8px;
+            box-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .folder-image::before {
+            content: '';
+            position: absolute;
+            top: -6px;
+            left: 10px;
+            width: 20px;
+            height: 6px;
+            background: linear-gradient(145deg, #F0E68C, #DAA520);
+            border: 1px solid #B8860B;
+            border-bottom: none;
+            border-radius: 2px 2px 0 0;
+        }
+
+        .folder-emoji {
+            font-size: 28px;
+        }
+
+        .folder-label {
+            text-align: center;
+            font-size: 11px;
+            max-width: 100px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-shadow: 1px 1px 0 rgba(255,255,255,0.5);
+        }
+
+        /* List View */
+        .list-view {
+            display: none;
+            background: #FFF;
+            border: 2px solid #000;
+            box-shadow: 4px 4px 0 rgba(0,0,0,0.3);
+        }
+
+        .list-view.active {
+            display: block;
+        }
+
+        .window-title-bar {
+            background: #000;
+            color: #FFF;
+            padding: 5px 10px;
+            font-size: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .window-controls {
+            display: flex;
+            gap: 5px;
+        }
+
+        .window-btn {
+            width: 14px;
+            height: 14px;
+            background: #FFF;
+            border: 1px solid #000;
+            cursor: pointer;
+        }
+
+        .window-body {
+            padding: 20px;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .back-button {
+            background: linear-gradient(to bottom, #FFFFFF, #D0D0D0);
+            border: 2px outset #CCC;
+            padding: 6px 15px;
+            font-family: 'ChicagoFLF', monospace;
+            font-size: 11px;
+            cursor: pointer;
+            margin-bottom: 15px;
+            box-shadow: 2px 2px 0 rgba(0,0,0,0.2);
+        }
+
+        .back-button:active {
+            border-style: inset;
+            transform: translateY(1px);
+        }
+
+        /* Index Cards */
+        .index-cards {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        .index-card {
+            background: #FFFEF0;
+            border: 1px solid #DDD0A0;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+            padding: 12px;
+            display: flex;
+            cursor: pointer;
+            transition: transform 0.1s, background-color 0.1s;
+        }
+
+        .index-card:hover {
+            background: #FFF8D0;
+            transform: translateY(-2px);
+        }
+
+        .card-image {
+            width: 80px;
+            height: 80px;
+            background: #E0E0E0;
+            border: 1px solid #A0A0A0;
+            margin-right: 12px;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .card-content {
+            flex: 1;
+        }
+
+        .card-title {
+            font-weight: bold;
+            font-size: 13px;
+            margin-bottom: 5px;
+            text-decoration: underline;
+        }
+
+        .card-detail {
+            font-size: 11px;
+            margin-bottom: 3px;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 200;
+            backdrop-filter: blur(2px);
+        }
+
+        .modal-overlay.active {
+            display: block;
+        }
+
+        .burger-detail {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            max-width: 500px;
+            width: 90%;
+            background: #C0C0C0;
+            border: 2px outset #FFFFFF;
+            box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.5);
+            z-index: 300;
+        }
+
+        .detail-title-bar {
+            background: linear-gradient(to right, #000080, #1084d0);
+            color: white;
+            padding: 5px 10px;
+            font-size: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .close-button {
+            width: 16px;
+            height: 16px;
+            background: #C0C0C0;
+            border: 1px outset #FFFFFF;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .detail-content {
+            padding: 15px;
+            background: #FFFEF0;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .detail-image {
+            width: 100%;
+            height: 200px;
+            background: #E0E0E0;
+            border: 1px inset #808080;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+
+        .detail-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .detail-section {
+            margin-bottom: 10px;
+            font-size: 12px;
+        }
+
+        .detail-label {
+            font-weight: bold;
+            margin-bottom: 3px;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .menu-bar {
+                flex-direction: column;
+                gap: 10px;
+                padding: 8px;
+            }
+
+            .menu-left {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .menu-right {
+                width: 100%;
+                text-align: center;
+            }
+
+            .folder-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 15px;
+                padding: 15px;
+            }
+
+            .desktop-title {
+                font-size: 14px;
+            }
+
+            .window-body {
+                padding: 15px;
+            }
+
+            .index-card {
+                flex-direction: column;
+            }
+
+            .card-image {
+                width: 100%;
+                height: 150px;
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+
+            .burger-detail {
+                width: 95%;
+            }
+
+            .detail-content {
+                padding: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .folder-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+
+            .folder-image {
+                width: 56px;
+                height: 56px;
+            }
+
+            .folder-emoji {
+                font-size: 24px;
+            }
+
+            .folder-label {
+                font-size: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Menu Bar -->
+    <div class="menu-bar">
+        <div class="menu-left">
+            <span class="logo-text">CB⚡DB</span>
+            <span>|</span>
+            <span>Burger Database</span>
+        </div>
+        <div class="menu-right">
+            <span id="currentTime"></span>
+        </div>
+    </div>
+
+    <!-- Desktop Folder View -->
+    <div class="desktop active" id="desktopView">
+        <div class="desktop-title">Select a folder to browse burgers</div>
+        
+        <div class="folder-grid">
+            <div class="folder-icon" onclick="browseAll()">
+                <div class="folder-image">
+                    <div class="folder-emoji">🍔</div>
+                </div>
+                <div class="folder-label">All Burgers</div>
+            </div>
+
+            <div class="folder-icon" onclick="browseByRating()">
+                <div class="folder-image">
+                    <div class="folder-emoji">⭐</div>
+                </div>
+                <div class="folder-label">By Rating</div>
+            </div>
+
+            <div class="folder-icon" onclick="browseByLocation()">
+                <div class="folder-image">
+                    <div class="folder-emoji">📍</div>
+                </div>
+                <div class="folder-label">By Location</div>
+            </div>
+
+            <div class="folder-icon" onclick="browseByStyle()">
+                <div class="folder-image">
+                    <div class="folder-emoji">🍽️</div>
+                </div>
+                <div class="folder-label">By Style</div>
+            </div>
+
+            <div class="folder-icon" onclick="randomBurger()">
+                <div class="folder-image">
+                    <div class="folder-emoji">🎲</div>
+                </div>
+                <div class="folder-label">Random</div>
+            </div>
+
+            <div class="folder-icon" onclick="window.location.href='index.html'">
+                <div class="folder-image">
+                    <div class="folder-emoji">🏠</div>
+                </div>
+                <div class="folder-label">Home</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- List View Window -->
+    <div class="list-view" id="listView">
+        <div class="window-title-bar">
+            <span id="windowTitle">Burgers</span>
+            <div class="window-controls">
+                <div class="window-btn"></div>
+            </div>
+        </div>
+        <div class="window-body">
+            <button class="back-button" onclick="backToDesktop()">← Back to Desktop</button>
+            <div class="index-cards" id="burgerCards">
+                <!-- Cards populate here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Overlay -->
+    <div class="modal-overlay" id="modalOverlay" onclick="closeModal()"></div>
+
+    <!-- Burger Detail Modal -->
+    <div class="burger-detail" id="burgerDetail" style="display: none;">
+        <div class="detail-title-bar">
+            <span id="detailTitle">Burger Info</span>
+            <div class="close-button" onclick="closeModal()">×</div>
+        </div>
+        <div class="detail-content" id="detailContent">
+            <!-- Details populate here -->
+        </div>
+    </div>
+
+    <script src="burger-data.js"></script>
+    <script>
+        // Update time
+        function updateTime() {
+            const now = new Date();
+            document.getElementById('currentTime').textContent = 
+                now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+        }
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        // Navigation
+        function showDesktop() {
+            document.getElementById('desktopView').classList.add('active');
+            document.getElementById('listView').classList.remove('active');
+        }
+
+        function showList(title) {
+            document.getElementById('desktopView').classList.remove('active');
+            document.getElementById('listView').classList.add('active');
+            document.getElementById('windowTitle').textContent = title;
+        }
+
+        function backToDesktop() {
+            showDesktop();
+        }
+
+        // Browse functions
+        function browseAll() {
+            displayBurgers(burgerDatabase, 'All Burgers');
+        }
+
+        function browseByRating() {
+            const sorted = [...burgerDatabase].sort((a, b) => b.rating - a.rating);
+            displayBurgers(sorted, 'Burgers by Rating');
+        }
+
+        function browseByLocation() {
+            const sorted = [...burgerDatabase].sort((a, b) => a.location.localeCompare(b.location));
+            displayBurgers(sorted, 'Burgers by Location');
+        }
+
+        function browseByStyle() {
+            const sorted = [...burgerDatabase].sort((a, b) => a.style.localeCompare(b.style));
+            displayBurgers(sorted, 'Burgers by Style');
+        }
+
+        function randomBurger() {
+            const random = burgerDatabase[Math.floor(Math.random() * burgerDatabase.length)];
+            showBurgerDetail(random);
+        }
+
+        // Display burgers
+        function displayBurgers(burgers, title) {
+            const container = document.getElementById('burgerCards');
+            container.innerHTML = '';
+
+            burgers.forEach(burger => {
+                const card = document.createElement('div');
+                card.className = 'index-card';
+                card.onclick = () => showBurgerDetail(burger);
+
+                card.innerHTML = `
+                    <div class="card-image">
+                        <img src="${burger.imageUrl}" alt="${burger.name}">
+                    </div>
+                    <div class="card-content">
+                        <div class="card-title">${burger.name}</div>
+                        <div class="card-detail">Location: ${burger.location}</div>
+                        <div class="card-detail">Rating: ${burger.rating}/10</div>
+                        <div class="card-detail">Style: ${burger.style}</div>
+                    </div>
+                `;
+
+                container.appendChild(card);
+            });
+
+            showList(title);
+        }
+
+        // Show detail modal
+        function showBurgerDetail(burger) {
+            const modal = document.getElementById('burgerDetail');
+            const title = document.getElementById('detailTitle');
+            const content = document.getElementById('detailContent');
+
+            title.textContent = burger.name;
+
+            content.innerHTML = `
+                <div class="detail-image">
+                    <img src="${burger.imageUrl}" alt="${burger.name}">
+                </div>
+                <div class="detail-section">
+                    <div class="detail-label">Restaurant:</div>
+                    <div>${burger.name}</div>
+                </div>
+                <div class="detail-section">
+                    <div class="detail-label">Location:</div>
+                    <div>${burger.location}</div>
+                </div>
+                <div class="detail-section">
+                    <div class="detail-label">Rating:</div>
+                    <div>${burger.rating}/10</div>
+                </div>
+                <div class="detail-section">
+                    <div class="detail-label">Style:</div>
+                    <div>${burger.style}</div>
+                </div>
+                <div class="detail-section">
+                    <div class="detail-label">Notes:</div>
+                    <div>${burger.notes}</div>
+                </div>
+            `;
+
+            modal.style.display = 'block';
+            document.getElementById('modalOverlay').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('burgerDetail').style.display = 'none';
+            document.getElementById('modalOverlay').classList.remove('active');
+        }
+    </script>
+</body>
+</html>
