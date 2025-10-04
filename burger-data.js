@@ -8,7 +8,7 @@ const burgerDatabase = [
         location: "Portland, OR",
         rating: 9,
         style: "Classic",
-        notes: "Killer Burger offers nine signature burgers in three sizes: pint, original, or double. Personally, I think the pint size is perfect with the fries, but you do you. Every burger comes with a 1/3 lb \"100% beef\" patty (whatever that means) and bacon by default. Fries are included in the price and they're surprisingly good, making Killer Burger a solid choice for value & a consistently good burger. They've expanded to 24 locations, with the OG spot in NE Hollywood.",
+        notes: "Killer Burger offers nine signature burgers in three sizes: pint, original, or double. Personally, I think the pint size is perfect with the fries, but you do you. Every burger comes with bacon and fries included in the price, making Killer Burger a solid choice for value.,
         imageUrl: "https://i.ibb.co/ksLc7DZ9/killerburger.png"
     },
     {
@@ -16,8 +16,8 @@ const burgerDatabase = [
         name: "Tulip Shop Tavern",
         location: "Portland, OR",
         rating: 9,
-        style: "Pub",
-        notes: "This has been one of my fav burgers for years, the ratios & deliciousness of the components are on point. The sides are all delicious. The only downside is now everyone knows about this place and it's loud as fuck inside.",
+        style: "Smash",
+        notes: "This has been one of my fav burgers for years, the ratios & deliciousness of the components are on point. The sides are all delicious. The only downside is now everyone knows about this place and it can be painfully loud inside.",
         imageUrl: "https://i.ibb.co/SDtPXVJp/tulipshop.png"
     },
     {
@@ -35,7 +35,7 @@ const burgerDatabase = [
         location: "Portland, OR",
         rating: 9,
         style: "Classic",
-        notes: "Classic diner burger in a vintage setting, can't really beat it. The side options are all fantastic, especially the super crispy shoestring fries. A++",
+        notes: "Classic diner burger in a vintage setting, can't really beat it. The side options are all fantastic, especially the super crispy fries and onion rings. A++",
         imageUrl: "https://i.ibb.co/WvCCTXCc/skyline.png"
     },
     {
@@ -46,5 +46,14 @@ const burgerDatabase = [
         style: "Fast Food",
         notes: "Classic drive-in fare. The burger-to-bun ratio isn't great but you're not here just for the burger, you're here for the overall experience and it works.",
         imageUrl: "https://i.ibb.co/0jLNQg18/mikes.png"
+    }
+    {
+        id: 6,
+        name: "Sure Shot Burger",
+        location: "Portland, OR",
+        rating: 9,
+        style: "Smash",
+        notes: "Excellent smash burger — perfectly cooked, high-quality ingredients, and great value from a well-run food cart with ample seating.",
+        imageUrl: "https://i.ibb.co/YJQT5S4/sureshot.jpg"
     }
 ];
