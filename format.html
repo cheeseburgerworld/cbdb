@@ -6,32 +6,34 @@
     <title>Post Format — CB⚡DB</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;700&family=VT323&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+    html { -webkit-text-size-adjust: 100%; }
+
     :root {
         --bg:     #0d0900;
         --bg2:    #110e08;
         --amber:  #FF8C00;
         --adim:   #7A4200;
         --afaint: #1e1408;
-        --gold:   #FFD000;
         --green:  #39FF14;
-        --rust:   #7A2600;
+        --gold:   #FFD000;
         --w:      #ffffff;
-        --wd:     rgba(255,255,255,0.68);
-        --wf:     rgba(255,255,255,0.3);
-        /* Rating colors */
-        --r3-color: #39FF14;   /* green  — Legendary */
-        --r2-color: #FFD000;   /* gold   — Worth A Trip */
-        --r1-color: #FF8C00;   /* amber  — Solid */
-        --r0-color: #555555;   /* grey   — Skip It */
+        --wd:     rgba(255,255,255,0.75);
+        /* Two fonts only: headlines and everything else */
         --fhead: 'Bebas Neue', 'Arial Black', Impact, sans-serif;
         --fbody: 'IBM Plex Mono', 'Courier New', monospace;
-        --fterm: 'VT323', 'Courier New', monospace;
     }
-    body { background: var(--bg); color: var(--w); font-family: var(--fbody); min-height: 100vh; overflow-x: hidden; }
+
+    body {
+        background: var(--bg);
+        color: var(--w);
+        font-family: var(--fbody);
+        min-height: 100vh;
+        font-size: 14px;
+        line-height: 1.6;
+    }
 
     /* NAV */
     nav {
@@ -45,7 +47,7 @@
     .logo { font-family: var(--fhead); font-size: 22px; letter-spacing: 3px; color: var(--amber); text-decoration: none; flex-shrink: 0; line-height: 1; }
     .logo .bolt { color: var(--green); }
     .nav-links { display: flex; align-items: center; gap: 2px; list-style: none; }
-    .nav-links a { font-family: var(--fbody); font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--adim); text-decoration: none; padding: 6px 10px; white-space: nowrap; transition: color 0.15s; }
+    .nav-links a { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--adim); text-decoration: none; padding: 6px 10px; white-space: nowrap; transition: color 0.15s; }
     .nav-links a:hover { color: var(--w); }
     .nav-links .active { color: var(--amber); }
     .nav-links .pill { border: 1px solid var(--green); color: var(--green) !important; }
@@ -53,139 +55,139 @@
     @media (max-width: 600px) { .nav-links .hide { display: none; } }
 
     /* PAGE */
-    .page { max-width: 760px; margin: 0 auto; padding: 48px 20px 80px; }
-    .eyebrow { font-size: 9px; letter-spacing: 4px; color: var(--green); text-transform: uppercase; margin-bottom: 12px; }
-    .page-title { font-family: var(--fhead); font-size: clamp(40px, 10vw, 72px); color: var(--amber); letter-spacing: 3px; line-height: 0.9; margin-bottom: 20px; }
-    .page-intro { font-size: 13px; line-height: 1.9; color: var(--wd); border-left: 2px solid var(--afaint); padding-left: 16px; margin-bottom: 48px; max-width: 520px; }
-    .page-intro em { color: var(--amber); font-style: normal; }
+    .page { max-width: 620px; margin: 0 auto; padding: 48px 20px 80px; }
 
-    .section { margin-bottom: 52px; }
-    .section-label { font-size: 9px; letter-spacing: 4px; color: var(--green); text-transform: uppercase; margin-bottom: 16px; }
-    .section-title { font-family: var(--fhead); font-size: 26px; color: var(--amber); letter-spacing: 3px; margin-bottom: 18px; }
+    .eyebrow { font-size: 9px; letter-spacing: 4px; color: var(--green); text-transform: uppercase; margin-bottom: 14px; }
 
-    /* FORMAT EXAMPLE */
-    .format-box { background: var(--bg2); border: 1px solid var(--afaint); margin-bottom: 16px; }
-    .format-bar {
-        background: #0f0b07; border-bottom: 1px solid var(--afaint);
-        padding: 8px 16px; display: flex; align-items: center;
-        justify-content: space-between; gap: 12px;
+    h1 {
+        font-family: var(--fhead);
+        font-size: clamp(44px, 11vw, 80px);
+        color: var(--amber); letter-spacing: 3px; line-height: 0.88;
+        margin-bottom: 28px;
     }
-    .format-bar-left { display: flex; align-items: center; gap: 8px; font-size: 10px; letter-spacing: 1px; color: var(--adim); }
-    .bsky-dot { width: 14px; height: 14px; background: #0085FF; border-radius: 50%; flex-shrink: 0; }
 
-    .copy-btn {
-        font-family: var(--fbody); font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
-        background: rgba(57,255,20,0.08); border: 1px solid rgba(57,255,20,0.25);
-        color: var(--green); padding: 4px 12px; cursor: pointer; transition: background 0.15s; white-space: nowrap;
+    .intro {
+        font-size: 13px; line-height: 1.9; color: var(--wd);
+        border-left: 2px solid var(--afaint); padding-left: 16px;
+        margin-bottom: 52px;
     }
-    .copy-btn:hover { background: rgba(57,255,20,0.16); }
+    .intro em { color: var(--amber); font-style: normal; }
 
-    .format-body {
+    .section-label {
+        font-size: 9px; letter-spacing: 4px; color: var(--green);
+        text-transform: uppercase; margin-bottom: 16px;
+    }
+
+    /* FORMAT TABLE */
+    .format-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 48px;
+    }
+    .format-table tr { border-bottom: 1px solid var(--afaint); }
+    .format-table tr:last-child { border-bottom: none; }
+
+    .format-table td {
+        padding: 13px 16px;
+        vertical-align: middle;
+        background: var(--bg2);
+        font-size: 13px;
+    }
+    .format-table td:first-child {
+        width: 40px;
+        text-align: center;
+        font-size: 10px;
+        color: var(--adim);
+        border-right: 1px solid var(--afaint);
+        padding: 13px 10px;
+        white-space: nowrap;
+    }
+    .format-table td:nth-child(2) {
+        width: 40%;
+        color: var(--w);
+        border-right: 1px solid var(--afaint);
+        font-weight: 700;
+    }
+    .format-table td:nth-child(3) {
+        color: var(--wd);
+        font-size: 12px;
+    }
+
+    /* Blank row */
+    .row-blank td { padding: 5px 16px; background: var(--bg); }
+    .row-blank td:first-child { border-right: 1px solid var(--afaint); }
+    .row-blank td:nth-child(2) { color: var(--adim); font-size: 10px; letter-spacing: 2px; font-weight: 400; }
+    .row-blank td:nth-child(3) { color: transparent; }
+
+    @media (max-width: 500px) {
+        .format-table td:nth-child(3) { display: none; }
+        .format-table td:nth-child(2) { border-right: none; width: auto; }
+    }
+
+    /* EXAMPLE */
+    .example-block {
+        background: var(--bg2);
+        border: 1px solid var(--afaint);
+        margin-bottom: 48px;
+    }
+    .block-bar {
+        background: #0f0b07;
+        border-bottom: 1px solid var(--afaint);
+        padding: 9px 16px;
+        display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    }
+    .block-bar-left { display: flex; align-items: center; gap: 8px; font-size: 10px; letter-spacing: 1px; color: var(--adim); }
+    .bsky-dot { width: 12px; height: 12px; background: #0085FF; border-radius: 50%; flex-shrink: 0; }
+
+    .example-body {
         padding: 24px;
-        font-family: var(--fterm);
-        font-size: clamp(17px, 4.5vw, 22px);
-        line-height: 1.85;
-        color: var(--amber);
+        font-size: 14px;
+        line-height: 2;
+        color: var(--w);
     }
-    .format-body .fw   { color: var(--w); opacity: 0.88; }
-    .format-body .fg   { color: var(--green); }
-    .format-body .fd   { color: rgba(255,255,255,0.25); font-size: 0.75em; letter-spacing: 2px; }
-    .format-body .fgold { color: var(--gold); }
+    .ex-dim    { color: var(--wd); }
+    .ex-rating { color: var(--gold); font-weight: 700; }
+    .ex-price  { color: var(--amber); font-weight: 700; }
+    .ex-tag    { color: var(--green); font-weight: 700; }
 
-    .parse-ok {
-        background: rgba(57,255,20,0.04); border-top: 1px solid rgba(57,255,20,0.15);
-        padding: 14px 24px; font-family: var(--fterm);
-        font-size: clamp(14px, 3.5vw, 16px); line-height: 1.7; color: var(--green);
+    /* COPY BLOCK */
+    .copy-block {
+        background: var(--bg2);
+        border: 1px solid var(--afaint);
+        margin-bottom: 48px;
     }
+    .copy-btn {
+        font-family: var(--fbody);
+        font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+        background: rgba(57,255,20,0.1); border: 1px solid rgba(57,255,20,0.3);
+        color: var(--green); padding: 5px 14px; cursor: pointer;
+        transition: background 0.15s; white-space: nowrap;
+    }
+    .copy-btn:hover { background: rgba(57,255,20,0.2); }
+
+    .copy-body {
+        padding: 24px;
+        font-size: 14px;
+        line-height: 2;
+        color: var(--w);
+    }
+    .copy-body .placeholder { color: rgba(255,255,255,0.45); }
+    .copy-body .ex-tag { color: var(--green); font-weight: 700; }
 
     /* RATING SCALE */
-    .rating-grid {
-        display: grid; grid-template-columns: repeat(2, 1fr);
-        gap: 2px; background: var(--afaint); border: 1px solid var(--afaint);
-    }
-    @media (max-width: 480px) { .rating-grid { grid-template-columns: 1fr; } }
-
-    .rating-block { background: var(--bg2); padding: 22px 20px; }
-    .rating-symbol { font-size: 20px; margin-bottom: 8px; line-height: 1; }
-    .rating-name { font-family: var(--fhead); font-size: 17px; letter-spacing: 2px; margin-bottom: 7px; }
-    .r3 .rating-name { color: var(--r3-color); }
-    .r2 .rating-name { color: var(--r2-color); }
-    .r1 .rating-name { color: var(--r1-color); }
-    .r0 .rating-name { color: var(--r0-color); }
-    .rating-desc { font-size: 11px; line-height: 1.75; color: var(--wd); }
-
-    /* TEMPLATE PICKER */
-    .template-picker {
+    .rating-rows { display: flex; flex-direction: column; gap: 2px; }
+    .rating-row {
         background: var(--bg2); border: 1px solid var(--afaint);
+        padding: 16px 20px;
+        display: grid; grid-template-columns: 72px 1fr; gap: 16px; align-items: start;
     }
-    .picker-bar {
-        background: #0f0b07; border-bottom: 1px solid var(--afaint);
-        padding: 10px 16px; display: flex; align-items: center;
-        justify-content: space-between; gap: 12px; flex-wrap: wrap;
-    }
-    .picker-label { font-size: 10px; letter-spacing: 2px; color: var(--adim); text-transform: uppercase; }
-
-    .picker-controls { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
-    .picker-group { display: flex; gap: 2px; }
-    .picker-btn {
-        font-family: var(--fbody); font-size: 9px; letter-spacing: 1px; text-transform: uppercase;
-        background: transparent; border: 1px solid var(--afaint); color: var(--adim);
-        padding: 4px 10px; cursor: pointer; transition: all 0.12s; white-space: nowrap;
-    }
-    .picker-btn:hover { border-color: var(--adim); color: var(--w); }
-    .picker-btn.on { font-weight: 700; }
-    .pb-3.on  { background: var(--r3-color); border-color: var(--r3-color); color: var(--bg); }
-    .pb-2.on  { background: var(--r2-color); border-color: var(--r2-color); color: var(--bg); }
-    .pb-1.on  { background: var(--r1-color); border-color: var(--r1-color); color: var(--bg); }
-    .pb-0.on  { background: var(--r0-color); border-color: var(--r0-color); color: var(--w); }
-    .pb-p1.on { background: var(--amber); border-color: var(--amber); color: var(--bg); }
-    .pb-p2.on { background: var(--amber); border-color: var(--amber); color: var(--bg); }
-    .pb-p3.on { background: var(--amber); border-color: var(--amber); color: var(--bg); }
-
-    .sep { width: 1px; height: 20px; background: var(--afaint); align-self: center; margin: 0 2px; }
-
-    .picker-copy {
-        font-family: var(--fbody); font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
-        background: rgba(57,255,20,0.08); border: 1px solid rgba(57,255,20,0.25);
-        color: var(--green); padding: 5px 14px; cursor: pointer; transition: background 0.15s; white-space: nowrap;
-        margin-left: auto;
-    }
-    .picker-copy:hover { background: rgba(57,255,20,0.16); }
-
-    .picker-preview {
-        padding: 24px;
-        font-family: var(--fterm);
-        font-size: clamp(17px, 4.5vw, 22px);
-        line-height: 1.85;
-    }
-    .preview-restaurant { color: var(--w); opacity: 0.88; }
-    .preview-location   { color: var(--w); opacity: 0.88; }
-    .preview-rating     { }
-    .preview-price      { color: var(--w); opacity: 0.88; }
-    .preview-blank      { display: block; height: 0.5em; }
-    .preview-review     { color: var(--w); opacity: 0.6; font-style: italic; }
-    .preview-tag        { color: var(--green); }
-
-    /* FIELD TABLE */
-    .field-table { width: 100%; border-collapse: collapse; margin-top: 16px; }
-    .field-table th {
-        background: var(--bg2); color: var(--amber); font-weight: 700;
-        padding: 10px 14px; text-align: left; font-size: 9px; letter-spacing: 2px;
-        text-transform: uppercase; border: 1px solid var(--afaint);
-    }
-    .field-table td { padding: 11px 14px; border: 1px solid var(--afaint); font-size: 11px; line-height: 1.65; color: var(--wd); vertical-align: top; }
-    .field-table td:first-child { color: var(--green); width: 90px; white-space: nowrap; }
-    code { background: rgba(57,255,20,0.08); color: var(--green); padding: 1px 5px; font-family: var(--fbody); font-size: 0.9em; }
-
-    /* INFO BOX */
-    .info-box {
-        background: rgba(255,140,0,0.04); border: 1px solid var(--afaint);
-        padding: 18px 20px; margin-top: 32px;
-        font-size: 11px; line-height: 1.85; color: var(--wd);
-    }
-    .info-box em { color: var(--amber); font-style: normal; }
-    .info-box a { color: var(--green); text-decoration: none; }
-    .info-box a:hover { text-decoration: underline; }
+    .rr-symbol { font-size: 18px; line-height: 1.4; padding-top: 2px; }
+    .rr-name   { font-family: var(--fhead); font-size: 16px; letter-spacing: 2px; margin-bottom: 4px; line-height: 1; }
+    .rr-desc   { font-size: 12px; line-height: 1.7; color: var(--wd); }
+    .r3 .rr-name { color: #39FF14; }
+    .r2 .rr-name { color: #FFD000; }
+    .r1 .rr-name { color: #FF8C00; }
+    .r0 .rr-name { color: #888; }
 
     /* FOOTER */
     footer {
@@ -193,6 +195,7 @@
         padding: 24px 20px; display: flex; flex-wrap: wrap;
         justify-content: space-between; align-items: center;
         gap: 14px; font-size: 9px; letter-spacing: 1.5px; color: var(--adim);
+        margin-top: 60px;
     }
     .footer-logo { font-family: var(--fhead); font-size: 18px; letter-spacing: 3px; color: var(--amber); }
     .footer-links { display: flex; gap: 16px; flex-wrap: wrap; }
@@ -214,128 +217,149 @@
 
 <div class="page">
 
-    <div class="eyebrow">◈ Post Format</div>
-    <h1 class="page-title">HOW TO<br>POST</h1>
-    <p class="page-intro">
-        Each field on its own line. Attach a photo of the actual burger.
-        Keep the line order exact — that's what the parser reads.
-        Once you're <em>accepted into the reviewer program</em>,
-        any <code style="background:rgba(57,255,20,0.08);color:var(--green);padding:1px 5px;">#CBDB</code> post
-        from your Bluesky handle gets indexed automatically.
+    <div class="eyebrow">◈ Official CBDB Post Format</div>
+    <h1>THE<br>FORMAT</h1>
+
+    <p class="intro">
+        Post to Bluesky using this format and tag it <em>#CBDB</em>.
+        Keep the line order exactly as shown - that's what the parser reads.
+        Attach a photo of the actual burger.
     </p>
 
-    <!-- LIVE EXAMPLE -->
-    <div class="section">
-        <div class="section-label">◈ Example post</div>
-        <div class="format-box">
-            <div class="format-bar">
-                <div class="format-bar-left">
-                    <div class="bsky-dot"></div>
-                    Bluesky post — approved reviewer
-                </div>
-            </div>
-            <div class="format-body">
-                <span class="fw">Sure Shot Burger</span><br>
-                <span class="fw">Portland, OR</span><br>
-                <span class="fgold">⭐⭐</span><br>
-                <span class="fw">$</span><br>
-                <br>
-                <span class="fw">Excellent smash burger — perfectly cooked, high-quality ingredients, great value from a well-run food cart next to Oakshire Brewing with ample seating.</span><br>
-                <br>
-                <span class="fg">#CBDB</span>
-            </div>
-            <div class="parse-ok">
-                ◉ PARSER — VALID&nbsp;&nbsp;
-                ✓ Sure Shot Burger · Portland, OR · ⭐⭐ Worth A Trip · $
+    <!-- FORMAT -->
+    <div class="section-label">◈ Line by line</div>
+    <table class="format-table">
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td>Restaurant name</td>
+                <td>Official name. Consistent spelling every time.</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>City, State</td>
+                <td>Portland, OR · Seattle, WA · Tokyo, JP</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>Rating</td>
+                <td>⭐ &nbsp;⭐⭐ &nbsp;⭐⭐⭐ &nbsp;or &nbsp;ㄨ — see scale below</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>Price</td>
+                <td>$ = under $12 &nbsp;·&nbsp; $$ = $12–22 &nbsp;·&nbsp; $$$ = over $22</td>
+            </tr>
+            <tr class="row-blank">
+                <td></td>
+                <td>blank line</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>Your review</td>
+                <td>Free text. Be specific about the patty, bun, what worked or didn't.</td>
+            </tr>
+            <tr class="row-blank">
+                <td></td>
+                <td>blank line</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>#</td>
+                <td>#CBDB</td>
+                <td>Required tag — this is how the parser finds your post.</td>
+            </tr>
+            <tr>
+                <td>📸</td>
+                <td>Photo attached</td>
+                <td>Your photo, that visit. Gets pulled into the database.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- EXAMPLE -->
+    <div class="section-label">◈ Example</div>
+    <div class="example-block">
+        <div class="block-bar">
+            <div class="block-bar-left">
+                <div class="bsky-dot"></div>
+                Bluesky post
             </div>
         </div>
-
-        <!-- Field reference -->
-        <table class="field-table">
-            <thead><tr><th>Line</th><th>Content</th><th>Notes</th></tr></thead>
-            <tbody>
-                <tr><td>1</td><td>Restaurant name</td><td>Official name. Consistent spelling every time.</td></tr>
-                <tr><td>2</td><td>City, State</td><td>Standard abbreviations — Portland, OR · Tokyo, JP for international.</td></tr>
-                <tr><td>3</td><td>Rating</td><td><code>⭐</code> <code>⭐⭐</code> <code>⭐⭐⭐</code> or <code>ㄨ</code> — see scale below.</td></tr>
-                <tr><td>4</td><td>Price</td><td><code>$</code> under $12 · <code>$$</code> $12–22 · <code>$$$</code> over $22 (include fries if combo)</td></tr>
-                <tr><td>5</td><td><em style="color:var(--wd);opacity:0.5;">(blank line)</em></td><td>Just hit return.</td></tr>
-                <tr><td>6+</td><td>Review text</td><td>Free text. Be specific about the patty, bun, what worked, what didn't.</td></tr>
-                <tr><td>—</td><td><span style="color:var(--green);">#CBDB</span></td><td>Required. This is how our parser finds your post. Add other tags if you want.</td></tr>
-                <tr><td>📸</td><td>Photo</td><td>Attach to the post. Your photo, that visit. Gets pulled into the database.</td></tr>
-            </tbody>
-        </table>
-    </div>
-
-    <!-- RATING SCALE -->
-    <div class="section">
-        <div class="section-label">◈ Rating scale</div>
-        <div class="rating-grid">
-            <div class="rating-block r3">
-                <div class="rating-symbol">⭐⭐⭐</div>
-                <div class="rating-name">LEGENDARY</div>
-                <div class="rating-desc">Genuinely exceptional. A benchmark burger — the kind you specifically go back for and tell everyone about. Rare, and that's the point.</div>
-            </div>
-            <div class="rating-block r2">
-                <div class="rating-symbol">⭐⭐</div>
-                <div class="rating-name">WORTH A TRIP</div>
-                <div class="rating-desc">Good enough to be the reason you go somewhere. Standout quality, memorable in at least one way. You'd drive across town for this.</div>
-            </div>
-            <div class="rating-block r1">
-                <div class="rating-symbol">⭐</div>
-                <div class="rating-name">SOLID</div>
-                <div class="rating-desc">A good burger. Competently made, enjoyable, worth it if you're already in the area. No complaints, nothing that makes it a destination.</div>
-            </div>
-            <div class="rating-block r0">
-                <div class="rating-symbol">ㄨ</div>
-                <div class="rating-name">SKIP IT</div>
-                <div class="rating-desc">Not worth your money or your calories. Something fundamentally off — bad beef, bad ratios, lazy execution. These are some of the most useful reviews in the database.</div>
-            </div>
+        <div class="example-body">
+            Sure Shot Burger<br>
+            <span class="ex-dim">Portland, OR</span><br>
+            <span class="ex-rating">⭐⭐</span><br>
+            <span class="ex-price">$</span><br>
+            <br>
+            <span class="ex-dim">Excellent smash burger. Perfectly cooked, high-quality ingredients, great value from a food cart next to Oakshire Brewing.</span><br>
+            <br>
+            <span class="ex-tag">#CBDB</span>
         </div>
     </div>
 
     <!-- COPY TEMPLATE -->
-    <div class="section">
-        <div class="section-label">◈ Copy template</div>
-        <div class="template-picker">
-            <div class="picker-bar">
-                <span class="picker-label">Build your post:</span>
-                <div class="picker-controls">
-                    <div class="picker-group">
-                        <button class="picker-btn pb-3" onclick="setRating(3,this)">⭐⭐⭐</button>
-                        <button class="picker-btn pb-2 on" onclick="setRating(2,this)">⭐⭐</button>
-                        <button class="picker-btn pb-1" onclick="setRating(1,this)">⭐</button>
-                        <button class="picker-btn pb-0" onclick="setRating(0,this)">ㄨ</button>
-                    </div>
-                    <div class="sep"></div>
-                    <div class="picker-group">
-                        <button class="picker-btn pb-p1 on" onclick="setPrice('$',this)">$</button>
-                        <button class="picker-btn pb-p2" onclick="setPrice('$$',this)">$$</button>
-                        <button class="picker-btn pb-p3" onclick="setPrice('$$$',this)">$$$</button>
-                    </div>
-                </div>
-                <button class="picker-copy" id="pickerCopyBtn" onclick="copyTemplate()">Copy</button>
+    <div class="section-label">◈ Copy &amp; paste into Bluesky</div>
+    <div class="copy-block">
+        <div class="block-bar">
+            <div class="block-bar-left">Blank template — edit and post</div>
+            <button class="copy-btn" id="copyBtn" onclick="copyTemplate()">Copy</button>
+        </div>
+        <div class="copy-body">
+            <span class="placeholder">[Restaurant Name]</span><br>
+            <span class="placeholder">[City, State]</span><br>
+            <span class="placeholder">[⭐ or ⭐⭐ or ⭐⭐⭐ or ㄨ]</span><br>
+            <span class="placeholder">[$ or $$ or $$$]</span><br>
+            <br>
+            <span class="placeholder">[Your review]</span><br>
+            <br>
+            <span class="ex-tag">#CBDB</span>
+        </div>
+    </div>
+
+    <!-- RATING SCALE -->
+    <div class="section-label">◈ Rating scale</div>
+    <div class="rating-rows">
+        <div class="rating-row r3">
+            <div class="rr-symbol">⭐⭐⭐</div>
+            <div>
+                <div class="rr-name">LEGENDARY</div>
+                <div class="rr-desc">Genuinely exceptional. A benchmark you go back for and tell everyone about. Rare — and that's the point.</div>
             </div>
-            <div class="picker-preview" id="pickerPreview">
-                <span class="preview-restaurant">[Restaurant Name]</span><br>
-                <span class="preview-location">[City, State]</span><br>
-                <span class="preview-rating" id="prev-rating" style="color:var(--r2-color);">⭐⭐</span><br>
-                <span class="preview-price" id="prev-price">$</span><br>
-                <span class="preview-blank"></span><br>
-                <span class="preview-review">[Your review here]</span><br>
-                <span class="preview-blank"></span><br>
-                <span class="preview-tag">#CBDB</span>
+        </div>
+        <div class="rating-row r2">
+            <div class="rr-symbol">⭐⭐</div>
+            <div>
+                <div class="rr-name">WORTH A TRIP</div>
+                <div class="rr-desc">Good enough to be the reason you go somewhere. You'd drive across town for this.</div>
+            </div>
+        </div>
+        <div class="rating-row r1">
+            <div class="rr-symbol">⭐</div>
+            <div>
+                <div class="rr-name">SOLID</div>
+                <div class="rr-desc">A good burger. Worth eating if you're already in the area. No complaints, nothing exceptional.</div>
+            </div>
+        </div>
+        <div class="rating-row r0">
+            <div class="rr-symbol">ㄨ</div>
+            <div>
+                <div class="rr-name">SKIP IT</div>
+                <div class="rr-desc">Not worth your money or your calories. Bad components, bad ratios, overpriced.</div>
             </div>
         </div>
     </div>
 
-    <!-- NOTICE -->
-    <div class="info-box">
-        <em>This format is public</em> — anyone can see how it works.
-        But our parser only indexes posts from <em>approved reviewers</em>.
-        If you're not in the program, you can post whatever you want to Bluesky —
-        it just won't show up in the database.
-        <br><br>
-        Want in? <a href="/reviewer.html">Apply here →</a>
+    <!-- FOOTER NOTE -->
+    <div style="margin-top:48px; border-left:2px solid var(--afaint); padding-left:16px;">
+        <p style="font-size:13px; line-height:1.9; color:var(--wd);">
+            This format is public - anyone can see how it works.
+            But our parser only indexes posts from approved reviewers.
+            If you're not in the program, you can post whatever you want to Bluesky
+            — it just won't show up in the database.
+        </p>
+        <a href="/reviewer.html" style="display:inline-block; margin-top:16px; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--green); text-decoration:none;">Apply to join →</a>
     </div>
 
 </div>
@@ -348,58 +372,24 @@
         <a href="/reviewer.html">Join as Reviewer</a>
         <a href="https://github.com/cheeseburgerworld/cbdb" target="_blank">GitHub</a>
     </div>
-    <div>© 2026 Cheeseburger World LLC · Portland, OR</div>
+    <div>© 2026 Cheeseburger World LLC</div>
 </footer>
 
 <script>
-// ── Template state ────────────────────────────────
-const RATING_COLORS = {
-    3: 'var(--r3-color)',
-    2: 'var(--r2-color)',
-    1: 'var(--r1-color)',
-    0: 'var(--r0-color)'
-};
-const RATING_SYMBOLS = { 3: '⭐⭐⭐', 2: '⭐⭐', 1: '⭐', 0: 'ㄨ' };
-const RATING_CLASSES = { 3: 'pb-3', 2: 'pb-2', 1: 'pb-1', 0: 'pb-0' };
-const PRICE_CLASSES  = { '$': 'pb-p1', '$$': 'pb-p2', '$$$': 'pb-p3' };
-
-let currentRating = 2;
-let currentPrice  = '$';
-
-function setRating(val, btn) {
-    currentRating = val;
-    // Update buttons
-    document.querySelectorAll('.pb-3,.pb-2,.pb-1,.pb-0').forEach(b => b.classList.remove('on'));
-    btn.classList.add('on');
-    // Update preview
-    const el = document.getElementById('prev-rating');
-    el.textContent = RATING_SYMBOLS[val];
-    el.style.color = RATING_COLORS[val];
-}
-
-function setPrice(val, btn) {
-    currentPrice = val;
-    document.querySelectorAll('.pb-p1,.pb-p2,.pb-p3').forEach(b => b.classList.remove('on'));
-    btn.classList.add('on');
-    document.getElementById('prev-price').textContent = val;
-}
-
 function copyTemplate() {
-    const text =
-`[Restaurant Name]
+    const text = `[Restaurant Name]
 [City, State]
-${RATING_SYMBOLS[currentRating]}
-${currentPrice}
+[⭐ or ⭐⭐ or ⭐⭐⭐ or ㄨ]
+[$ or $$ or $$$]
 
-[Your review here — be specific about the patty, bun, and what made it good or bad]
+[Your review]
 
 #CBDB`;
-
-    const btn = document.getElementById('pickerCopyBtn');
+    const btn = document.getElementById('copyBtn');
     navigator.clipboard.writeText(text).then(() => {
         btn.textContent = 'Copied!';
         setTimeout(() => { btn.textContent = 'Copy'; }, 2500);
-    }).catch(() => { alert('Template:\n\n' + text); });
+    }).catch(() => { alert(text); });
 }
 </script>
 </body>
