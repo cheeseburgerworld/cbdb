@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Become a Reviewer — CB⚡DB</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=VT323&family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg:        #0d0900;
+            --bg2:       #140f00;
+            --amber:     #FF8C00;
+            --amber-dim: #7A4200;
+            --gold:      #FFD000;
+            --green:     #39FF14;
+            --cream:     #F5E6C8;
+            --rust:      #C44A00;
+            --grid:      rgba(255,140,0,0.08);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background: var(--bg);
+            color: var(--cream);
+            font-family: 'IBM Plex Mono', monospace;
+            overflow-x: hidden;
+            cursor: crosshair;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.12) 2px, rgba(0,0,0,0.12) 4px);
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        nav {
+            position: fixed; top: 0; left: 0; right: 0;
+            z-index: 1000;
+            background: var(--bg2);
+            border-bottom: 1px solid var(--amber-dim);
+            padding: 0 24px; height: 48px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+
+        .nav-logo {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 26px; color: var(--amber);
+            letter-spacing: 3px; text-decoration: none;
+        }
+
+        .nav-logo span { color: var(--green); }
+
+        .nav-back {
+            font-size: 10px; letter-spacing: 2px; color: var(--amber-dim);
+            text-decoration: none; text-transform: uppercase;
+            transition: color 0.2s;
+        }
+
+        .nav-back:hover { color: var(--amber); }
+
+        /* Page wrapper */
+        .page {
+            position: relative; z-index: 1;
+            max-width: 860px; margin: 0 auto;
+            padding: 100px 40px 80px;
+        }
+
+        /* Hero */
+        .page-badge {
+            font-size: 10px; letter-spacing: 4px; color: var(--green);
+            text-transform: uppercase; margin-bottom: 20px;
+            display: flex; align-items: center; gap: 8px;
+        }
+
+        .page-badge::before {
+            content: '';
+            display: inline-block; width: 8px; height: 8px;
+            border-radius: 50%; background: var(--green);
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(57,255,20,0.4); }
+            50%       { box-shadow: 0 0 0 8px rgba(57,255,20,0); }
+        }
+
+        h1 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(52px, 10vw, 96px);
+            line-height: 0.9; letter-spacing: 4px;
+            color: var(--amber);
+            text-shadow: 3px 3px 0 var(--rust);
+            margin-bottom: 24px;
+        }
+
+        .page-intro {
+            font-size: 13px; line-height: 1.9;
+            color: var(--cream); opacity: 0.7;
+            max-width: 580px; margin-bottom: 60px;
+            border-left: 2px solid var(--amber-dim);
+            padding-left: 16px;
+        }
+
+        /* Section labels */
+        .section-label {
+            font-size: 10px; letter-spacing: 4px;
+            color: var(--green); text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .section-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 36px; color: var(--amber);
+            letter-spacing: 4px; margin-bottom: 28px;
+        }
+
+        /* Requirements */
+        .req-list {
+            display: flex; flex-direction: column; gap: 2px;
+            margin-bottom: 60px;
+        }
+
+        .req-item {
+            background: var(--bg2);
+            border: 1px solid var(--amber-dim);
+            padding: 20px 24px;
+            display: flex; gap: 16px; align-items: flex-start;
+            transition: border-color 0.2s;
+        }
+
+        .req-item:hover { border-color: var(--amber); }
+
+        .req-check {
+            color: var(--green); font-size: 16px;
+            flex-shrink: 0; margin-top: 1px;
+        }
+
+        .req-item-title {
+            font-size: 12px; font-weight: 700;
+            letter-spacing: 2px; color: var(--amber);
+            text-transform: uppercase; margin-bottom: 6px;
+        }
+
+        .req-item-body {
+            font-size: 11px; line-height: 1.8;
+            color: var(--cream); opacity: 0.65;
+        }
+
+        /* Rating guide */
+        .rating-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+            gap: 2px; margin-bottom: 60px;
+        }
+
+        .rating-block {
+            background: var(--bg2);
+            border: 1px solid var(--amber-dim);
+            padding: 24px 20px;
+        }
+
+        .rating-symbol {
+            font-size: 28px; margin-bottom: 12px;
+        }
+
+        .rating-name {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 20px; letter-spacing: 2px;
+            margin-bottom: 8px;
+        }
+
+        .r3 .rating-name { color: var(--green); }
+        .r2 .rating-name { color: var(--gold); }
+        .r1 .rating-name { color: var(--amber); }
+        .r0 .rating-name { color: #666; }
+
+        .rating-desc {
+            font-size: 11px; line-height: 1.7;
+            color: var(--cream); opacity: 0.6;
+        }
+
+        /* Post template */
+        .template-block {
+            background: var(--bg);
+            border: 1px solid var(--amber-dim);
+            margin-bottom: 12px;
+            position: relative;
+        }
+
+        .template-header {
+            background: var(--bg2);
+            border-bottom: 1px solid var(--amber-dim);
+            padding: 8px 16px;
+            font-size: 10px; letter-spacing: 2px;
+            color: var(--amber-dim);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+
+        .copy-btn {
+            background: rgba(57,255,20,0.1);
+            border: 1px solid rgba(57,255,20,0.3);
+            color: var(--green);
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 9px; letter-spacing: 2px;
+            padding: 3px 10px; cursor: pointer;
+            text-transform: uppercase;
+            transition: background 0.2s;
+        }
+
+        .copy-btn:hover { background: rgba(57,255,20,0.2); }
+
+        .template-body {
+            padding: 24px;
+            font-family: 'VT323', monospace;
+            font-size: 18px; line-height: 1.7;
+            color: var(--amber);
+        }
+
+        .template-body .placeholder {
+            color: var(--amber-dim);
+            background: rgba(255,140,0,0.05);
+            padding: 0 4px;
+        }
+
+        .template-body .tag { color: var(--green); }
+
+        .template-note {
+            font-size: 10px; letter-spacing: 1px;
+            color: var(--amber-dim); line-height: 1.8;
+            margin-bottom: 60px;
+        }
+
+        .template-note strong { color: var(--amber); }
+
+        /* Field guide */
+        .field-table {
+            width: 100%; border-collapse: collapse;
+            margin-bottom: 60px; font-size: 11px;
+        }
+
+        .field-table th {
+            background: var(--bg2);
+            color: var(--amber); font-weight: 700;
+            padding: 10px 16px; text-align: left;
+            font-size: 10px; letter-spacing: 2px;
+            text-transform: uppercase;
+            border: 1px solid var(--amber-dim);
+        }
+
+        .field-table td {
+            padding: 12px 16px;
+            border: 1px solid rgba(255,140,0,0.1);
+            color: var(--cream); opacity: 0.75;
+            line-height: 1.6;
+            vertical-align: top;
+        }
+
+        .field-table td:first-child {
+            color: var(--green);
+            font-weight: 700;
+            opacity: 1;
+            width: 140px;
+        }
+
+        .field-table td code {
+            background: rgba(57,255,20,0.1);
+            color: var(--green);
+            padding: 1px 5px;
+        }
+
+        .field-table tr:hover td { background: rgba(255,140,0,0.02); }
+
+        /* Signup form */
+        .signup-form {
+            background: var(--bg2);
+            border: 1px solid var(--amber-dim);
+            padding: 40px; margin-bottom: 60px;
+        }
+
+        .form-row {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 16px; margin-bottom: 16px;
+        }
+
+        @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
+
+        .form-group { display: flex; flex-direction: column; gap: 6px; }
+
+        .form-group label {
+            font-size: 10px; letter-spacing: 2px;
+            color: var(--amber); text-transform: uppercase;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            background: var(--bg);
+            border: 1px solid var(--amber-dim);
+            color: var(--cream);
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 12px; padding: 10px 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--amber);
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: var(--amber-dim); opacity: 0.5;
+        }
+
+        .form-group select option {
+            background: var(--bg2);
+        }
+
+        .form-full { margin-bottom: 16px; }
+
+        .form-submit {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 12px; letter-spacing: 3px;
+            text-transform: uppercase; font-weight: 700;
+            background: var(--amber); color: var(--bg);
+            border: none; padding: 14px 40px;
+            cursor: pointer; width: 100%;
+            transition: all 0.2s;
+            clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+        }
+
+        .form-submit:hover {
+            background: var(--gold);
+            box-shadow: 0 0 20px rgba(255,140,0,0.4);
+        }
+
+        .form-note {
+            margin-top: 16px; font-size: 10px;
+            color: var(--amber-dim); letter-spacing: 1px;
+            line-height: 1.7;
+        }
+
+        /* Success state */
+        .success-msg {
+            display: none;
+            background: rgba(57,255,20,0.05);
+            border: 1px solid var(--green);
+            padding: 24px;
+            text-align: center;
+            font-family: 'VT323', monospace;
+            font-size: 22px; color: var(--green);
+            line-height: 1.6;
+        }
+
+        /* DO / DON'T */
+        .dos-grid {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 2px; margin-bottom: 60px;
+        }
+
+        @media (max-width: 600px) { .dos-grid { grid-template-columns: 1fr; } }
+
+        .dos-block {
+            background: var(--bg2);
+            border: 1px solid var(--amber-dim);
+            padding: 28px 24px;
+        }
+
+        .dos-block-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 20px; letter-spacing: 3px;
+            margin-bottom: 16px;
+        }
+
+        .do .dos-block-title { color: var(--green); }
+        .dont .dos-block-title { color: var(--rust); }
+
+        .dos-block li {
+            list-style: none; font-size: 11px;
+            line-height: 1.9; color: var(--cream);
+            opacity: 0.7; padding-left: 20px;
+            position: relative; margin-bottom: 4px;
+        }
+
+        .do li::before { content: '✓'; position: absolute; left: 0; color: var(--green); }
+        .dont li::before { content: '✗'; position: absolute; left: 0; color: var(--rust); }
+
+        /* Footer */
+        footer {
+            position: relative; z-index: 1;
+            background: var(--bg2);
+            border-top: 1px solid var(--amber-dim);
+            padding: 32px 40px;
+            display: flex; justify-content: space-between; align-items: center;
+            font-size: 10px; letter-spacing: 2px; color: var(--amber-dim);
+            flex-wrap: wrap; gap: 16px;
+        }
+
+        .footer-logo {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 20px; color: var(--amber); letter-spacing: 3px;
+        }
+
+        footer a {
+            color: var(--amber-dim); text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        footer a:hover { color: var(--amber); }
+
+        @media (max-width: 640px) {
+            .page { padding: 80px 20px 60px; }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="index.html" class="nav-logo">CB<span>⚡</span>DB</a>
+    <a href="index.html" class="nav-back">← Back to Database</a>
+</nav>
+
+<div class="page">
+
+    <div class="page-badge">Reviewer Program/div>
+    <h1>BECOME A<br>REVIEWER</h1>
+    <p class="page-intro">
+        CB⚡DB is built by real people with real opinions.<br>
+        No algorithm. No sponsored content.<br>
+        Just people who care about a good cheeseburger and enjoy writing about it on the internet
+    </p>
+
+    <!-- REQUIREMENTS -->
+    <div class="section-label">◈ What We're Looking For</div>
+    <div class="section-title">REQUIREMENTS</div>
+
+    <div class="req-list">
+        <div class="req-item">
+            <div class="req-check">◉</div>
+            <div>
+                <div class="req-item-title">A Bluesky Account</div>
+                <div class="req-item-body">Your reviews live on your profile — you own them. We just index them. Create a free account at bsky.app if you don't have one.</div>
+            </div>
+        </div>
+        <div class="req-item">
+            <div class="req-check">◉</div>
+            <div>
+                <div class="req-item-title">You Actually Eat the Burger</div>
+                <div class="req-item-body">No stock photos. No reviewing a place you haven't been to in 3 years. All reviews require a photo you took, of a burger you ate, at the restaurant.</div>
+            </div>
+        </div>
+        <div class="req-item">
+            <div class="req-check">◉</div>
+            <div>
+                <div class="req-item-title">Follow the Post Format</div>
+                <div class="req-item-body">Our parser needs structured data to index your review. Use the template below exactly. The only creative freedom is in your written review text.</div>
+            </div>
+        </div>
+        <div class="req-item">
+            <div class="req-check">◉</div>
+            <div>
+                <div class="req-item-title">Be Honest</div>
+                <div class="req-item-body">A ⭐ "Solid" review is valuable. A ✗ "Skip It" review is extremely valuable. Don't inflate ratings. The usefulness of this database depends on calibrated honesty.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- RATING GUIDE -->
+    <div class="section-label">◈ The Scale</div>
+    <div class="section-title">RATING GUIDE</div>
+
+    <div class="rating-grid">
+        <div class="rating-block r3">
+            <div class="rating-symbol">⭐⭐⭐</div>
+            <div class="rating-name">LEGENDARY</div>
+            <div class="rating-desc">The complete package. A benchmark experience. Worth driving hours for. You'll talk about this burger for years. Maybe 1-2 a year if you're lucky.</div>
+        </div>
+        <div class="rating-block r2">
+            <div class="rating-symbol">⭐⭐</div>
+            <div class="rating-name">DESTINATION-WORTHY</div>
+            <div class="rating-desc">Has standout elements that make it worth a special trip. Excellent execution in at least one dimension. "We need to go back."</div>
+        </div>
+        <div class="rating-block r1">
+            <div class="rating-symbol">⭐</div>
+            <div class="rating-name">SOLID</div>
+            <div class="rating-desc">Competently executed. A good burger. If you're in the area, go. Nothing special, nothing wrong. The baseline of quality.</div>
+        </div>
+        <div class="rating-block r0">
+            <div class="rating-symbol">✗</div>
+            <div class="rating-name">SKIP IT</div>
+            <div class="rating-desc">Fundamentally flawed. Bad beef, wrong ratios, lazy execution. Do not waste your burger budget here. We need these reviews.</div>
+        </div>
+    </div>
+
+    <!-- POST TEMPLATE -->
+    <div class="section-label">◈ Bluesky Post Format</div>
+    <div class="section-title">THE TEMPLATE</div>
+
+    <div class="template-block">
+        <div class="template-header">
+            <span>bluesky_post_template.txt</span>
+            <button class="copy-btn" onclick="copyTemplate()">Copy Template</button>
+        </div>
+        <div class="template-body" id="templateText">
+🍔 <span class="placeholder">[Restaurant Name]</span> | <span class="placeholder">[City, ST]</span><br>
+<span class="placeholder">[⭐ / ⭐⭐ / ⭐⭐⭐ / ✗]</span> | <span class="placeholder">[$/$$/$$$ ]</span> | <span class="placeholder">[Style]</span><br>
+───<br>
+<span class="placeholder">[Your review, max 280 chars. Be specific about the patty, bun, and overall experience.]</span><br>
+<br>
+<span class="tag">#CBDB #cheeseburger #<span class="placeholder">[city]</span></span>
+        </div>
+    </div>
+
+    <div class="template-note">
+        <strong>Styles:</strong> Classic · Smash · Fast Food · Pub · Bistro · Fancy · Regional<br>
+        <strong>Required tags:</strong> <code style="background:rgba(57,255,20,0.1);color:var(--green);padding:1px 5px;">#CBDB</code> — this is how the parser finds your post<br>
+        <strong>Photo:</strong> Attach a photo to the post. It will be pulled into the database automatically.
+    </div>
+
+    <!-- FIELD GUIDE -->
+    <div class="section-label">◈ Field Reference</div>
+    <div class="section-title">FIELD GUIDE</div>
+
+    <table class="field-table">
+        <thead>
+            <tr>
+                <th>Field</th>
+                <th>Format</th>
+                <th>Notes</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Restaurant Name</td>
+                <td>Free text</td>
+                <td>Official name of the restaurant. Be consistent — "Burger Stevens" not "Steven's Burgers"</td>
+            </tr>
+            <tr>
+                <td>Location</td>
+                <td>City, ST</td>
+                <td>Use standard US state abbreviations. International: City, Country. e.g. "Portland, OR" or "Tokyo, JP"</td>
+            </tr>
+            <tr>
+                <td>Rating</td>
+                <td>⭐ / ⭐⭐ / ⭐⭐⭐ / ✗</td>
+                <td>Stars = 1/2/3, X = 0. Use actual emoji stars. The parser counts them.</td>
+            </tr>
+            <tr>
+                <td>Price</td>
+                <td>$ / $$ / $$$</td>
+                <td>$ = under $12 · $$ = $12–22 · $$$ = over $22 (includes fries if combo)</td>
+            </tr>
+            <tr>
+                <td>Style</td>
+                <td>See options</td>
+                <td><code>Classic</code> <code>Smash</code> <code>Fast Food</code> <code>Pub</code> <code>Bistro</code> <code>Fancy</code> <code>Regional</code></td>
+            </tr>
+            <tr>
+                <td>Review text</td>
+                <td>Free text, 280 max</td>
+                <td>Between the "───" divider and your hashtags. Talk about patty, bun, sauce, sides, atmosphere.</td>
+            </tr>
+            <tr>
+                <td>Tags</td>
+                <td>#CBDB required</td>
+                <td><code>#CBDB</code> is required. Add <code>#cheeseburger</code> and your city tag. These help discoverability on Bluesky too.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- DOS AND DONTS -->
+    <div class="section-label">◈ Review Quality</div>
+    <div class="section-title">DO'S &amp; DON'TS</div>
+
+    <div class="dos-grid">
+        <div class="dos-block do">
+            <div class="dos-block-title">◉ DO</div>
+            <ul>
+                <li>Take your own photo, burger visible and in focus</li>
+                <li>Mention the patty quality specifically</li>
+                <li>Note bun type and if it held up</li>
+                <li>Be specific: "too salty" not "didn't like it"</li>
+                <li>Review the same place multiple times — things change</li>
+                <li>Give ✗ reviews when earned</li>
+                <li>Mention the price in context</li>
+            </ul>
+        </div>
+        <div class="dos-block dont">
+            <div class="dos-block-title">✗ DON'T</div>
+            <ul>
+                <li>Post from memory — only current, recent visits</li>
+                <li>Rate 3 stars just because you like the restaurant</li>
+                <li>Skip the format template — parser won't index it</li>
+                <li>Forget #CBDB in your tags</li>
+                <li>Mention anything you were paid to say</li>
+                <li>Use stock or menu photos</li>
+                <li>Review a burger you didn't order yourself</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- SIGNUP FORM -->
+    <div class="section-label">◈ Apply Now</div>
+    <div class="section-title">SIGN UP</div>
+
+    <div class="signup-form">
+        <form id="reviewerForm" onsubmit="submitForm(event)">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Bluesky Handle</label>
+                    <input type="text" placeholder="yourname.bsky.social" required>
+                </div>
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" placeholder="you@example.com" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Your City</label>
+                    <input type="text" placeholder="Portland, OR" required>
+                </div>
+                <div class="form-group">
+                    <label>Favorite Burger Style</label>
+                    <select>
+                        <option value="">Select...</option>
+                        <option>Classic / Pub Style</option>
+                        <option>Smash Burger</option>
+                        <option>Fast Food</option>
+                        <option>Fancy / Bistro</option>
+                        <option>All of the above</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group form-full">
+                <label>Tell Us About a Burger You've Had Recently</label>
+                <textarea rows="3" placeholder="Name the restaurant, where it is, and what stood out about it..." style="resize: vertical;"></textarea>
+            </div>
+            <button type="submit" class="form-submit">Submit Application →</button>
+        </form>
+        <div class="success-msg" id="successMsg">
+            ◉ APPLICATION RECEIVED<br>
+            We'll verify your Bluesky account and<br>
+            send you access within 48 hours.<br><br>
+            Start practicing the format in the meantime.<br>
+            <span style="font-size: 14px; color: var(--amber-dim);">— CB⚡DB Team</span>
+        </div>
+    </div>
+
+</div>
+
+<footer>
+    <div class="footer-logo">CB⚡DB</div>
+    <div>
+        <a href="index.html">Home</a> &nbsp;·&nbsp;
+        <a href="#format">Format Guide</a> &nbsp;·&nbsp;
+        <a href="mailto:hello@cheeseburger.world">Contact</a>
+    </div>
+    <div>© 2026 Cheeseburger World LLC · Portland, OR</div>
+</footer>
+
+<script>
+    function copyTemplate() {
+        const template = `🍔 [Restaurant Name] | [City, ST]
+[⭐ / ⭐⭐ / ⭐⭐⭐ / ✗] | [$/$$/$$$ ] | [Style]
+───
+[Your review, max 280 chars. Be specific about the patty, bun, and overall experience.]
+
+#CBDB #cheeseburger #[city]`;
+
+        navigator.clipboard.writeText(template).then(() => {
+            const btn = document.querySelector('.copy-btn');
+            btn.textContent = 'Copied!';
+            btn.style.background = 'rgba(57,255,20,0.2)';
+            setTimeout(() => {
+                btn.textContent = 'Copy Template';
+                btn.style.background = 'rgba(57,255,20,0.1)';
+            }, 2000);
+        });
+    }
+
+    function submitForm(e) {
+        e.preventDefault();
+        document.getElementById('reviewerForm').style.display = 'none';
+        document.getElementById('successMsg').style.display = 'block';
+    }
+</script>
+
+</body>
+</html>
