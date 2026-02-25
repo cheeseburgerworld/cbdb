@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database — CB⚡DB</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg:          #0d0900;
+            --bg2:         #110e08;
+            --amber:       #FF8C00;
+            --amber-dim:   #7A4200;
+            --amber-faint: #1e1408;
+            --gold:        #FFD000;
+            --green:       #39FF14;
+            --rust:        #7A2600;
+            --white:       #ffffff;
+            --wd:          rgba(255,255,255,0.65);
+            --wf:          rgba(255,255,255,0.3);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background: var(--bg);
+            color: var(--white);
+            font-family: 'IBM Plex Mono', monospace;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed; inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+            background-size: 256px;
+            pointer-events: none;
+            z-index: 9000;
+        }
+
+        /* ── NAV ─────────────────────────────────── */
+        nav {
+            position: sticky;
+            top: 0; z-index: 100;
+            height: 52px;
+            background: rgba(13,9,0,0.94);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--amber-faint);
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .nav-logo {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 24px;
+            letter-spacing: 3px;
+            color: var(--amber);
+            text-decoration: none;
+            flex-shrink: 0;
+        }
+        .nav-logo span { color: var(--green); }
+
+        .nav-links {
+            display: flex;
+            gap: 6px;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-links a {
+            font-size: 10px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--amber-dim);
+            text-decoration: none;
+            padding: 5px 10px;
+            border: 1px solid transparent;
+            transition: color 0.15s;
+            white-space: nowrap;
+        }
+
+        .nav-links a:hover { color: var(--white); }
+        .nav-links .active { color: var(--amber); border-color: var(--amber-faint); }
+        .nav-links .cta { border-color: var(--green) !important; color: var(--green) !important; }
+        .nav-links .cta:hover { background: rgba(57,255,20,0.08); }
+
+        @media (max-width: 640px) {
+            .nav-links .hide-sm { display: none; }
+        }
+
+        /* ── PAGE HEADER ─────────────────────────── */
+        .page-header {
+            padding: 40px 20px 32px;
+            max-width: 1100px;
+            margin: 0 auto;
+            border-bottom: 1px solid var(--amber-faint);
+        }
+
+        .page-eyebrow {
+            font-size: 9px;
+            letter-spacing: 4px;
+            color: var(--green);
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .page-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(36px, 8vw, 64px);
+            color: var(--amber);
+            letter-spacing: 3px;
+            line-height: 1;
+        }
+
+        .page-subtitle {
+            font-size: 11px;
+            color: var(--wd);
+            margin-top: 10px;
+            letter-spacing: 1px;
+        }
+
+        /* ── FILTERS ─────────────────────────────── */
+        .filters {
+            padding: 20px;
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-label {
+            font-size: 9px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--amber-dim);
+            margin-right: 4px;
+        }
+
+        .filter-btn {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 9px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            background: transparent;
+            border: 1px solid var(--amber-faint);
+            color: var(--amber-dim);
+            padding: 5px 12px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .filter-btn:hover { border-color: var(--amber-dim); color: var(--white); }
+
+        .filter-btn.active {
+            background: var(--amber);
+            border-color: var(--amber);
+            color: var(--bg);
+            font-weight: 700;
+        }
+
+        /* Search */
+        .search-wrap {
+            margin-left: auto;
+            position: relative;
+        }
+
+        .search-input {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 11px;
+            background: var(--bg2);
+            border: 1px solid var(--amber-faint);
+            color: var(--white);
+            padding: 6px 32px 6px 12px;
+            outline: none;
+            transition: border-color 0.15s;
+            width: 180px;
+        }
+
+        .search-input:focus { border-color: var(--amber-dim); }
+        .search-input::placeholder { color: var(--amber-dim); opacity: 0.5; }
+
+        .search-icon {
+            position: absolute;
+            right: 10px; top: 50%;
+            transform: translateY(-50%);
+            font-size: 12px;
+            color: var(--amber-dim);
+            pointer-events: none;
+        }
+
+        @media (max-width: 560px) {
+            .search-wrap { margin-left: 0; width: 100%; }
+            .search-input { width: 100%; }
+        }
+
+        /* ── GRID ────────────────────────────────── */
+        .grid-wrap {
+            padding: 20px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .result-count {
+            font-size: 9px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--amber-dim);
+            margin-bottom: 16px;
+        }
+
+        .review-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        @media (max-width: 860px) { .review-grid { grid-template-columns: repeat(2,1fr); } }
+        @media (max-width: 500px) { .review-grid { grid-template-columns: 1fr; } }
+
+        /* Card */
+        .r-card {
+            background: var(--bg2);
+            border: 1px solid var(--amber-faint);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: transform 0.2s, border-color 0.2s;
+            cursor: pointer;
+        }
+
+        .r-card:hover { transform: translateY(-2px); border-color: #3a2800; }
+
+        .r-img {
+            height: 130px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            background: #0a0700;
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        /* Real photo support */
+        .r-img img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            position: absolute;
+            inset: 0;
+        }
+
+        .r-img::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 40px;
+            background: linear-gradient(transparent, var(--bg2));
+        }
+
+        .r-stamp {
+            position: absolute;
+            top: 10px; right: 10px;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 13px;
+            letter-spacing: 1px;
+            padding: 3px 9px;
+            z-index: 1;
+        }
+
+        .rs-3 { background: var(--green); color: var(--bg); }
+        .rs-2 { background: var(--amber); color: var(--bg); }
+        .rs-1 { background: var(--rust); color: #f5e6c8; }
+        .rs-0 { background: #222; color: #555; border: 1px solid #333; }
+
+        .r-body {
+            padding: 16px 16px 18px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .r-name {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 20px;
+            letter-spacing: 2px;
+            color: var(--amber);
+            line-height: 1;
+            margin-bottom: 3px;
+        }
+
+        .r-loc {
+            font-size: 8px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--amber-dim);
+            margin-bottom: 12px;
+        }
+
+        .r-sep {
+            border: none;
+            border-top: 1px solid var(--amber-faint);
+            margin-bottom: 12px;
+        }
+
+        .r-text {
+            font-size: 11px;
+            line-height: 1.75;
+            color: var(--wd);
+            flex: 1;
+            margin-bottom: 14px;
+        }
+
+        .r-foot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 8px;
+            letter-spacing: 1px;
+            padding-top: 10px;
+            border-top: 1px solid var(--amber-faint);
+            gap: 6px;
+        }
+
+        .r-handle { color: var(--green); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .r-tag { border: 1px solid var(--amber-faint); color: var(--amber-dim); padding: 2px 6px; font-size: 7px; letter-spacing: 2px; text-transform: uppercase; flex-shrink: 0; }
+        .r-date { color: var(--wf); flex-shrink: 0; }
+
+        /* Empty state */
+        .empty {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--amber-dim);
+            font-size: 12px;
+            letter-spacing: 2px;
+        }
+
+        /* ── FOOTER ──────────────────────────────── */
+        footer {
+            background: var(--bg2);
+            border-top: 1px solid var(--amber-faint);
+            padding: 24px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            font-size: 9px;
+            letter-spacing: 2px;
+            color: var(--amber-dim);
+            margin-top: 40px;
+        }
+
+        .footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 3px; color: var(--amber); }
+        footer a { color: var(--amber-dim); text-decoration: none; }
+        footer a:hover { color: var(--white); }
+
+        @media (max-width: 480px) {
+            footer { flex-direction: column; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="index.html" class="nav-logo">CB<span>⚡</span>DB</a>
+    <ul class="nav-links">
+        <li><a href="database.html" class="active">Database</a></li>
+        <li class="hide-sm"><a href="reviewer.html">Format Guide</a></li>
+        <li><a href="reviewer.html" class="cta">Join</a></li>
+    </ul>
+</nav>
+
+<div class="page-header">
+    <div class="page-eyebrow">◈ Live Index</div>
+    <div class="page-title">THE BURGERS</div>
+    <div class="page-subtitle" id="lastUpdated">Indexed from #CBDB posts on Bluesky</div>
+</div>
+
+<div class="filters" id="filterBar">
+    <span class="filter-label">Filter:</span>
+    <button class="filter-btn active" data-filter="all" onclick="setFilter('all',this)">All</button>
+    <button class="filter-btn" data-filter="3" onclick="setFilter('3',this)">⭐⭐⭐ Legendary</button>
+    <button class="filter-btn" data-filter="2" onclick="setFilter('2',this)">⭐⭐ Destination</button>
+    <button class="filter-btn" data-filter="1" onclick="setFilter('1',this)">⭐ Solid</button>
+    <button class="filter-btn" data-filter="0" onclick="setFilter('0',this)">✗ Skip</button>
+
+    <div class="search-wrap">
+        <input class="search-input" type="text" id="searchInput" placeholder="Search..." oninput="applyFilters()">
+        <span class="search-icon">⌕</span>
+    </div>
+</div>
+
+<div class="grid-wrap">
+    <div class="result-count" id="resultCount">6 reviews</div>
+    <div class="review-grid" id="reviewGrid"></div>
+</div>
+
+<footer>
+    <div class="footer-logo">CB⚡DB</div>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;">
+        <a href="index.html">Home</a>
+        <a href="reviewer.html">Reviewer Guide</a>
+        <a href="https://github.com/cheeseburgerworld/cbdb" target="_blank">GitHub</a>
+    </div>
+    <div>© 2026 Cheeseburger World LLC</div>
+</footer>
+
+<script src="burger-data.js"></script>
+<script>
+    // ── DATA ──────────────────────────────────────────────────────
+    // Maps old 0–10 ratings to 0–3 scale
+    // When Bluesky scraper is live, this gets replaced by fetched data
+    const reviews = (typeof burgerDatabase !== 'undefined' ? burgerDatabase : []).map(b => ({
+        ...b,
+        rating3: b.rating >= 9 ? 2 : b.rating >= 7 ? 1 : b.rating >= 5 ? 1 : 0,
+        imageUrl: b.imageUrl || null
+    }));
+
+    // Fallback inline data if burger-data.js isn't present
+    const fallback = [
+        { id:1, name:"Burger Stevens",    location:"Portland, OR", rating3:2, style:"Smash",     handle:"@ash.bsky.social", date:"Feb 2026", notes:"Masterclass in simplicity. Smash patty hits the perfect char-to-juice ratio. Special sauce adds tang without masking the beef. Potato bun held together clean." },
+        { id:2, name:"Killer Burger",     location:"Portland, OR", rating3:2, style:"Classic",   handle:"@ash.bsky.social", date:"Jan 2026", notes:"Bacon by default on every burger — a genuine statement of intent. Nine signatures. Pint size is the right call. Downtown has a full bar." },
+        { id:3, name:"Skyline",           location:"Portland, OR", rating3:2, style:"Classic",   handle:"@ash.bsky.social", date:"Jan 2026", notes:"Portland's most underrated. Quality beef ground in-house — you can taste it. Toasted bun holds up through the whole thing. Vintage room, zero pretension." },
+        { id:4, name:"Tulip Shop Tavern", location:"Portland, OR", rating3:2, style:"Pub",       handle:"@ash.bsky.social", date:"Dec 2025", notes:"8oz at a perfect medium. High-quality beef allowed to actually speak. House-made pickles. House sauce is well-calibrated." },
+        { id:5, name:"Burgerville",       location:"Portland, OR", rating3:1, style:"Fast Food", handle:"@ash.bsky.social", date:"Nov 2025", notes:"Pacific NW fast food with actual values. Local ingredients, seasonal specials. Patties run thin but quality justifies the price. Shakes are legitimately good." },
+        { id:6, name:"Mike's Drive In",   location:"Portland, OR", rating3:1, style:"Fast Food", handle:"@ash.bsky.social", date:"Oct 2025", notes:"A Portland institution. Good sear on the patty. Bun-to-patty ratio is off — too much bread. Atmosphere earns it a pass. Milkshakes are the move." }
+    ];
+
+    const data = reviews.length ? reviews.map(r => ({
+        ...r,
+        handle: r.handle || '@ash.bsky.social',
+        date: r.date || '2026',
+    })) : fallback;
+
+    const ratingLabel = { 3:'⭐⭐⭐ Legendary', 2:'⭐⭐ Destination', 1:'⭐ Solid', 0:'✗ Skip It' };
+    const ratingClass = { 3:'rs-3', 2:'rs-2', 1:'rs-1', 0:'rs-0' };
+
+    let activeFilter = 'all';
+
+    function setFilter(val, btn) {
+        activeFilter = val;
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        applyFilters();
+    }
+
+    function applyFilters() {
+        const q = document.getElementById('searchInput').value.toLowerCase();
+        let filtered = data.filter(r => {
+            const matchRating = activeFilter === 'all' || String(r.rating3) === activeFilter;
+            const matchSearch = !q || r.name.toLowerCase().includes(q) || r.location.toLowerCase().includes(q) || r.style.toLowerCase().includes(q);
+            return matchRating && matchSearch;
+        });
+        render(filtered);
+    }
+
+    function render(list) {
+        const grid = document.getElementById('reviewGrid');
+        document.getElementById('resultCount').textContent = `${list.length} review${list.length !== 1 ? 's' : ''}`;
+
+        if (!list.length) {
+            grid.innerHTML = '<div class="empty">No reviews match your filter.</div>';
+            return;
+        }
+
+        grid.innerHTML = list.map(r => `
+            <div class="r-card">
+                <div class="r-img">
+                    ${r.imageUrl ? `<img src="${r.imageUrl}" alt="${r.name}" loading="lazy">` : '🍔'}
+                    <div class="r-stamp ${ratingClass[r.rating3]}">${ratingLabel[r.rating3]}</div>
+                </div>
+                <div class="r-body">
+                    <div class="r-name">${r.name}</div>
+                    <div class="r-loc">${r.location}</div>
+                    <hr class="r-sep">
+                    <div class="r-text">${r.notes}</div>
+                    <div class="r-foot">
+                        <span class="r-handle">${r.handle}</span>
+                        <span class="r-tag">${r.style}</span>
+                        <span class="r-date">${r.date}</span>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // Init
+    render(data);
+</script>
+</body>
+</html>
