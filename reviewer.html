@@ -46,51 +46,93 @@
     @media (max-width: 600px) { .nav-links .hide { display: none; } }
 
     /* PAGE */
-    .page { max-width: 680px; margin: 0 auto; padding: 48px 20px 80px; }
-    .eyebrow { font-size: 9px; letter-spacing: 4px; color: var(--green); text-transform: uppercase; margin-bottom: 12px; }
-    .page-title { font-family: var(--fhead); font-size: clamp(40px, 10vw, 72px); color: var(--amber); letter-spacing: 3px; line-height: 0.9; margin-bottom: 20px; }
-    .page-intro { font-size: 13px; line-height: 1.9; color: var(--wd); border-left: 2px solid var(--afaint); padding-left: 16px; margin-bottom: 48px; max-width: 520px; }
+    .page {
+        max-width: 640px;
+        margin: 0 auto;
+        padding: 56px 20px 80px;
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+    }
+
+    /* HEADER */
+    .eyebrow { font-size: 9px; letter-spacing: 4px; color: var(--green); text-transform: uppercase; margin-bottom: 14px; }
+    .page-title {
+        font-family: var(--fhead);
+        font-size: clamp(44px, 11vw, 80px);
+        color: var(--amber); letter-spacing: 3px; line-height: 0.88;
+        margin-bottom: 28px;
+    }
+    .page-intro {
+        font-size: 13px; line-height: 1.95; color: var(--wd);
+        border-left: 2px solid var(--afaint); padding-left: 16px;
+        margin-bottom: 48px; max-width: 500px;
+    }
     .page-intro em { color: var(--amber); font-style: normal; }
 
     /* HOW IT WORKS */
+    .section-label { font-size: 9px; letter-spacing: 4px; color: var(--green); text-transform: uppercase; margin-bottom: 14px; }
     .steps { display: flex; flex-direction: column; gap: 2px; margin-bottom: 48px; }
-    .step { background: var(--bg2); border: 1px solid var(--afaint); padding: 18px 20px; display: flex; gap: 16px; align-items: flex-start; }
-    .step-n { font-family: var(--fhead); font-size: 28px; color: var(--afaint); line-height: 1; flex-shrink: 0; width: 28px; }
-    /* Make step numbers visible with a slightly lighter tone */
-    .step:hover .step-n { color: var(--adim); }
+    .step {
+        background: var(--bg2); border: 1px solid var(--afaint);
+        padding: 18px 20px; display: flex; gap: 18px; align-items: flex-start;
+    }
+    .step-n {
+        font-family: var(--fhead); font-size: 26px; color: var(--adim);
+        line-height: 1; flex-shrink: 0; width: 26px; transition: color 0.15s;
+    }
+    .step:hover .step-n { color: var(--amber); }
     .step-title { font-size: 11px; font-weight: 700; letter-spacing: 2px; color: var(--amber); text-transform: uppercase; margin-bottom: 5px; }
-    .step-body { font-size: 11px; line-height: 1.75; color: var(--wd); }
+    .step-body { font-size: 11px; line-height: 1.8; color: var(--wd); }
     .step-body a { color: var(--green); text-decoration: none; }
     .step-body a:hover { text-decoration: underline; }
+    code { background: rgba(57,255,20,0.08); color: var(--green); padding: 1px 5px; font-family: var(--fbody); font-size: 0.88em; }
 
-    /* FORM */
-    .section-label { font-size: 9px; letter-spacing: 4px; color: var(--green); text-transform: uppercase; margin-bottom: 16px; }
-    .apply-form { background: var(--bg2); border: 1px solid var(--afaint); padding: 28px 24px; }
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
-    @media (max-width: 520px) { .form-row { grid-template-columns: 1fr; } }
-    .form-group { display: flex; flex-direction: column; gap: 6px; }
-    .form-group label { font-size: 9px; letter-spacing: 2px; color: var(--amber); text-transform: uppercase; }
-    .form-group input, .form-group textarea {
-        font-family: var(--fbody); font-size: 12px;
-        background: var(--bg); border: 1px solid var(--afaint);
-        color: var(--w); padding: 10px 12px; outline: none;
-        transition: border-color 0.15s; width: 100%; -webkit-appearance: none;
+    /* CTA BLOCK */
+    .cta-block {
+        background: var(--bg2);
+        border: 1px solid var(--afaint);
+        padding: 36px 32px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+        margin-bottom: 32px;
     }
-    .form-group input:focus, .form-group textarea:focus { border-color: var(--adim); }
-    .form-group input::placeholder, .form-group textarea::placeholder { color: var(--adim); opacity: 0.5; }
-    .form-full { margin-bottom: 14px; }
-    .submit-btn {
-        font-family: var(--fbody); font-size: 11px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase;
-        background: var(--amber); color: var(--bg); border: none; padding: 14px 24px;
-        cursor: pointer; width: 100%; transition: background 0.15s; -webkit-appearance: none;
+
+    .cta-heading {
+        font-family: var(--fterm);
+        font-size: clamp(22px, 5vw, 28px);
+        line-height: 1.5;
+        color: var(--wd);
     }
-    .submit-btn:hover { background: #FFD000; }
-    .form-note { margin-top: 14px; font-size: 10px; color: var(--adim); letter-spacing: 1px; line-height: 1.9; }
-    .success-msg {
-        display: none; border: 1px solid var(--green); padding: 28px; text-align: center;
-        font-family: var(--fterm); font-size: 20px; color: var(--green); line-height: 1.7;
-        background: rgba(57,255,20,0.03);
+    .cta-heading strong { color: var(--amber); font-weight: normal; }
+
+    .apply-btn {
+        display: inline-block;
+        font-family: var(--fbody);
+        font-size: 13px; font-weight: 700;
+        letter-spacing: 3px; text-transform: uppercase;
+        background: var(--amber); color: var(--bg);
+        text-decoration: none;
+        padding: 16px 32px;
+        transition: background 0.15s;
+        /* Full width on mobile */
+        width: 100%;
+        text-align: center;
     }
+    .apply-btn:hover { background: #FFD000; }
+
+    .cta-note {
+        font-size: 10px; letter-spacing: 1px; color: var(--adim); line-height: 1.8;
+    }
+
+    /* DISCLAIMER */
+    .disclaimer {
+        font-size: 11px; line-height: 1.85; color: var(--adim);
+        border-left: 2px solid var(--afaint); padding-left: 16px;
+    }
+    .disclaimer em { color: var(--wf); font-style: normal; }
 
     /* FOOTER */
     footer {
@@ -98,6 +140,7 @@
         padding: 24px 20px; display: flex; flex-wrap: wrap;
         justify-content: space-between; align-items: center;
         gap: 14px; font-size: 9px; letter-spacing: 1.5px; color: var(--adim);
+        margin-top: 60px;
     }
     .footer-logo { font-family: var(--fhead); font-size: 18px; letter-spacing: 3px; color: var(--amber); }
     .footer-links { display: flex; gap: 16px; flex-wrap: wrap; }
@@ -112,7 +155,7 @@
     <a href="/" class="logo">CB<span class="bolt">⚡</span>DB</a>
     <ul class="nav-links">
         <li><a href="/database.html">Database</a></li>
-        <li class="hide"><a href="/format.html">Format Guide</a></li>
+        <li class="hide"><a href="/format.html">Format</a></li>
         <li><a href="/reviewer.html" class="active pill">Join</a></li>
     </ul>
 </nav>
@@ -121,85 +164,46 @@
 
     <div class="eyebrow">◈ Reviewer Program</div>
     <h1 class="page-title">BECOME A<br>REVIEWER</h1>
+
     <p class="page-intro">
-        CB⚡DB is built by real people with real opinions —
-        no follower counts, no sponsored content.
-        Post reviews to your own <em>Bluesky</em> in our format
-        and we index them automatically. Your reviews stay yours.
+        CB⚡DB is built by real people with real opinions.
+        No algorithms. No sponsored content.
+        You post to your own <em>Bluesky</em> in our format —
+        we index it. Your reviews stay yours.
     </p>
 
-    <!-- HOW IT WORKS -->
     <div class="section-label">◈ How it works</div>
     <div class="steps">
         <div class="step">
             <div class="step-n">01</div>
             <div>
                 <div class="step-title">Apply below</div>
-                <div class="step-body">Submit your Bluesky handle. We verify you're a real person and approve your handle — usually within 48 hours.</div>
+                <div class="step-body">Fill out the short application. We check you're a real person and that you've actually eaten a burger recently.</div>
             </div>
         </div>
         <div class="step">
             <div class="step-n">02</div>
             <div>
                 <div class="step-title">Learn the format</div>
-                <div class="step-body">Check the <a href="/format.html">format guide</a> — it's a simple 6-line post with a photo. Follow it exactly and our parser picks it up automatically.</div>
+                <div class="step-body">Check the <a href="/format.html">format guide</a> — it's a simple 6-line post with a photo attached. Follow it exactly and the parser handles the rest.</div>
             </div>
         </div>
         <div class="step">
             <div class="step-n">03</div>
             <div>
                 <div class="step-title">Post to Bluesky, get indexed</div>
-                <div class="step-body">Once you're approved, any <code style="background:rgba(57,255,20,0.08);color:var(--green);padding:1px 5px;">#CBDB</code> post from your handle gets indexed hourly. You own the review — it lives on your Bluesky profile.</div>
+                <div class="step-body">Once approved, any <code>#CBDB</code> post from your handle gets picked up automatically - usually within the hour. You own the review. It lives on your profile.</div>
             </div>
         </div>
     </div>
 
-    <p style="font-size:11px;line-height:1.85;color:var(--wd);margin-bottom:48px;padding-left:16px;border-left:2px solid var(--afaint);">
-        Not in the reviewer program? You can obviously post whatever you want to Bluesky —
-        we just won't index it. The database only pulls from approved handles so the quality stays consistent.
-    </p>
-
-    <!-- APPLY FORM -->
-    <div class="section-label">◈ Apply now</div>
-    <div class="apply-form">
-        <form id="applyForm" onsubmit="submitForm(event)">
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Bluesky Handle</label>
-                    <input type="text" name="handle" placeholder="yourname.bsky.social" required>
-                </div>
-                <div class="form-group">
-                    <label>Email</label>
-                    <input type="email" name="email" placeholder="you@example.com" required>
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Your City</label>
-                    <input type="text" name="city" placeholder="Portland, OR" required>
-                </div>
-                <div class="form-group">
-                    <label>Favorite Burger Style</label>
-                    <input type="text" name="style" placeholder="Smash, pub, fast food...">
-                </div>
-            </div>
-            <div class="form-group form-full">
-                <label>Tell us about a burger you've eaten recently</label>
-                <textarea name="recent" rows="3" placeholder="Name the place, where it is, what stood out..." style="resize:vertical;"></textarea>
-            </div>
-            <button type="submit" class="submit-btn">Submit Application →</button>
-        </form>
-        <div class="success-msg" id="successMsg">
-            ◉ APPLICATION RECEIVED<br>
-            We'll verify your handle and be in<br>
-            touch within 48 hours.<br><br>
-            In the meantime, read the <a href="/format.html" style="color:var(--amber);">format guide</a>.<br><br>
-            <span style="font-size:14px;color:var(--adim);">— CB⚡DB</span>
+    <!-- CTA -->
+    <div class="cta-block">
+        <div class="cta-heading">
+            Want in? Click here to apply
         </div>
-        <div class="form-note">
-            ◉ No follower count requirements — just real opinions.<br>
-            ◉ Applications reviewed within 48 hours.<br>
-            ◉ Your reviews stay on your Bluesky. We just index them.
+        <a href="https://tally.so/r/dW6LRq" class="apply-btn" target="_blank" rel="noopener">
+            Apply Now →
         </div>
     </div>
 
@@ -213,15 +217,8 @@
         <a href="/format.html">Format Guide</a>
         <a href="https://github.com/cheeseburgerworld/cbdb" target="_blank">GitHub</a>
     </div>
-    <div>© 2026 Cheeseburger World LLC · Portland, OR</div>
+    <div>© 2026 Cheeseburger World LLC/div>
 </footer>
 
-<script>
-function submitForm(e) {
-    e.preventDefault();
-    document.getElementById('applyForm').style.display = 'none';
-    document.getElementById('successMsg').style.display = 'block';
-}
-</script>
 </body>
 </html>
