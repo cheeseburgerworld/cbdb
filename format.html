@@ -97,7 +97,7 @@
         width: 40px;
         text-align: center;
         font-size: 10px;
-        color: var(--adim);
+        color: rgba(255,255,255,0.5);
         border-right: 1px solid var(--afaint);
         padding: 13px 10px;
         white-space: nowrap;
@@ -109,14 +109,14 @@
         font-weight: 700;
     }
     .format-table td:nth-child(3) {
-        color: var(--wd);
+        color: rgba(255,255,255,0.65);
         font-size: 12px;
     }
 
     /* Blank row */
     .row-blank td { padding: 5px 16px; background: var(--bg); }
     .row-blank td:first-child { border-right: 1px solid var(--afaint); }
-    .row-blank td:nth-child(2) { color: var(--adim); font-size: 10px; letter-spacing: 2px; font-weight: 400; }
+    .row-blank td:nth-child(2) { color: rgba(255,255,255,0.3); font-size: 10px; letter-spacing: 2px; font-weight: 400; font-style: italic; }
     .row-blank td:nth-child(3) { color: transparent; }
 
     @media (max-width: 500px) {
@@ -222,7 +222,7 @@
 
     <p class="intro">
         Post to Bluesky using this format and tag it <em>#CBDB</em>.
-        Keep the line order exactly as shown - that's what the parser reads.
+        Keep the line order exactly as shown — that's what the parser reads.
         Attach a photo of the actual burger.
     </p>
 
@@ -354,7 +354,7 @@
     <!-- FOOTER NOTE -->
     <div style="margin-top:48px; border-left:2px solid var(--afaint); padding-left:16px;">
         <p style="font-size:13px; line-height:1.9; color:var(--wd);">
-            This format is public - anyone can see how it works.
+            This format is public — anyone can see how it works.
             But our parser only indexes posts from approved reviewers.
             If you're not in the program, you can post whatever you want to Bluesky
             — it just won't show up in the database.
