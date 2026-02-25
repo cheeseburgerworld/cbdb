@@ -3,444 +3,219 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cheeseburger Database — CB⚡DB</title>
+    <meta name="description" content="An open-source cheeseburger database. Real reviews posted to Bluesky by real people. No ads. No sponsored content.">
+    <title>CB⚡DB — Cheeseburger Database</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=VT323&family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg:          #0d0900;
-            --bg2:         #110e08;
-            --amber:       #FF8C00;
-            --amber-dim:   #7A4200;
-            --amber-faint: #1e1408;
-            --gold:        #FFD000;
-            --green:       #39FF14;
-            --rust:        #7A2600;
-            --white:       #ffffff;
-            --wd:          rgba(255,255,255,0.65);
-            --wf:          rgba(255,255,255,0.35);
-        }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { -webkit-text-size-adjust: 100%; }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        html { scroll-behavior: smooth; }
+    :root {
+        --bg:     #0d0900;
+        --bg2:    #110e08;
+        --amber:  #FF8C00;
+        --adim:   #7A4200;
+        --afaint: #1e1408;
+        --green:  #39FF14;
+        --rust:   #7A2600;
+        --w:      #ffffff;
+        --wd:     rgba(255,255,255,0.7);
+        --fhead:  'Bebas Neue', 'Arial Black', Impact, sans-serif;
+        --fbody:  'IBM Plex Mono', 'Courier New', monospace;
+    }
 
-        body {
-            background: var(--bg);
-            color: var(--white);
-            font-family: 'IBM Plex Mono', monospace;
-            overflow-x: hidden;
-            min-height: 100vh;
-        }
+    body {
+        background: var(--bg);
+        color: var(--w);
+        font-family: var(--fbody);
+        min-height: 100vh;
+        overflow-x: hidden;
+    }
 
-        /* Grain */
-        body::before {
-            content: '';
-            position: fixed; inset: 0;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
-            background-size: 256px;
-            pointer-events: none;
-            z-index: 9000;
-        }
+    /* NAV */
+    nav {
+        position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+        height: 52px;
+        background: rgba(13,9,0,0.96);
+        -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--afaint);
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 0 20px; gap: 12px;
+    }
+    .logo { font-family: var(--fhead); font-size: 22px; letter-spacing: 3px; color: var(--amber); text-decoration: none; line-height: 1; }
+    .logo .bolt { color: var(--green); }
+    .nav-links { display: flex; align-items: center; gap: 2px; list-style: none; }
+    .nav-links a { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--adim); text-decoration: none; padding: 6px 10px; white-space: nowrap; transition: color 0.15s; }
+    .nav-links a:hover { color: var(--w); }
+    .nav-links .pill { border: 1px solid var(--green); color: var(--green) !important; }
+    .nav-links .pill:hover { background: rgba(57,255,20,0.08); }
+    @media (max-width: 560px) { .nav-links .hide { display: none; } }
 
-        /* ── NAV ─────────────────────────────────── */
-        nav {
-            position: fixed;
-            top: 0; left: 0; right: 0;
-            z-index: 1000;
-            height: 52px;
-            background: rgba(13,9,0,0.94);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-bottom: 1px solid var(--amber-faint);
-            padding: 0 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 16px;
-        }
+    /* HERO — full viewport, centered */
+    .hero {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 80px 24px 60px;
+        max-width: 700px;
+        margin: 0 auto;
+        width: 100%;
+    }
 
-        .nav-logo {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 24px;
-            letter-spacing: 3px;
-            color: var(--amber);
-            text-decoration: none;
-            flex-shrink: 0;
-        }
-        .nav-logo span { color: var(--green); }
+    .hero-tag {
+        display: flex; align-items: center; gap: 10px;
+        font-size: 9px; letter-spacing: 4px; color: var(--green);
+        text-transform: uppercase; margin-bottom: 20px;
+    }
+    .dot {
+        width: 7px; height: 7px; border-radius: 50%;
+        background: var(--green); flex-shrink: 0;
+        animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+        0%,100% { box-shadow: 0 0 0 0 rgba(57,255,20,0.5); }
+        50%      { box-shadow: 0 0 0 7px rgba(57,255,20,0); }
+    }
 
-        .nav-links {
-            display: flex;
-            gap: 6px;
-            list-style: none;
-            align-items: center;
-        }
+    h1 {
+        font-family: var(--fhead);
+        font-size: clamp(64px, 17vw, 150px);
+        line-height: 0.86;
+        letter-spacing: 2px;
+        color: var(--amber);
+        text-shadow: 4px 4px 0 var(--rust), 8px 8px 0 rgba(122,38,0,0.18);
+        margin-bottom: 32px;
+    }
+    h1 .bolt { color: var(--green); text-shadow: 0 0 24px rgba(57,255,20,0.6); }
 
-        .nav-links a {
-            font-size: 10px;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            color: var(--amber-dim);
-            text-decoration: none;
-            padding: 5px 10px;
-            border: 1px solid transparent;
-            transition: color 0.15s, border-color 0.15s;
-            white-space: nowrap;
-        }
+    .tagline {
+        font-size: 13px;
+        line-height: 1.9;
+        color: var(--wd);
+        border-left: 2px solid var(--afaint);
+        padding-left: 16px;
+        margin-bottom: 48px;
+        max-width: 420px;
+    }
+    .tagline em { color: var(--amber); font-style: normal; }
 
-        .nav-links a:hover { color: var(--white); }
+    /* TWO BUTTONS */
+    .buttons {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        max-width: 480px;
+    }
+    @media (max-width: 440px) {
+        .buttons { grid-template-columns: 1fr; }
+    }
 
-        .nav-links .active {
-            color: var(--amber);
-            border-color: var(--amber-faint);
-        }
+    .btn {
+        display: block;
+        font-family: var(--fbody);
+        font-size: 12px; font-weight: 700;
+        letter-spacing: 2.5px; text-transform: uppercase;
+        text-decoration: none;
+        padding: 18px 20px;
+        text-align: center;
+        transition: filter 0.15s, transform 0.15s;
+    }
+    .btn:hover { filter: brightness(1.12); transform: translateY(-1px); }
+    .btn:active { transform: translateY(0); }
 
-        .nav-links .cta {
-            border-color: var(--green) !important;
-            color: var(--green) !important;
-        }
+    .btn-database {
+        background: var(--amber);
+        color: var(--bg);
+    }
+    .btn-join {
+        background: transparent;
+        color: var(--green);
+        border: 2px solid var(--green);
+    }
+    .btn-join:hover { background: rgba(57,255,20,0.07); }
 
-        .nav-links .cta:hover {
-            background: rgba(57,255,20,0.08);
-        }
+    /* MANIFESTO */
+    .manifesto {
+        padding: 72px 24px;
+        max-width: 700px;
+        margin: 0 auto;
+        border-top: 1px solid var(--afaint);
+    }
 
-        /* Hide middle links on small screens */
-        @media (max-width: 640px) {
-            .nav-links .hide-sm { display: none; }
-        }
+    .manifesto-eyebrow {
+        font-size: 9px; letter-spacing: 4px; color: var(--green);
+        text-transform: uppercase; margin-bottom: 24px;
+    }
 
-        /* ── HERO ────────────────────────────────── */
-        #hero {
-            min-height: 100svh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            padding: 100px 20px 60px;
-            position: relative;
-            overflow: hidden;
-            max-width: 900px;
-            margin: 0 auto;
-        }
+    .manifesto-text {
+        font-size: 14px; line-height: 2; color: var(--wd);
+        max-width: 520px; margin-bottom: 48px;
+    }
+    .manifesto-text em     { color: var(--amber); font-style: normal; }
+    .manifesto-text strong { color: var(--green); font-weight: normal; }
 
-        /* Ambient glow */
-        #hero::before {
-            content: '';
-            position: absolute;
-            top: 0; left: -100px;
-            width: 600px; height: 500px;
-            background: radial-gradient(ellipse at 30% 40%, rgba(255,140,0,0.07) 0%, transparent 60%);
-            pointer-events: none;
-        }
+    .charity {
+        display: inline-flex; flex-direction: column;
+        border: 1px solid rgba(57,255,20,0.2);
+        padding: 22px 28px;
+        background: rgba(57,255,20,0.025);
+    }
+    .charity-label { font-size: 8px; letter-spacing: 4px; color: var(--green); text-transform: uppercase; margin-bottom: 6px; }
+    .charity-num { font-family: var(--fhead); font-size: 52px; color: var(--green); letter-spacing: 3px; line-height: 1; text-shadow: 0 0 24px rgba(57,255,20,0.3); }
+    .charity-sub { font-size: 9px; letter-spacing: 2px; color: rgba(255,255,255,0.3); margin-top: 6px; }
 
-        .hero-eyebrow {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 9px;
-            letter-spacing: 4px;
-            color: var(--green);
-            text-transform: uppercase;
-            margin-bottom: 24px;
-            position: relative;
-        }
-
-        .pulse-dot {
-            width: 7px; height: 7px;
-            border-radius: 50%;
-            background: var(--green);
-            flex-shrink: 0;
-            animation: pulse 2s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-            0%,100% { box-shadow: 0 0 0 0 rgba(57,255,20,.5); }
-            50%      { box-shadow: 0 0 0 8px rgba(57,255,20,0); }
-        }
-
-        h1 {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: clamp(56px, 14vw, 136px);
-            line-height: 0.87;
-            letter-spacing: 2px;
-            color: var(--amber);
-            text-shadow: 3px 3px 0 var(--rust), 6px 6px 0 rgba(122,38,0,.2);
-            margin-bottom: 32px;
-            position: relative;
-        }
-
-        h1 .bolt {
-            color: var(--green);
-            text-shadow: 0 0 24px rgba(57,255,20,.6);
-        }
-
-        .hero-desc {
-            font-size: clamp(12px, 3vw, 14px);
-            line-height: 1.95;
-            color: var(--wd);
-            max-width: 520px;
-            padding-left: 16px;
-            border-left: 2px solid var(--amber-faint);
-            margin-bottom: 48px;
-            position: relative;
-        }
-
-        .hero-desc em { color: var(--amber); font-style: normal; }
-
-        /* ── NAV TILES ───────────────────────────── */
-        .tiles {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 2px;
-            background: var(--amber-faint);
-            border: 1px solid var(--amber-faint);
-            position: relative;
-            margin-bottom: 48px;
-        }
-
-        @media (max-width: 560px) {
-            .tiles { grid-template-columns: 1fr; }
-        }
-
-        .tile {
-            background: var(--bg2);
-            padding: 28px 24px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            text-decoration: none;
-            color: var(--white);
-            transition: background 0.15s;
-            cursor: pointer;
-        }
-
-        .tile:hover { background: #161008; }
-
-        .tile-icon { font-size: 28px; line-height: 1; }
-
-        .tile-title {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 20px;
-            letter-spacing: 2px;
-            color: var(--amber);
-            line-height: 1;
-        }
-
-        .tile-desc {
-            font-size: 10px;
-            line-height: 1.7;
-            color: var(--wd);
-            opacity: 0.7;
-        }
-
-        .tile-arrow {
-            font-size: 11px;
-            letter-spacing: 2px;
-            color: var(--amber-dim);
-            margin-top: auto;
-            padding-top: 12px;
-        }
-
-        /* ── STATS ROW ───────────────────────────── */
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            border-top: 1px solid var(--amber-faint);
-            border-bottom: 1px solid var(--amber-faint);
-            position: relative;
-        }
-
-        @media (max-width: 480px) {
-            .stats { grid-template-columns: repeat(2,1fr); }
-        }
-
-        .stat {
-            padding: 20px 16px;
-            border-right: 1px solid var(--amber-faint);
-        }
-
-        .stat:last-child { border-right: none; }
-
-        @media (max-width: 480px) {
-            .stat:nth-child(2) { border-right: none; }
-            .stat:nth-child(3) { border-top: 1px solid var(--amber-faint); }
-            .stat:nth-child(4) { border-top: 1px solid var(--amber-faint); border-right: none; }
-        }
-
-        .stat-n {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 32px;
-            color: var(--amber);
-            letter-spacing: 2px;
-            line-height: 1;
-            margin-bottom: 4px;
-        }
-
-        .stat-l {
-            font-size: 8px;
-            letter-spacing: 2.5px;
-            text-transform: uppercase;
-            color: var(--amber-dim);
-        }
-
-        /* ── MANIFESTO ───────────────────────────── */
-        #manifesto {
-            padding: 80px 20px;
-            max-width: 900px;
-            margin: 0 auto;
-            border-top: 1px solid var(--amber-faint);
-        }
-
-        .manifesto-eyebrow {
-            font-size: 9px;
-            letter-spacing: 4px;
-            color: var(--green);
-            text-transform: uppercase;
-            margin-bottom: 32px;
-        }
-
-        .manifesto-body {
-            font-family: 'VT323', monospace;
-            font-size: clamp(18px, 4vw, 24px);
-            line-height: 1.7;
-            color: var(--wd);
-            max-width: 620px;
-            margin-bottom: 48px;
-        }
-
-        .manifesto-body em     { color: var(--amber); font-style: normal; }
-        .manifesto-body strong { color: var(--green); font-weight: normal; }
-
-        .charity {
-            display: inline-flex;
-            flex-direction: column;
-            border: 1px solid rgba(57,255,20,0.2);
-            padding: 24px 32px;
-            background: rgba(57,255,20,0.02);
-        }
-
-        .charity-label {
-            font-size: 9px;
-            letter-spacing: 4px;
-            color: var(--green);
-            text-transform: uppercase;
-            margin-bottom: 6px;
-        }
-
-        .charity-num {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 52px;
-            color: var(--green);
-            letter-spacing: 3px;
-            line-height: 1;
-            text-shadow: 0 0 24px rgba(57,255,20,.3);
-        }
-
-        .charity-sub {
-            font-size: 9px;
-            letter-spacing: 2px;
-            color: var(--wf);
-            margin-top: 6px;
-        }
-
-        /* ── FOOTER ──────────────────────────────── */
-        footer {
-            background: var(--bg2);
-            border-top: 1px solid var(--amber-faint);
-            padding: 28px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 16px;
-            font-size: 9px;
-            letter-spacing: 2px;
-            color: var(--amber-dim);
-        }
-
-        .footer-logo {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 18px;
-            letter-spacing: 3px;
-            color: var(--amber);
-        }
-
-        .footer-links { display: flex; gap: 16px; flex-wrap: wrap; }
-
-        footer a { color: var(--amber-dim); text-decoration: none; transition: color 0.15s; }
-        footer a:hover { color: var(--white); }
-
-        @media (max-width: 480px) {
-            footer { flex-direction: column; text-align: center; }
-            .footer-links { justify-content: center; }
-        }
+    /* FOOTER */
+    footer {
+        border-top: 1px solid var(--afaint); background: var(--bg2);
+        padding: 24px 20px; display: flex; flex-wrap: wrap;
+        justify-content: space-between; align-items: center;
+        gap: 14px; font-size: 9px; letter-spacing: 1.5px; color: var(--adim);
+    }
+    .footer-logo { font-family: var(--fhead); font-size: 18px; letter-spacing: 3px; color: var(--amber); }
+    .footer-links { display: flex; gap: 16px; flex-wrap: wrap; }
+    footer a { color: var(--adim); text-decoration: none; transition: color 0.15s; }
+    footer a:hover { color: var(--w); }
+    @media (max-width: 500px) { footer { flex-direction: column; align-items: flex-start; } }
     </style>
 </head>
 <body>
 
 <nav>
-    <a href="index.html" class="nav-logo">CB<span>⚡</span>DB</a>
+    <a href="/" class="logo">CB<span class="bolt">⚡</span>DB</a>
     <ul class="nav-links">
-        <li><a href="database.html">Database</a></li>
-        <li class="hide-sm"><a href="reviewer.html">Format Guide</a></li>
-        <li class="hide-sm"><a href="#manifesto">Mission</a></li>
-        <li><a href="reviewer.html" class="cta">Join</a></li>
+        <li><a href="/database.html">Database</a></li>
+        <li class="hide"><a href="/format.html">Format</a></li>
+        <li><a href="/reviewer.html" class="pill">Join</a></li>
     </ul>
 </nav>
 
-<main id="hero">
-    <div class="hero-eyebrow">
-        <div class="pulse-dot"></div>
-        Open Database · Bluesky-Native · No Algorithms
+<div class="hero">
+    <div class="hero-tag">
+        <div class="dot"></div>
+        Open Source · Bluesky-native · No algorithms
     </div>
 
     <h1>CHEESEBURGER<br><span class="bolt">⚡</span>DATABASE</h1>
 
-    <p class="hero-desc">
-        An <em>open-source</em> database of cheeseburger reviews —
-        written by real people, posted to <em>Bluesky</em>,
-        indexed here.
+    <p class="tagline">
+        The world's first & finest open source cheeseburger database.<br>
     </p>
 
-    <div class="tiles">
-        <a href="database.html" class="tile">
-            <div class="tile-icon">🍔</div>
-            <div class="tile-title">Browse Database</div>
-            <div class="tile-desc">All indexed reviews. Filter by rating, city, and style.</div>
-            <div class="tile-arrow">Open →</div>
-        </a>
-        <a href="reviewer.html" class="tile">
-            <div class="tile-icon">✍️</div>
-            <div class="tile-title">Become a Reviewer</div>
-            <div class="tile-desc">Apply with your Bluesky handle.</div>
-            <div class="tile-arrow">Apply →</div>
-        </a>
-        <a href="reviewer.html#format" class="tile">
-            <div class="tile-icon">📋</div>
-            <div class="tile-title">Post Format</div>
-            <div class="tile-desc">The template our parser uses to index your review.</div>
-            <div class="tile-arrow">View →</div>
-        </a>
+    <div class="buttons">
+        <a href="/database.html" class="btn btn-database">Browse Database</a>
+        <a href="/reviewer.html" class="btn btn-join">Become a Reviewer</a>
     </div>
+</div>
 
-    <div class="stats">
-        <div class="stat">
-            <div class="stat-n">6</div>
-            <div class="stat-l">Reviews</div>
-        </div>
-        <div class="stat">
-            <div class="stat-n">1</div>
-            <div class="stat-l">Reviewers</div>
-        </div>
-    </div>
-</main>
-
-</section>
 
 <footer>
     <div class="footer-logo">CB⚡DB</div>
     <div class="footer-links">
-        <a href="database.html">Database</a>
-        <a href="reviewer.html">Reviewer Guide</a>
+        <a href="/database.html">Database</a>
+        <a href="/format.html">Format Guide</a>
         <a href="https://github.com/cheeseburgerworld/cbdb" target="_blank">GitHub</a>
         <a href="mailto:hello@cheeseburger.world">Contact</a>
     </div>
