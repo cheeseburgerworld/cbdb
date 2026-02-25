@@ -262,12 +262,10 @@
 // Add approved Bluesky handles here (lowercase, no @)
 const APPROVED = new Set([
     'cheeseburger.world',
-    'ok-cool.bsky.social',
     // add more approved handles here as the program grows
 ]);
 
-const BSKY_API  = 'https://public.api.bsky.app/xrpc';
-const SEARCH_Q  = '%23CBDB';
+const BSKY_API    = 'https://public.api.bsky.app/xrpc';
 const FETCH_LIMIT = 100;
 
 // ── RATING MAPS ───────────────────────────────────────
@@ -286,40 +284,57 @@ let activeFilter  = 'all';
 let yearOnly      = false;
 
 // ── FETCH ─────────────────────────────────────────────
+// Fetches each approved handle's feed directly — more reliable than search API
 async function loadReviews() {
-    try {
-        const res  = await fetch(`${BSKY_API}/app.bsky.feed.searchPosts?q=${SEARCH_Q}&limit=${FETCH_LIMIT}`);
-        const data = await res.json();
-        const posts = data.posts || [];
+    ALL_REVIEWS = [];
+    const errors = [];
 
-        ALL_REVIEWS = [];
+    await Promise.all([...APPROVED].map(async handle => {
+        try {
+            const url  = `${BSKY_API}/app.bsky.feed.getAuthorFeed?actor=${encodeURIComponent(handle)}&limit=${FETCH_LIMIT}&filter=posts_no_replies`;
+            const res  = await fetch(url);
+            if (!res.ok) throw new Error(`HTTP ${res.status} for ${handle}`);
+            const data = await res.json();
+            const feed = data.feed || [];
 
-        for (const post of posts) {
-            const handle = (post.author?.handle || '').toLowerCase().replace(/^@/, '');
-            if (!APPROVED.has(handle)) continue;
+            for (const item of feed) {
+                const post = item.post;
+                if (!post) continue;
 
-            const text   = post.record?.text || '';
-            const parsed = parsePost(text);
-            if (!parsed) continue;
+                const text = post.record?.text || '';
+                if (!/\#CBDB/i.test(text)) continue;
 
-            ALL_REVIEWS.push({
-                restaurant: parsed.restaurant,
-                location:   parsed.location,
-                r:          parsed.ratingNum,
-                price:      parsed.price,
-                notes:      parsed.reviewText,
-                handle:     post.author?.handle || '',
-                date:       formatDate(post.record?.createdAt),
-                imageUrl:   extractImage(post),
-                postUrl:    buildPostUrl(post.author?.handle, post.uri),
-            });
+                const parsed = parsePost(text);
+                if (!parsed) continue;
+
+                ALL_REVIEWS.push({
+                    restaurant: parsed.restaurant,
+                    location:   parsed.location,
+                    r:          parsed.ratingNum,
+                    price:      parsed.price,
+                    notes:      parsed.reviewText,
+                    handle:     post.author?.handle || handle,
+                    date:       formatDate(post.record?.createdAt),
+                    imageUrl:   extractImage(post),
+                    postUrl:    buildPostUrl(post.author?.handle || handle, post.uri),
+                    _ts:        post.record?.createdAt || '',
+                });
+            }
+        } catch(err) {
+            errors.push(err);
+            console.warn(`Failed to fetch feed for ${handle}:`, err);
         }
+    }));
 
-        renderFiltered();
+    // Sort newest first
+    ALL_REVIEWS.sort((a, b) => b._ts.localeCompare(a._ts));
 
-    } catch (err) {
-        showError(err);
+    if (ALL_REVIEWS.length === 0 && errors.length === APPROVED.size) {
+        showError(errors[0]);
+        return;
     }
+
+    renderFiltered();
 }
 
 // ── PARSER ────────────────────────────────────────────
