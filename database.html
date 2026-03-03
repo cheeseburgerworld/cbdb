@@ -121,30 +121,28 @@
     .card:hover { transform: translateY(-2px); border-color: #3a2800; }
 
     .card-img {
-        height: 160px; background: #0a0700;
+        height: 200px; background: #0a0700;
         display: flex; align-items: center; justify-content: center;
         font-size: 48px; position: relative; overflow: hidden; flex-shrink: 0;
     }
     .card-img img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-    .card-img::after {
-        content: ''; position: absolute; bottom: 0; left: 0; right: 0;
-        height: 40px; background: linear-gradient(transparent, var(--bg2)); pointer-events: none;
-    }
+    /* no gradient — show the burger */
 
     /* Rating stamp */
     .stamp {
-        position: absolute; top: 10px; right: 10px;
-        font-family: var(--fhead); font-size: 11px; letter-spacing: 1px;
-        padding: 3px 8px; z-index: 1; line-height: 1.3;
+        position: absolute; top: 0; left: 0;
+        font-family: var(--fhead); font-size: 12px; letter-spacing: 2px;
+        padding: 5px 12px; z-index: 1; line-height: 1.3;
+        text-transform: uppercase;
     }
     .s3 { background: #39FF14; color: #0d0900; }
     .s2 { background: #FFD000; color: #0d0900; }
     .s1 { background: #FF8C00; color: #0d0900; }
-    .s0 { background: #333; color: #888; border: 1px solid #444; }
+    .s0 { background: #1a1a1a; color: #666; border-bottom: 1px solid #2a2a2a; border-right: 1px solid #2a2a2a; }
 
     .card-body { padding: 14px 16px 16px; display: flex; flex-direction: column; flex: 1; }
-    .card-name { font-family: var(--fhead); font-size: 20px; letter-spacing: 2px; line-height: 1; margin-bottom: 3px; }
-    .card-loc  { font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--adim); margin-bottom: 12px; }
+    .card-name { font-family: var(--fhead); font-size: 20px; letter-spacing: 2px; line-height: 1; margin-bottom: 3px; color: var(--w); }
+    .card-loc  { font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 12px; }
     .card-sep  { border: none; border-top: 1px solid var(--afaint); margin-bottom: 12px; }
     .card-text { font-size: 12px; line-height: 1.75; color: var(--wd); flex: 1; margin-bottom: 14px; }
     .card-foot {
@@ -214,21 +212,18 @@
 <div class="page-head">
     <div>
         <div class="eyebrow">◈ Live index · #CBDB on Bluesky</div>
-        <div class="page-title">THE BURGERS</div>
+        <div class="page-title">THE DATABASE</div>
     </div>
-    <div class="live-badge">
-        <div class="live-dot"></div>
-        Live from Bluesky
-    </div>
+
 </div>
 
 <div class="filter-bar">
     <span class="filter-label">Filter:</span>
     <button class="fbtn fall on" onclick="setFilter('all',this)">All</button>
-    <button class="fbtn f3"     onclick="setFilter('3',this)">⭐⭐⭐</button>
-    <button class="fbtn f2"     onclick="setFilter('2',this)">⭐⭐</button>
-    <button class="fbtn f1"     onclick="setFilter('1',this)">⭐</button>
-    <button class="fbtn f0"     onclick="setFilter('0',this)">ㄨ</button>
+    <button class="fbtn f3"     onclick="setFilter('3',this)">Legendary</button>
+    <button class="fbtn f2"     onclick="setFilter('2',this)">Worth A Trip</button>
+    <button class="fbtn f1"     onclick="setFilter('1',this)">Solid</button>
+    <button class="fbtn f0"     onclick="setFilter('0',this)">Skip It</button>
     <div class="filter-sep"></div>
     <button class="fbtn" id="yearBtn" onclick="toggleYear(this)">Last Year</button>
     <div class="search-wrap">
@@ -242,7 +237,7 @@
     <div class="grid" id="grid">
         <div class="spinner">
             <div class="spinner-ring"></div>
-            Fetching from Bluesky...
+            Loading...
         </div>
     </div>
 </div>
@@ -270,10 +265,10 @@ const FETCH_LIMIT = 100;
 
 // ── RATING MAPS ───────────────────────────────────────
 const LABEL = {
-    3: '⭐⭐⭐ Legendary',
-    2: '⭐⭐ Worth A Trip',
-    1: '⭐ Solid',
-    0: 'ㄨ Skip It'
+    3: 'Legendary',
+    2: 'Worth A Trip',
+    1: 'Solid',
+    0: 'Skip It'
 };
 const STAMP_CLASS = { 3:'s3', 2:'s2', 1:'s1', 0:'s0' };
 const NAME_COLOR  = { 3:'#39FF14', 2:'#FFD000', 1:'#FF8C00', 0:'#888' };
@@ -441,8 +436,8 @@ function showError(err) {
             <div class="state-icon">⚠️</div>
             <div class="state-title">COULD NOT LOAD</div>
             <div class="state-body">
-                Couldn't reach Bluesky. Check your connection and try refreshing.<br>
-                <a href="https://bsky.app/hashtag/CBDB" target="_blank">View #CBDB posts directly on Bluesky →</a>
+                Could not connect to Bluesky. Check your connection and try again.<br>
+                <a href="https://bsky.app/hashtag/CBDB" target="_blank">View #CBDB on Bluesky directly →</a>
             </div>
         </div>`;
 }
@@ -494,9 +489,8 @@ function render(list) {
                 <div class="state-icon">🍔</div>
                 <div class="state-title">NO REVIEWS YET</div>
                 <div class="state-body">
-                    Nothing indexed yet. Post to Bluesky using #CBDB<br>
-                    and it'll show up here within the hour.<br><br>
-                    <a href="/format.html">See the post format →</a>
+                    Nothing here yet. The database grows one burger at a time.<br><br>
+                    <a href="/format.html">Read the format guide →</a>
                 </div>
             </div>`;
         return;
@@ -516,7 +510,7 @@ function render(list) {
                 <div class="stamp ${STAMP_CLASS[r.r]}">${LABEL[r.r]}</div>
             </div>
             <div class="card-body">
-                <div class="card-name" style="color:${NAME_COLOR[r.r]}">${r.restaurant}</div>
+                <div class="card-name">${r.restaurant}</div>
                 <div class="card-loc">${r.location}</div>
                 <hr class="card-sep">
                 <div class="card-text">${r.notes}</div>
