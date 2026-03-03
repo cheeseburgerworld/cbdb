@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Post Format — CB⚡DB</title>
+    <title>Format Guide — Cheeseburger Database</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { -webkit-text-size-adjust: 100%; }
-
     :root {
         --bg:     #0d0900;
         --bg2:    #110e08;
@@ -21,19 +20,10 @@
         --gold:   #FFD000;
         --w:      #ffffff;
         --wd:     rgba(255,255,255,0.75);
-        /* Two fonts only: headlines and everything else */
-        --fhead: 'Bebas Neue', 'Arial Black', Impact, sans-serif;
-        --fbody: 'IBM Plex Mono', 'Courier New', monospace;
+        --fhead:  'Bebas Neue', 'Arial Black', Impact, sans-serif;
+        --fbody:  'IBM Plex Mono', 'Courier New', monospace;
     }
-
-    body {
-        background: var(--bg);
-        color: var(--w);
-        font-family: var(--fbody);
-        min-height: 100vh;
-        font-size: 14px;
-        line-height: 1.6;
-    }
+    body { background: var(--bg); color: var(--w); font-family: var(--fbody); min-height: 100vh; }
 
     /* NAV */
     nav {
@@ -55,139 +45,96 @@
     @media (max-width: 600px) { .nav-links .hide { display: none; } }
 
     /* PAGE */
-    .page { max-width: 620px; margin: 0 auto; padding: 48px 20px 80px; }
+    .page { max-width: 640px; margin: 0 auto; padding: 48px 20px 80px; }
 
     .eyebrow { font-size: 9px; letter-spacing: 4px; color: var(--green); text-transform: uppercase; margin-bottom: 14px; }
+    h1 { font-family: var(--fhead); font-size: clamp(44px, 11vw, 80px); color: var(--amber); letter-spacing: 3px; line-height: 0.88; margin-bottom: 28px; }
 
-    h1 {
-        font-family: var(--fhead);
-        font-size: clamp(44px, 11vw, 80px);
-        color: var(--amber); letter-spacing: 3px; line-height: 0.88;
-        margin-bottom: 28px;
-    }
-
-    .intro {
-        font-size: 13px; line-height: 1.9; color: var(--wd);
-        border-left: 2px solid var(--afaint); padding-left: 16px;
-        margin-bottom: 52px;
-    }
+    .intro { font-size: 13px; line-height: 1.9; color: var(--wd); border-left: 2px solid var(--afaint); padding-left: 16px; margin-bottom: 56px; max-width: 480px; }
     .intro em { color: var(--amber); font-style: normal; }
 
-    .section-label {
-        font-size: 9px; letter-spacing: 4px; color: var(--green);
-        text-transform: uppercase; margin-bottom: 16px;
-    }
+    /* SECTIONS */
+    .section { margin-bottom: 56px; }
+    .section-label { font-size: 9px; letter-spacing: 4px; color: var(--green); text-transform: uppercase; margin-bottom: 4px; }
+    .section-title { font-family: var(--fhead); font-size: 28px; letter-spacing: 2px; color: var(--w); margin-bottom: 20px; line-height: 1; }
 
-    /* FORMAT TABLE */
-    .format-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-bottom: 48px;
+    /* ── RATINGS ── */
+    .rating-rows { display: flex; flex-direction: column; gap: 2px; }
+    .rating-row {
+        background: var(--bg2); border: 1px solid var(--afaint);
+        display: grid; grid-template-columns: 100px 1fr;
+        align-items: stretch;
     }
+    .rr-left {
+        display: flex; flex-direction: column; justify-content: center; align-items: center;
+        padding: 20px 16px; border-right: 1px solid var(--afaint);
+        gap: 6px;
+    }
+    .rr-stars { font-size: 16px; line-height: 1; letter-spacing: 2px; }
+    .rr-name  { font-family: var(--fhead); font-size: 13px; letter-spacing: 2px; text-align: center; line-height: 1.1; }
+    .rr-right { padding: 18px 20px; display: flex; align-items: center; }
+    .rr-desc  { font-size: 12px; line-height: 1.75; color: var(--wd); }
+
+    .r3 .rr-name { color: #39FF14; }
+    .r2 .rr-name { color: #FFD000; }
+    .r1 .rr-name { color: #FF8C00; }
+    .r0 .rr-name { color: #888; }
+    .r0 .rr-stars { color: #666; }
+
+    /* ── FORMAT TABLE ── */
+    .format-table { width: 100%; border-collapse: collapse; }
     .format-table tr { border-bottom: 1px solid var(--afaint); }
     .format-table tr:last-child { border-bottom: none; }
-
-    .format-table td {
-        padding: 13px 16px;
-        vertical-align: middle;
-        background: var(--bg2);
-        font-size: 13px;
-    }
-    .format-table td:first-child {
-        width: 40px;
-        text-align: center;
-        font-size: 10px;
-        color: rgba(255,255,255,0.5);
-        border-right: 1px solid var(--afaint);
-        padding: 13px 10px;
-        white-space: nowrap;
-    }
-    .format-table td:nth-child(2) {
-        width: 40%;
-        color: var(--w);
-        border-right: 1px solid var(--afaint);
-        font-weight: 700;
-    }
-    .format-table td:nth-child(3) {
-        color: rgba(255,255,255,0.65);
-        font-size: 12px;
-    }
-
-    /* Blank row */
+    .format-table td { padding: 13px 16px; background: var(--bg2); font-size: 13px; vertical-align: middle; }
+    .format-table td:first-child { width: 36px; text-align: center; font-size: 10px; color: rgba(255,255,255,0.4); border-right: 1px solid var(--afaint); padding: 13px 8px; }
+    .format-table td:nth-child(2) { width: 40%; color: var(--w); font-weight: 700; border-right: 1px solid var(--afaint); }
+    .format-table td:nth-child(3) { color: rgba(255,255,255,0.55); font-size: 12px; }
     .row-blank td { padding: 5px 16px; background: var(--bg); }
     .row-blank td:first-child { border-right: 1px solid var(--afaint); }
-    .row-blank td:nth-child(2) { color: rgba(255,255,255,0.3); font-size: 10px; letter-spacing: 2px; font-weight: 400; font-style: italic; }
+    .row-blank td:nth-child(2) { color: rgba(255,255,255,0.2); font-size: 10px; letter-spacing: 2px; font-style: italic; font-weight: 400; }
     .row-blank td:nth-child(3) { color: transparent; }
-
     @media (max-width: 500px) {
         .format-table td:nth-child(3) { display: none; }
-        .format-table td:nth-child(2) { border-right: none; width: auto; }
+        .format-table td:nth-child(2) { border-right: none; }
     }
 
-    /* EXAMPLE */
-    .example-block {
-        background: var(--bg2);
-        border: 1px solid var(--afaint);
-        margin-bottom: 48px;
-    }
+    /* ── EXAMPLE ── */
+    .example-block { background: var(--bg2); border: 1px solid var(--afaint); }
     .block-bar {
-        background: #0f0b07;
-        border-bottom: 1px solid var(--afaint);
-        padding: 9px 16px;
-        display: flex; align-items: center; justify-content: space-between; gap: 12px;
+        background: #0f0b07; border-bottom: 1px solid var(--afaint);
+        padding: 9px 16px; display: flex; align-items: center;
+        justify-content: space-between; gap: 12px;
     }
     .block-bar-left { display: flex; align-items: center; gap: 8px; font-size: 10px; letter-spacing: 1px; color: var(--adim); }
     .bsky-dot { width: 12px; height: 12px; background: #0085FF; border-radius: 50%; flex-shrink: 0; }
 
-    .example-body {
-        padding: 24px;
-        font-size: 14px;
-        line-height: 2;
-        color: var(--w);
-    }
+    .example-body { padding: 28px 24px; font-size: 14px; line-height: 2.1; color: var(--w); }
     .ex-dim    { color: var(--wd); }
     .ex-rating { color: var(--gold); font-weight: 700; }
     .ex-price  { color: var(--amber); font-weight: 700; }
     .ex-tag    { color: var(--green); font-weight: 700; }
-
-    /* COPY BLOCK */
-    .copy-block {
-        background: var(--bg2);
-        border: 1px solid var(--afaint);
-        margin-bottom: 48px;
+    .ex-label  {
+        display: inline-block; font-size: 9px; letter-spacing: 2px;
+        text-transform: uppercase; vertical-align: middle;
+        margin-left: 10px; color: var(--adim);
     }
+
+    /* ── COPY BLOCK ── */
+    .copy-block { background: var(--bg2); border: 1px solid var(--afaint); margin-top: 12px; }
     .copy-btn {
-        font-family: var(--fbody);
-        font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+        font-family: var(--fbody); font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
         background: rgba(57,255,20,0.1); border: 1px solid rgba(57,255,20,0.3);
         color: var(--green); padding: 5px 14px; cursor: pointer;
         transition: background 0.15s; white-space: nowrap;
     }
     .copy-btn:hover { background: rgba(57,255,20,0.2); }
+    .copy-body { padding: 24px; font-size: 14px; line-height: 2.1; color: rgba(255,255,255,0.65); }
+    .copy-body .tag { color: var(--green); font-weight: 700; }
 
-    .copy-body {
-        padding: 24px;
-        font-size: 14px;
-        line-height: 2;
-        color: var(--w);
-    }
-    .copy-body .placeholder { color: rgba(255,255,255,0.45); }
-    .copy-body .ex-tag { color: var(--green); font-weight: 700; }
-
-    /* RATING SCALE */
-    .rating-rows { display: flex; flex-direction: column; gap: 2px; }
-    .rating-row {
-        background: var(--bg2); border: 1px solid var(--afaint);
-        padding: 16px 20px;
-        display: grid; grid-template-columns: 72px 1fr; gap: 16px; align-items: start;
-    }
-    .rr-symbol { font-size: 18px; line-height: 1.4; padding-top: 2px; }
-    .rr-name   { font-family: var(--fhead); font-size: 16px; letter-spacing: 2px; margin-bottom: 4px; line-height: 1; }
-    .rr-desc   { font-size: 12px; line-height: 1.7; color: var(--wd); }
-    .r3 .rr-name { color: #39FF14; }
-    .r2 .rr-name { color: #FFD000; }
-    .r1 .rr-name { color: #FF8C00; }
-    .r0 .rr-name { color: #888; }
+    /* FOOTER NOTE */
+    .footer-note { margin-top: 56px; border-left: 2px solid var(--afaint); padding-left: 16px; font-size: 13px; line-height: 1.9; color: var(--wd); }
+    .footer-note a { color: var(--green); text-decoration: none; }
+    .footer-note a:hover { text-decoration: underline; }
 
     /* FOOTER */
     footer {
@@ -217,148 +164,163 @@
 
 <div class="page">
 
-    <div class="eyebrow">◈ Post Format</div>
-    <h1>THE<br>FORMAT</h1>
-
+    <div class="eyebrow">◈ Reviewer Format Guide</div>
+    <h1>HOW TO<br>POST</h1>
     <p class="intro">
-        Post to Bluesky in this format, tag it <em>#CBDB</em>, attach a photo.
-        The parser reads each line in order — if the format is off, it won't index.
-        There's no manual review process. Get the format right and it just works.
+        Once you're approved, post to Bluesky in this format and tag it <em>#CBDB</em>.
+        The parser reads each line in order — follow it exactly and it indexes automatically.
     </p>
 
-    <!-- FORMAT -->
-    <div class="section-label">◈ Line by line</div>
-    <table class="format-table">
-        <tbody>
-            <tr>
-                <td>1</td>
-                <td>Restaurant name</td>
-                <td>Official name. Consistent spelling every time.</td>
-            </tr>
-            <tr>
-                <td>2</td>
-                <td>City, State</td>
-                <td>Portland, OR · Seattle, WA · Tokyo, JP</td>
-            </tr>
-            <tr>
-                <td>3</td>
-                <td>Rating</td>
-                <td>⭐ &nbsp;⭐⭐ &nbsp;⭐⭐⭐ &nbsp;or &nbsp;ㄨ — see scale below</td>
-            </tr>
-            <tr>
-                <td>4</td>
-                <td>Price</td>
-                <td>$ = under $12 &nbsp;·&nbsp; $$ = $12–22 &nbsp;·&nbsp; $$$ = over $22</td>
-            </tr>
-            <tr class="row-blank">
-                <td></td>
-                <td>blank line</td>
-                <td></td>
-            </tr>
-            <tr>
-                <td>5</td>
-                <td>Your review</td>
-                <td>Free text. Be specific about the patty, bun, what worked or didn't.</td>
-            </tr>
-            <tr class="row-blank">
-                <td></td>
-                <td>blank line</td>
-                <td></td>
-            </tr>
-            <tr>
-                <td>#</td>
-                <td>#CBDB</td>
-                <td>Required tag — this is how the parser finds your post.</td>
-            </tr>
-            <tr>
-                <td>📸</td>
-                <td>Photo attached</td>
-                <td>Your photo, that visit. Gets pulled into the database.</td>
-            </tr>
-        </tbody>
-    </table>
+    <!-- 1. RATINGS -->
+    <div class="section">
+        <div class="section-label">◈ Step 1</div>
+        <div class="section-title">PICK YOUR RATING</div>
+        <div class="rating-rows">
 
-    <!-- EXAMPLE -->
-    <div class="section-label">◈ Example</div>
-    <div class="example-block">
-        <div class="block-bar">
-            <div class="block-bar-left">
-                <div class="bsky-dot"></div>
-                Bluesky post
+            <div class="rating-row r3">
+                <div class="rr-left">
+                    <div class="rr-stars">⭐⭐⭐</div>
+                    <div class="rr-name">LEGENDARY</div>
+                </div>
+                <div class="rr-right">
+                    <div class="rr-desc">Exceptional. A benchmark. The kind of burger you bring up unprompted and go back for deliberately. Use it sparingly — its value depends on it.</div>
+                </div>
             </div>
-        </div>
-        <div class="example-body">
-            Sure Shot Burger<br>
-            <span class="ex-dim">Portland, OR</span><br>
-            <span class="ex-rating">⭐⭐</span><br>
-            <span class="ex-price">$</span><br>
-            <br>
-            <span class="ex-dim">Excellent smash burger. Perfectly cooked, high-quality ingredients, great value from a food cart next to Oakshire Brewing.</span><br>
-            <br>
-            <span class="ex-tag">#CBDB</span>
+
+            <div class="rating-row r2">
+                <div class="rr-left">
+                    <div class="rr-stars">⭐⭐</div>
+                    <div class="rr-name">WORTH A TRIP</div>
+                </div>
+                <div class="rr-right">
+                    <div class="rr-desc">Notably good. Worth a specific visit. At least one thing — the patty, the build, the value — is genuinely excellent.</div>
+                </div>
+            </div>
+
+            <div class="rating-row r1">
+                <div class="rr-left">
+                    <div class="rr-stars">⭐</div>
+                    <div class="rr-name">SOLID</div>
+                </div>
+                <div class="rr-right">
+                    <div class="rr-desc">Competently made. Worth ordering if you're already there. Nothing disappoints, nothing stands out. Most burgers land here.</div>
+                </div>
+            </div>
+
+            <div class="rating-row r0">
+                <div class="rr-left">
+                    <div class="rr-stars">ㄨ</div>
+                    <div class="rr-name">SKIP IT</div>
+                </div>
+                <div class="rr-right">
+                    <div class="rr-desc">Not worth your time or money. Bad beef, bad ratios, lazy execution. These reviews are as valuable as any other — post them.</div>
+                </div>
+            </div>
+
         </div>
     </div>
 
-    <!-- COPY TEMPLATE -->
-    <div class="section-label">◈ Copy &amp; paste into Bluesky</div>
-    <div class="copy-block">
-        <div class="block-bar">
-            <div class="block-bar-left">Blank template — edit and post</div>
-            <button class="copy-btn" id="copyBtn" onclick="copyTemplate()">Copy</button>
-        </div>
-        <div class="copy-body">
-            <span class="placeholder">[Restaurant Name]</span><br>
-            <span class="placeholder">[City, State]</span><br>
-            <span class="placeholder">[⭐ or ⭐⭐ or ⭐⭐⭐ or ㄨ]</span><br>
-            <span class="placeholder">[$ or $$ or $$$]</span><br>
-            <br>
-            <span class="placeholder">[Your review]</span><br>
-            <br>
-            <span class="ex-tag">#CBDB</span>
-        </div>
+    <!-- 2. FORMAT -->
+    <div class="section">
+        <div class="section-label">◈ Step 2</div>
+        <div class="section-title">WRITE YOUR POST</div>
+        <table class="format-table">
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>Restaurant name</td>
+                    <td>Official name, consistent spelling every time</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>City, State</td>
+                    <td>Portland, OR &nbsp;·&nbsp; Seattle, WA &nbsp;·&nbsp; Tokyo, JP</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Rating</td>
+                    <td>⭐ &nbsp;⭐⭐ &nbsp;⭐⭐⭐ &nbsp;or &nbsp;ㄨ</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>Price</td>
+                    <td>$ = under $12 &nbsp;·&nbsp; $$ = $12–22 &nbsp;·&nbsp; $$$ = over $22</td>
+                </tr>
+                <tr class="row-blank">
+                    <td></td>
+                    <td>blank line</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>Your review</td>
+                    <td>Be specific — patty, bun, what worked, what didn't</td>
+                </tr>
+                <tr class="row-blank">
+                    <td></td>
+                    <td>blank line</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>#</td>
+                    <td>#CBDB</td>
+                    <td>Required — this is how the parser finds your post</td>
+                </tr>
+                <tr>
+                    <td>📸</td>
+                    <td>Photo attached</td>
+                    <td>The burger, that visit — not a menu photo</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 
-    <!-- RATING SCALE -->
-    <div class="section-label">◈ Rating scale</div>
-    <div class="rating-rows">
-        <div class="rating-row r3">
-            <div class="rr-symbol">⭐⭐⭐</div>
-            <div>
-                <div class="rr-name">LEGENDARY</div>
-                <div class="rr-desc">Exceptional. A benchmark. The kind of burger you bring up unprompted and return to deliberately. Use this sparingly — its value depends on it.</div>
+    <!-- 3. EXAMPLE -->
+    <div class="section">
+        <div class="section-label">◈ Step 3</div>
+        <div class="section-title">POST TO BLUESKY</div>
+
+        <div class="example-block">
+            <div class="block-bar">
+                <div class="block-bar-left">
+                    <div class="bsky-dot"></div>
+                    Example post
+                </div>
+            </div>
+            <div class="example-body">
+                Sure Shot Burger<br>
+                <span class="ex-dim">Portland, OR</span><br>
+                <span class="ex-rating">⭐⭐</span><br>
+                <span class="ex-price">$</span><br>
+                <br>
+                <span class="ex-dim">Excellent smash burger. Perfectly cooked, great value from a well-run food cart next to Oakshire Brewing. The patty has a proper crust, the bun holds up.</span><br>
+                <br>
+                <span class="ex-tag">#CBDB</span>
             </div>
         </div>
-        <div class="rating-row r2">
-            <div class="rr-symbol">⭐⭐</div>
-            <div>
-                <div class="rr-name">WORTH A TRIP</div>
-                <div class="rr-desc">Notably good. Worth a specific trip. At least one thing — the patty, the build, the value — is genuinely excellent.</div>
+
+        <div class="copy-block">
+            <div class="block-bar">
+                <div class="block-bar-left">Blank template</div>
+                <button class="copy-btn" id="copyBtn" onclick="copyTemplate()">Copy</button>
             </div>
-        </div>
-        <div class="rating-row r1">
-            <div class="rr-symbol">⭐</div>
-            <div>
-                <div class="rr-name">SOLID</div>
-                <div class="rr-desc">Competently executed. Worth ordering if you're already there. No single thing disappoints, nothing stands out. Most burgers land here.</div>
-            </div>
-        </div>
-        <div class="rating-row r0">
-            <div class="rr-symbol">ㄨ</div>
-            <div>
-                <div class="rr-name">SKIP IT</div>
-                <div class="rr-desc">Not worth your time or money. Something is fundamentally wrong — the beef, the ratios, the execution. These reviews are as valuable as any other. Post them.</div>
+            <div class="copy-body">
+                [Restaurant Name]<br>
+                [City, State]<br>
+                [⭐ or ⭐⭐ or ⭐⭐⭐ or ㄨ]<br>
+                [$ or $$ or $$$]<br>
+                <br>
+                [Your review]<br>
+                <br>
+                <span class="tag">#CBDB</span>
             </div>
         </div>
     </div>
 
     <!-- FOOTER NOTE -->
-    <div style="margin-top:48px; border-left:2px solid var(--afaint); padding-left:16px;">
-        <p style="font-size:13px; line-height:1.9; color:var(--wd);">
-            The format is public. Anyone can read it.
-            But the parser only indexes approved handles — so the database stays consistent.
-            Post whatever you want to Bluesky. We'll only pick it up once you're in the program.
-        </p>
-        <a href="/reviewer.html" style="display:inline-block; margin-top:16px; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--green); text-decoration:none;">Apply to join →</a>
+    <div class="footer-note">
+        The format is public — anyone can read it.
+        But the parser only indexes <a href="/reviewer.html">approved handles</a>.
     </div>
 
 </div>
