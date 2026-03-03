@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Application Received — Cheeseburger Database</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { -webkit-text-size-adjust: 100%; }
+    :root {
+        --bg:     #0d0900;
+        --bg2:    #110e08;
+        --amber:  #FF8C00;
+        --adim:   #7A4200;
+        --afaint: #1e1408;
+        --green:  #39FF14;
+        --w:      #ffffff;
+        --wd:     rgba(255,255,255,0.7);
+        --fhead:  'Bebas Neue', 'Arial Black', Impact, sans-serif;
+        --fbody:  'IBM Plex Mono', 'Courier New', monospace;
+    }
+    body {
+        background: var(--bg);
+        color: var(--w);
+        font-family: var(--fbody);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 40px 24px;
+    }
+
+    /* NAV */
+    nav {
+        position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+        height: 52px;
+        background: rgba(13,9,0,0.96);
+        -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--afaint);
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 0 20px;
+    }
+    .logo { font-family: var(--fhead); font-size: 22px; letter-spacing: 3px; color: var(--amber); text-decoration: none; line-height: 1; }
+    .logo .bolt { color: var(--green); }
+
+    /* CONTENT */
+    .wrap {
+        max-width: 560px;
+        width: 100%;
+        margin: 0 auto;
+        opacity: 0;
+        animation: fadein 0.5s 0.1s forwards;
+    }
+
+    .status {
+        display: flex; align-items: center; gap: 10px;
+        font-size: 9px; letter-spacing: 4px; color: var(--green);
+        text-transform: uppercase; margin-bottom: 24px;
+    }
+    .status-dot {
+        width: 7px; height: 7px; border-radius: 50%;
+        background: var(--green);
+        animation: pulse 2s ease-in-out infinite;
+        flex-shrink: 0;
+    }
+    @keyframes pulse {
+        0%,100% { box-shadow: 0 0 0 0 rgba(57,255,20,0.5); }
+        50%      { box-shadow: 0 0 0 7px rgba(57,255,20,0); }
+    }
+
+    h1 {
+        font-family: var(--fhead);
+        font-size: clamp(44px, 11vw, 80px);
+        color: var(--w);
+        letter-spacing: 2px;
+        line-height: 0.88;
+        margin-bottom: 32px;
+    }
+
+    .body-text {
+        font-size: 13px;
+        line-height: 1.95;
+        color: var(--wd);
+        border-left: 2px solid var(--afaint);
+        padding-left: 18px;
+        margin-bottom: 48px;
+        max-width: 420px;
+    }
+    .body-text em { color: var(--amber); font-style: normal; }
+
+    .actions {
+        display: flex; gap: 12px; flex-wrap: wrap;
+    }
+    .btn {
+        font-family: var(--fbody); font-size: 11px; font-weight: 700;
+        letter-spacing: 2.5px; text-transform: uppercase;
+        text-decoration: none; padding: 14px 22px;
+        transition: filter 0.15s, transform 0.15s;
+    }
+    .btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
+    .btn-primary   { background: var(--amber); color: var(--bg); }
+    .btn-secondary { background: transparent; color: var(--green); border: 2px solid var(--green); }
+    .btn-secondary:hover { background: rgba(57,255,20,0.07); }
+
+    /* FOOTER NOTE */
+    .footnote {
+        margin-top: 60px;
+        font-size: 10px; letter-spacing: 1px;
+        color: var(--adim); line-height: 1.8;
+        border-top: 1px solid var(--afaint);
+        padding-top: 20px;
+    }
+    .footnote a { color: var(--adim); text-decoration: none; }
+    .footnote a:hover { color: var(--w); }
+
+    @keyframes fadein { to { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="/" class="logo">CB<span class="bolt">⚡</span>DB</a>
+</nav>
+
+<div class="wrap">
+
+    <div class="status">
+        <div class="status-dot"></div>
+        Application received
+    </div>
+
+    <h1>THANKS FOR<br>APPLYING.</h1>
+
+    <p class="body-text">
+        We've got your application and we'll be in touch with next steps.<br><br>
+        In the meantime, read the format guide so you're
+        ready to post the moment you're approved.
+    </p>
+
+    <div class="actions">
+        <a href="/format.html" class="btn btn-primary">Read the Format Guide</a>
+        <a href="/database.html" class="btn btn-secondary">Browse the Database</a>
+    </div>
+
+
+
+</div>
+
+</body>
+</html>
