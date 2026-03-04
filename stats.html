@@ -120,21 +120,6 @@
     .contrib-handle { font-size: 11px; color: var(--green); }
     .contrib-count  { font-size: 11px; color: var(--adim); }
 
-    /* MANUAL SECTION — edit this directly in the file */
-    .editorial {
-        background: var(--bg2); border: 1px solid var(--afaint);
-        padding: 28px 28px; margin-bottom: 48px;
-    }
-    .editorial-label { font-size: 8px; letter-spacing: 4px; text-transform: uppercase; color: var(--adim); margin-bottom: 16px; }
-    .editorial p { font-size: 13px; line-height: 1.9; color: var(--wd); margin-bottom: 12px; }
-    .editorial p:last-child { margin-bottom: 0; }
-    .editorial em { color: var(--amber); font-style: normal; }
-    .city-want { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
-    .city-tag {
-        font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
-        border: 1px solid var(--adim); color: var(--adim);
-        padding: 4px 10px;
-    }
 
     /* STATE */
     .loading-state { padding: 40px 0; color: var(--adim); font-size: 11px; letter-spacing: 2px; }
@@ -266,42 +251,13 @@
         <div class="loading-state">Loading...</div>
     </div>
 
-    <!-- EDITORIAL — edit this section manually -->
-    <div class="section-eyebrow">◈ Editorial</div>
-    <div class="section-title">WHERE WE WANT TO GO</div>
-    <div class="editorial">
-        <div class="editorial-label">From the database</div>
-        <p>
-            The database started in <em>Portland, OR</em>.
-            We're looking for contributors in new cities —
-            especially places with strong local burger culture that national review sites ignore.
-        </p>
-        <p>Cities we'd love coverage in:</p>
-        <div class="city-want">
-            <!-- Add or remove city tags here manually -->
-            <span class="city-tag">Seattle, WA</span>
-            <span class="city-tag">Chicago, IL</span>
-            <span class="city-tag">Austin, TX</span>
-            <span class="city-tag">Nashville, TN</span>
-            <span class="city-tag">New Orleans, LA</span>
-            <span class="city-tag">Detroit, MI</span>
-            <span class="city-tag">Kansas City, MO</span>
-            <span class="city-tag">Los Angeles, CA</span>
-        </div>
-    </div>
 
 </div>
 
 
+<script src="/config.js"></script>
 <script>
-// ── CONFIG — keep in sync with database.html ─────────────────────────────────
-const APPROVED = new Set([
-    'cheeseburger.world',
-    // add approved handles here as they're approved
-]);
-
-const BSKY_API    = 'https://public.api.bsky.app/xrpc';
-const FETCH_LIMIT = 100;
+// config loaded from config.js
 
 // ── PARSER (minimal — just needs rating + location) ───────────────────────────
 function parseRating(line) {
