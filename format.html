@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Format Guide — Cheeseburger Database</title>
+    <title>Format — Cheeseburger Database</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -25,27 +25,9 @@
     }
     body { background: var(--bg); color: var(--w); font-family: var(--fbody); min-height: 100vh; }
 
-    /* NAV */
-    nav {
-        position: sticky; top: 0; z-index: 100; height: 52px;
-        background: rgba(13,9,0,0.96);
-        -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
-        border-bottom: 1px solid var(--afaint);
-        display: flex; align-items: center; justify-content: space-between;
-        padding: 0 16px; gap: 12px;
-    }
-    .logo { font-family: var(--fhead); font-size: 22px; letter-spacing: 3px; color: var(--amber); text-decoration: none; flex-shrink: 0; line-height: 1; }
-    .logo .bolt { color: var(--green); }
-    .nav-links { display: flex; align-items: center; gap: 2px; list-style: none; }
-    .nav-links a { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--adim); text-decoration: none; padding: 6px 10px; white-space: nowrap; transition: color 0.15s; }
-    .nav-links a:hover { color: var(--w); }
-    .nav-links .active { color: var(--amber); }
-    .nav-links .pill { border: 1px solid var(--green); color: var(--green) !important; }
-    .nav-links .pill:hover { background: rgba(57,255,20,0.08); }
-    @media (max-width: 600px) { .nav-links .hide { display: none; } }
 
     /* PAGE */
-    .page { max-width: 640px; margin: 0 auto; padding: 48px 20px 80px; }
+    .page { max-width: 640px; margin: 0 auto; padding: 32px 16px 64px; }
 
     .eyebrow { font-size: 9px; letter-spacing: 4px; color: var(--green); text-transform: uppercase; margin-bottom: 14px; }
     h1 { font-family: var(--fhead); font-size: clamp(44px, 11vw, 80px); color: var(--amber); letter-spacing: 3px; line-height: 0.88; margin-bottom: 28px; }
@@ -137,17 +119,52 @@
     .footer-note a:hover { text-decoration: underline; }
 
     /* FOOTER */
+
     footer {
         border-top: 1px solid var(--afaint); background: var(--bg2);
-        padding: 24px 20px; display: flex; flex-wrap: wrap;
+        padding: 28px 24px;
+        display: flex; flex-wrap: wrap;
         justify-content: space-between; align-items: center;
-        gap: 14px; font-size: 9px; letter-spacing: 1.5px; color: var(--adim);
-        margin-top: 60px;
+        gap: 16px;
+        margin-top: 40px;
     }
-    .footer-logo { font-family: var(--fhead); font-size: 18px; letter-spacing: 3px; color: var(--amber); }
-    .footer-links { display: flex; gap: 16px; flex-wrap: wrap; }
-    footer a { color: var(--adim); text-decoration: none; transition: color 0.15s; }
-    footer a:hover { color: var(--w); }
+    .footer-logo { font-family: var(--fhead); font-size: 20px; letter-spacing: 3px; color: var(--amber); line-height: 1; }
+    .footer-right { display: flex; align-items: center; gap: 10px; font-size: 9px; letter-spacing: 1px; color: var(--adim); flex-wrap: wrap; }
+    .footer-right a { color: var(--adim); text-decoration: none; transition: color 0.15s; }
+    .footer-right a:hover { color: var(--w); }
+    .footer-sep { color: var(--afaint); }
+    @media (max-width: 500px) { footer { flex-direction: column; align-items: flex-start; } }
+    /* NAV */
+    nav {
+        position: sticky; top: 0; z-index: 100; height: 52px;
+        background: rgba(13,9,0,0.97);
+        -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--afaint);
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 0 20px; gap: 12px;
+    }
+    .logo { font-family: var(--fhead); font-size: 22px; letter-spacing: 3px; color: var(--amber); text-decoration: none; flex-shrink: 0; line-height: 1; }
+    .logo .bolt { color: var(--green); }
+    .nav-links { display: flex; align-items: center; gap: 0; list-style: none; }
+    .nav-links a { font-family: var(--fbody); font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--adim); text-decoration: none; padding: 6px 10px; white-space: nowrap; transition: color 0.15s; }
+    .nav-links a:hover { color: var(--w); }
+    .nav-links .active { color: var(--amber); }
+    .nav-links .pill { border: 1px solid var(--green); color: var(--green) !important; margin-left: 6px; }
+    .nav-links .pill:hover { background: rgba(57,255,20,0.08); }
+    @media (max-width: 580px) { .nav-links .hide { display: none; } }
+
+    /* FOOTER */
+    footer {
+        border-top: 1px solid var(--afaint); background: var(--bg2);
+        padding: 28px 24px; display: flex; flex-wrap: wrap;
+        justify-content: space-between; align-items: center;
+        gap: 16px; margin-top: 60px;
+    }
+    .footer-logo { font-family: var(--fhead); font-size: 20px; letter-spacing: 3px; color: var(--amber); line-height: 1; }
+    .footer-right { display: flex; align-items: center; gap: 10px; font-size: 9px; letter-spacing: 1px; color: var(--adim); flex-wrap: wrap; }
+    .footer-right a { color: var(--adim); text-decoration: none; transition: color 0.15s; }
+    .footer-right a:hover { color: var(--w); }
+    .footer-sep { color: var(--afaint); }
     @media (max-width: 500px) { footer { flex-direction: column; align-items: flex-start; } }
     </style>
 </head>
@@ -157,14 +174,16 @@
     <a href="/" class="logo">CB<span class="bolt">⚡</span>DB</a>
     <ul class="nav-links">
         <li><a href="/database.html">Database</a></li>
+        <li class="hide"><a href="/stats.html">Stats</a></li>
+        <li class="hide"><a href="/about.html">About</a></li>
         <li><a href="/format.html" class="active">Format</a></li>
-        <li><a href="/reviewer.html" class="pill">Join</a></li>
+        <li><a href="/contributor.html" class="pill">Contribute</a></li>
     </ul>
 </nav>
 
 <div class="page">
 
-    <div class="eyebrow">◈ Reviewer Format Guide</div>
+    <div class="eyebrow">◈ Contributor Format</div>
     <h1>HOW TO<br>POST</h1>
     <p class="intro">
         Once you're approved, post to Bluesky in this format and tag it <em>#CBDB</em>.
@@ -183,7 +202,7 @@
                     <div class="rr-name">LEGENDARY</div>
                 </div>
                 <div class="rr-right">
-                    <div class="rr-desc">Exceptional. A benchmark. Use it sparingly - that's what gives it meaning.</div>
+                    <div class="rr-desc">Exceptional. A benchmark. The kind of burger you bring up unprompted and go back for deliberately. Use it sparingly — its value depends on it.</div>
                 </div>
             </div>
 
@@ -193,7 +212,7 @@
                     <div class="rr-name">WORTH A TRIP</div>
                 </div>
                 <div class="rr-right">
-                    <div class="rr-desc">Notably good. Worth a specific visit. Something about it is genuinely excellent.</div>
+                    <div class="rr-desc">Notably good. Worth a specific visit. At least one thing — the patty, the build, the value — is genuinely excellent.</div>
                 </div>
             </div>
 
@@ -203,7 +222,7 @@
                     <div class="rr-name">SOLID</div>
                 </div>
                 <div class="rr-right">
-                    <div class="rr-desc">A good burger. No complaints, nothing exceptional. Most burgers land here and that's fine.</div>
+                    <div class="rr-desc">Competently made. Worth ordering if you're already there. Nothing disappoints, nothing stands out. Most burgers land here.</div>
                 </div>
             </div>
 
@@ -213,7 +232,7 @@
                     <div class="rr-name">SKIP IT</div>
                 </div>
                 <div class="rr-right">
-                    <div class="rr-desc">Not worth the money or the time. These reviews matter. Post them.</div>
+                    <div class="rr-desc">Not worth your time or money. Bad beef, bad ratios, lazy execution. These reviews are as valuable as any other — post them.</div>
                 </div>
             </div>
 
@@ -275,33 +294,15 @@
         </table>
     </div>
 
-    <!-- 3. EXAMPLE -->
+    <!-- 3. POST -->
     <div class="section">
         <div class="section-label">◈ Step 3</div>
         <div class="section-title">POST TO BLUESKY</div>
-
-        <div class="example-block">
-            <div class="block-bar">
-                <div class="block-bar-left">
-                    <div class="bsky-dot"></div>
-                    Example post
-                </div>
-            </div>
-            <div class="example-body">
-                Sure Shot Burger<br>
-                <span class="ex-dim">Portland, OR</span><br>
-                <span class="ex-rating">⭐⭐</span><br>
-                <span class="ex-price">$</span><br>
-                <br>
-                <span class="ex-dim">Excellent smash burger. Perfectly cooked, great value from a well-run food cart next to Oakshire Brewing. The patty has a proper crust, the bun holds up.</span><br>
-                <br>
-                <span class="ex-tag">#CBDB</span>
-            </div>
-        </div>
+        <p class="intro" style="margin-bottom: 20px;">Copy the template, paste it into a new Bluesky post, fill in your review, and attach a photo of the burger. That's it.</p>
 
         <div class="copy-block">
             <div class="block-bar">
-                <div class="block-bar-left">Blank template</div>
+                <div class="block-bar-left">Copy template</div>
                 <button class="copy-btn" id="copyBtn" onclick="copyTemplate()">Copy</button>
             </div>
             <div class="copy-body">
@@ -315,26 +316,17 @@
                 <span class="tag">#CBDB</span>
             </div>
         </div>
-    </div>
+
+
 
     <!-- FOOTER NOTE -->
     <div class="footer-note">
         The format is public — anyone can read it.
-        But the parser only indexes <a href="/reviewer.html">approved handles</a>.
+        But the parser only indexes <a href="/contributor.html">approved contributors</a>.
     </div>
 
 </div>
 
-<footer>
-    <div class="footer-logo">CB⚡DB</div>
-    <div class="footer-links">
-        <a href="/">Home</a>
-        <a href="/database.html">Database</a>
-        <a href="/reviewer.html">Join as Reviewer</a>
-        <a href="https://github.com/cheeseburgerworld/cbdb" target="_blank">GitHub</a>
-    </div>
-    <div>© 2026 Cheeseburger World LLC</div>
-</footer>
 
 <script>
 function copyTemplate() {
@@ -353,5 +345,16 @@ function copyTemplate() {
     }).catch(() => { alert(text); });
 }
 </script>
+
+
+<footer>
+    <div class="footer-logo">CB⚡DB</div>
+    <div class="footer-right">
+        <a href="https://github.com/cheeseburgerworld/cbdb" target="_blank">GitHub</a>
+        <span class="footer-sep">·</span>
+        <span>© 2026 Cheeseburger World LLC</span>
+    </div>
+</footer>
+
 </body>
 </html>
