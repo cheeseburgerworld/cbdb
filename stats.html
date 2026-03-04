@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stats — Cheeseburger Database</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { -webkit-text-size-adjust: 100%; }
+    :root {
+        --bg:     #0d0900;
+        --bg2:    #110e08;
+        --amber:  #FF8C00;
+        --adim:   #7A4200;
+        --afaint: #1e1408;
+        --green:  #39FF14;
+        --gold:   #FFD000;
+        --w:      #ffffff;
+        --wd:     rgba(255,255,255,0.75);
+        --fhead:  'Bebas Neue', 'Arial Black', Impact, sans-serif;
+        --fbody:  'IBM Plex Mono', 'Courier New', monospace;
+    }
+    body { background: var(--bg); color: var(--w); font-family: var(--fbody); min-height: 100vh; }
+
+    nav {
+        position: sticky; top: 0; z-index: 100; height: 52px;
+        background: rgba(13,9,0,0.96);
+        -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--afaint);
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 0 16px; gap: 12px;
+    }
+    .logo { font-family: var(--fhead); font-size: 22px; letter-spacing: 3px; color: var(--amber); text-decoration: none; flex-shrink: 0; line-height: 1; }
+    .logo .bolt { color: var(--green); }
+    .nav-links { display: flex; align-items: center; gap: 2px; list-style: none; }
+    .nav-links a { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--adim); text-decoration: none; padding: 6px 10px; white-space: nowrap; transition: color 0.15s; }
+    .nav-links a:hover { color: var(--w); }
+    .nav-links .active { color: var(--amber); }
+    .nav-links .pill { border: 1px solid var(--green); color: var(--green) !important; }
+    .nav-links .pill:hover { background: rgba(57,255,20,0.08); }
+    @media (max-width: 600px) { .nav-links .hide { display: none; } }
+
+    .page { max-width: 900px; margin: 0 auto; padding: 32px 16px 64px; }
+
+    .eyebrow { font-size: 9px; letter-spacing: 4px; color: var(--green); text-transform: uppercase; margin-bottom: 14px; }
+    h1 { font-family: var(--fhead); font-size: clamp(44px, 11vw, 80px); color: var(--amber); letter-spacing: 3px; line-height: 0.88; margin-bottom: 40px; }
+
+    /* BIG NUMBERS */
+    .numbers {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 2px;
+        margin-bottom: 48px;
+    }
+    @media (max-width: 640px) { .numbers { grid-template-columns: repeat(2, 1fr); } }
+
+    .num-card {
+        background: var(--bg2); border: 1px solid var(--afaint);
+        padding: 24px 20px;
+        display: flex; flex-direction: column; gap: 6px;
+    }
+    .num-label { font-size: 8px; letter-spacing: 3px; text-transform: uppercase; color: var(--adim); }
+    .num-value {
+        font-family: var(--fhead); font-size: clamp(36px, 7vw, 60px);
+        line-height: 1; letter-spacing: 2px; color: var(--w);
+    }
+    .num-value.loading { color: var(--afaint); animation: blink 1s ease-in-out infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+    /* RATING BREAKDOWN */
+    .section-title {
+        font-family: var(--fhead); font-size: 22px; letter-spacing: 3px;
+        color: var(--w); margin-bottom: 16px; margin-top: 48px;
+    }
+    .section-eyebrow { font-size: 9px; letter-spacing: 4px; color: var(--green); text-transform: uppercase; margin-bottom: 6px; margin-top: 48px; }
+
+    .rating-bars { display: flex; flex-direction: column; gap: 8px; margin-bottom: 48px; }
+    .rbar { display: grid; grid-template-columns: 140px 1fr 40px; align-items: center; gap: 14px; }
+    .rbar-label { font-size: 11px; letter-spacing: 1px; color: var(--wd); white-space: nowrap; }
+    .rbar-track { height: 6px; background: var(--afaint); position: relative; }
+    .rbar-fill  { height: 100%; width: 0%; transition: width 1s ease; }
+    .r3-fill { background: #39FF14; }
+    .r2-fill { background: #FFD000; }
+    .r1-fill { background: #FF8C00; }
+    .r0-fill { background: #555; }
+    .rbar-count { font-size: 11px; color: var(--adim); text-align: right; }
+
+    /* CITIES TABLE */
+    .city-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 2px;
+        margin-bottom: 48px;
+    }
+    .city-row {
+        background: var(--bg2); border: 1px solid var(--afaint);
+        padding: 12px 16px;
+        display: flex; justify-content: space-between; align-items: center;
+    }
+    .city-name { font-size: 12px; color: var(--w); }
+    .city-count {
+        font-family: var(--fhead); font-size: 18px; letter-spacing: 1px; color: var(--amber);
+    }
+
+    /* CONTRIBUTORS */
+    .contrib-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 2px;
+        margin-bottom: 48px;
+    }
+    .contrib-row {
+        background: var(--bg2); border: 1px solid var(--afaint);
+        padding: 12px 16px;
+        display: flex; justify-content: space-between; align-items: center;
+    }
+    .contrib-handle { font-size: 11px; color: var(--green); }
+    .contrib-count  { font-size: 11px; color: var(--adim); }
+
+    /* MANUAL SECTION — edit this directly in the file */
+    .editorial {
+        background: var(--bg2); border: 1px solid var(--afaint);
+        padding: 28px 28px; margin-bottom: 48px;
+    }
+    .editorial-label { font-size: 8px; letter-spacing: 4px; text-transform: uppercase; color: var(--adim); margin-bottom: 16px; }
+    .editorial p { font-size: 13px; line-height: 1.9; color: var(--wd); margin-bottom: 12px; }
+    .editorial p:last-child { margin-bottom: 0; }
+    .editorial em { color: var(--amber); font-style: normal; }
+    .city-want { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+    .city-tag {
+        font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+        border: 1px solid var(--adim); color: var(--adim);
+        padding: 4px 10px;
+    }
+
+    /* STATE */
+    .loading-state { padding: 40px 0; color: var(--adim); font-size: 11px; letter-spacing: 2px; }
+
+
+    footer {
+        border-top: 1px solid var(--afaint); background: var(--bg2);
+        padding: 28px 24px;
+        display: flex; flex-wrap: wrap;
+        justify-content: space-between; align-items: center;
+        gap: 16px;
+        margin-top: 40px;
+    }
+    .footer-logo { font-family: var(--fhead); font-size: 20px; letter-spacing: 3px; color: var(--amber); line-height: 1; }
+    .footer-right { display: flex; align-items: center; gap: 10px; font-size: 9px; letter-spacing: 1px; color: var(--adim); flex-wrap: wrap; }
+    .footer-right a { color: var(--adim); text-decoration: none; transition: color 0.15s; }
+    .footer-right a:hover { color: var(--w); }
+    .footer-sep { color: var(--afaint); }
+    @media (max-width: 500px) { footer { flex-direction: column; align-items: flex-start; } }
+    /* NAV */
+    nav {
+        position: sticky; top: 0; z-index: 100; height: 52px;
+        background: rgba(13,9,0,0.97);
+        -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--afaint);
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 0 20px; gap: 12px;
+    }
+    .logo { font-family: var(--fhead); font-size: 22px; letter-spacing: 3px; color: var(--amber); text-decoration: none; flex-shrink: 0; line-height: 1; }
+    .logo .bolt { color: var(--green); }
+    .nav-links { display: flex; align-items: center; gap: 0; list-style: none; }
+    .nav-links a { font-family: var(--fbody); font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--adim); text-decoration: none; padding: 6px 10px; white-space: nowrap; transition: color 0.15s; }
+    .nav-links a:hover { color: var(--w); }
+    .nav-links .active { color: var(--amber); }
+    .nav-links .pill { border: 1px solid var(--green); color: var(--green) !important; margin-left: 6px; }
+    .nav-links .pill:hover { background: rgba(57,255,20,0.08); }
+    @media (max-width: 580px) { .nav-links .hide { display: none; } }
+
+    /* FOOTER */
+    footer {
+        border-top: 1px solid var(--afaint); background: var(--bg2);
+        padding: 28px 24px; display: flex; flex-wrap: wrap;
+        justify-content: space-between; align-items: center;
+        gap: 16px; margin-top: 60px;
+    }
+    .footer-logo { font-family: var(--fhead); font-size: 20px; letter-spacing: 3px; color: var(--amber); line-height: 1; }
+    .footer-right { display: flex; align-items: center; gap: 10px; font-size: 9px; letter-spacing: 1px; color: var(--adim); flex-wrap: wrap; }
+    .footer-right a { color: var(--adim); text-decoration: none; transition: color 0.15s; }
+    .footer-right a:hover { color: var(--w); }
+    .footer-sep { color: var(--afaint); }
+    @media (max-width: 500px) { footer { flex-direction: column; align-items: flex-start; } }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="/" class="logo">CB<span class="bolt">⚡</span>DB</a>
+    <ul class="nav-links">
+        <li><a href="/database.html">Database</a></li>
+        <li class="hide"><a href="/stats.html">Stats</a></li>
+        <li class="hide"><a href="/about.html">About</a></li>
+        <li class="hide"><a href="/format.html">Format</a></li>
+        <li><a href="/contributor.html" class="pill">Contribute</a></li>
+    </ul>
+</nav>
+
+<div class="page">
+
+    <div class="eyebrow">◈ By the numbers</div>
+    <h1>THE STATS</h1>
+
+    <!-- BIG NUMBERS -->
+    <div class="numbers">
+        <div class="num-card">
+            <div class="num-label">Total Entries</div>
+            <div class="num-value loading" id="stat-total">—</div>
+        </div>
+        <div class="num-card">
+            <div class="num-label">Cities</div>
+            <div class="num-value loading" id="stat-cities">—</div>
+        </div>
+        <div class="num-card">
+            <div class="num-label">Contributors</div>
+            <div class="num-value loading" id="stat-contributors">—</div>
+        </div>
+        <div class="num-card">
+            <div class="num-label">This Year</div>
+            <div class="num-value loading" id="stat-year">—</div>
+        </div>
+    </div>
+
+    <!-- RATING BREAKDOWN -->
+    <div class="section-eyebrow">◈ Breakdown</div>
+    <div class="section-title">BY RATING</div>
+    <div class="rating-bars">
+        <div class="rbar">
+            <div class="rbar-label">⭐⭐⭐ Legendary</div>
+            <div class="rbar-track"><div class="rbar-fill r3-fill" id="bar-3"></div></div>
+            <div class="rbar-count" id="count-3">—</div>
+        </div>
+        <div class="rbar">
+            <div class="rbar-label">⭐⭐ Worth A Trip</div>
+            <div class="rbar-track"><div class="rbar-fill r2-fill" id="bar-2"></div></div>
+            <div class="rbar-count" id="count-2">—</div>
+        </div>
+        <div class="rbar">
+            <div class="rbar-label">⭐ Solid</div>
+            <div class="rbar-track"><div class="rbar-fill r1-fill" id="bar-1"></div></div>
+            <div class="rbar-count" id="count-1">—</div>
+        </div>
+        <div class="rbar">
+            <div class="rbar-label">ㄨ Skip It</div>
+            <div class="rbar-track"><div class="rbar-fill r0-fill" id="bar-0"></div></div>
+            <div class="rbar-count" id="count-0">—</div>
+        </div>
+    </div>
+
+    <!-- CITIES -->
+    <div class="section-eyebrow">◈ Coverage</div>
+    <div class="section-title">BY CITY</div>
+    <div class="city-grid" id="city-grid">
+        <div class="loading-state">Loading...</div>
+    </div>
+
+    <!-- CONTRIBUTORS -->
+    <div class="section-eyebrow">◈ Community</div>
+    <div class="section-title">CONTRIBUTORS</div>
+    <div class="contrib-grid" id="contrib-grid">
+        <div class="loading-state">Loading...</div>
+    </div>
+
+    <!-- EDITORIAL — edit this section manually -->
+    <div class="section-eyebrow">◈ Editorial</div>
+    <div class="section-title">WHERE WE WANT TO GO</div>
+    <div class="editorial">
+        <div class="editorial-label">From the database</div>
+        <p>
+            The database started in <em>Portland, OR</em>.
+            We're looking for contributors in new cities —
+            especially places with strong local burger culture that national review sites ignore.
+        </p>
+        <p>Cities we'd love coverage in:</p>
+        <div class="city-want">
+            <!-- Add or remove city tags here manually -->
+            <span class="city-tag">Seattle, WA</span>
+            <span class="city-tag">Chicago, IL</span>
+            <span class="city-tag">Austin, TX</span>
+            <span class="city-tag">Nashville, TN</span>
+            <span class="city-tag">New Orleans, LA</span>
+            <span class="city-tag">Detroit, MI</span>
+            <span class="city-tag">Kansas City, MO</span>
+            <span class="city-tag">Los Angeles, CA</span>
+        </div>
+    </div>
+
+</div>
+
+
+<script>
+// ── CONFIG — keep in sync with database.html ─────────────────────────────────
+const APPROVED = new Set([
+    'cheeseburger.world',
+    // add approved handles here as they're approved
+]);
+
+const BSKY_API    = 'https://public.api.bsky.app/xrpc';
+const FETCH_LIMIT = 100;
+
+// ── PARSER (minimal — just needs rating + location) ───────────────────────────
+function parseRating(line) {
+    const stars = (line.match(/⭐/g) || []).length;
+    if (/^[ㄨ✗Xx]/.test(line) && stars === 0) return 0;
+    if (stars >= 1 && stars <= 3) return stars;
+    return null;
+}
+
+function parsePost(text) {
+    if (!text || !/\#CBDB/i.test(text)) return null;
+    const lines = text.replace(/\r/g, '').split('\n');
+    if (lines.length < 4) return null;
+    const location   = lines[1].trim();
+    const ratingNum  = parseRating(lines[2].trim());
+    if (ratingNum === null || !location.includes(',')) return null;
+    return { location, ratingNum };
+}
+
+// ── FETCH ─────────────────────────────────────────────────────────────────────
+async function loadStats() {
+    const reviews = [];
+
+    await Promise.all([...APPROVED].map(async handle => {
+        try {
+            const url  = `${BSKY_API}/app.bsky.feed.getAuthorFeed?actor=${encodeURIComponent(handle)}&limit=${FETCH_LIMIT}&filter=posts_no_replies`;
+            const res  = await fetch(url);
+            if (!res.ok) return;
+            const data = await res.json();
+            for (const item of (data.feed || [])) {
+                const post = item.post;
+                if (!post) continue;
+                const text = post.record?.text || '';
+                if (!/\#CBDB/i.test(text)) continue;
+                const parsed = parsePost(text);
+                if (!parsed) continue;
+                reviews.push({
+                    handle,
+                    location:  parsed.location,
+                    r:         parsed.ratingNum,
+                    createdAt: post.record?.createdAt || '',
+                });
+            }
+        } catch(e) { console.warn(handle, e); }
+    }));
+
+    renderStats(reviews);
+}
+
+function renderStats(reviews) {
+    const total       = reviews.length;
+    const cities      = [...new Set(reviews.map(r => r.location))];
+    const contributors= [...new Set(reviews.map(r => r.handle))];
+    const yearStart   = new Date(); yearStart.setFullYear(yearStart.getFullYear() - 1);
+    const thisYear    = reviews.filter(r => r.createdAt && new Date(r.createdAt) >= yearStart).length;
+
+    // Big numbers
+    set('stat-total',        total);
+    set('stat-cities',       cities.length);
+    set('stat-contributors', contributors.length);
+    set('stat-year',         thisYear);
+
+    // Rating bars
+    const counts = {3:0, 2:0, 1:0, 0:0};
+    reviews.forEach(r => counts[r.r] = (counts[r.r] || 0) + 1);
+    const maxR = Math.max(...Object.values(counts), 1);
+    [3,2,1,0].forEach(n => {
+        set(`count-${n}`, counts[n]);
+        setTimeout(() => {
+            document.getElementById(`bar-${n}`).style.width = ((counts[n] / maxR) * 100) + '%';
+        }, 100);
+    });
+
+    // Cities
+    const cityMap = {};
+    reviews.forEach(r => cityMap[r.location] = (cityMap[r.location] || 0) + 1);
+    const sortedCities = Object.entries(cityMap).sort((a,b) => b[1] - a[1]);
+    document.getElementById('city-grid').innerHTML = sortedCities.length
+        ? sortedCities.map(([city, n]) => `
+            <div class="city-row">
+                <span class="city-name">${city}</span>
+                <span class="city-count">${n}</span>
+            </div>`).join('')
+        : '<div class="loading-state">No data yet.</div>';
+
+    // Contributors
+    const contribMap = {};
+    reviews.forEach(r => contribMap[r.handle] = (contribMap[r.handle] || 0) + 1);
+    const sortedContribs = Object.entries(contribMap).sort((a,b) => b[1] - a[1]);
+    document.getElementById('contrib-grid').innerHTML = sortedContribs.length
+        ? sortedContribs.map(([handle, n]) => `
+            <div class="contrib-row">
+                <span class="contrib-handle">@${handle}</span>
+                <span class="contrib-count">${n} ${n === 1 ? 'entry' : 'entries'}</span>
+            </div>`).join('')
+        : '<div class="loading-state">No contributors yet.</div>';
+
+    // Remove loading class from numbers
+    document.querySelectorAll('.num-value').forEach(el => el.classList.remove('loading'));
+}
+
+function set(id, val) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = val;
+}
+
+loadStats();
+</script>
+
+
+<footer>
+    <div class="footer-logo">CB⚡DB</div>
+    <div class="footer-right">
+        <a href="https://github.com/cheeseburgerworld/cbdb" target="_blank">GitHub</a>
+        <span class="footer-sep">·</span>
+        <span>© 2026 Cheeseburger World LLC</span>
+    </div>
+</footer>
+
+</body>
+</html>
