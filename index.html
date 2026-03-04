@@ -3,15 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="The world's first open-source cheeseburger database. Community-reviewed, Bluesky-native, nobody owns the data.">
-    <title>CB⚡DB — Cheeseburger Database</title>
+    <meta name="description" content="The world's first open-source cheeseburger database. Community-reviewed, Bluesky-native. No algorithms, no ads, no endless scrolling.">
+    <title>Cheeseburger Database</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { -webkit-text-size-adjust: 100%; }
-
     :root {
         --bg:     #0d0900;
         --bg2:    #110e08;
@@ -19,56 +18,42 @@
         --adim:   #7A4200;
         --afaint: #1e1408;
         --green:  #39FF14;
-        --rust:   #7A2600;
         --w:      #ffffff;
-        --wd:     rgba(255,255,255,0.7);
+        --wd:     rgba(255,255,255,0.72);
         --fhead:  'Bebas Neue', 'Arial Black', Impact, sans-serif;
         --fbody:  'IBM Plex Mono', 'Courier New', monospace;
     }
-
-    body {
-        background: var(--bg);
-        color: var(--w);
-        font-family: var(--fbody);
-        min-height: 100vh;
-        overflow-x: hidden;
-    }
+    body { background: var(--bg); color: var(--w); font-family: var(--fbody); min-height: 100vh; overflow-x: hidden; }
 
     /* NAV */
     nav {
-        position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-        height: 52px;
-        background: rgba(13,9,0,0.96);
+        position: fixed; top: 0; left: 0; right: 0; z-index: 100; height: 52px;
+        background: rgba(13,9,0,0.97);
         -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
         border-bottom: 1px solid var(--afaint);
         display: flex; align-items: center; justify-content: space-between;
         padding: 0 20px; gap: 12px;
     }
-    .logo { font-family: var(--fhead); font-size: 22px; letter-spacing: 3px; color: var(--amber); text-decoration: none; line-height: 1; }
+    .logo { font-family: var(--fhead); font-size: 22px; letter-spacing: 3px; color: var(--amber); text-decoration: none; line-height: 1; flex-shrink: 0; }
     .logo .bolt { color: var(--green); }
-    .nav-links { display: flex; align-items: center; gap: 2px; list-style: none; }
-    .nav-links a { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--adim); text-decoration: none; padding: 6px 10px; white-space: nowrap; transition: color 0.15s; }
+    .nav-links { display: flex; align-items: center; gap: 0; list-style: none; }
+    .nav-links a { font-family: var(--fbody); font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--adim); text-decoration: none; padding: 6px 10px; white-space: nowrap; transition: color 0.15s; }
     .nav-links a:hover { color: var(--w); }
-    .nav-links .pill { border: 1px solid var(--green); color: var(--green) !important; }
+    .nav-links .pill { border: 1px solid var(--green); color: var(--green) !important; margin-left: 6px; }
     .nav-links .pill:hover { background: rgba(57,255,20,0.08); }
-    @media (max-width: 560px) { .nav-links .hide { display: none; } }
+    @media (max-width: 580px) { .nav-links .hide { display: none; } }
 
-    /* HERO — full viewport, centered */
+    /* HERO */
     .hero {
         min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
+        display: flex; flex-direction: column; justify-content: center;
         padding: 80px 24px 60px;
-        max-width: 700px;
-        margin: 0 auto;
-        width: 100%;
+        max-width: 680px; margin: 0 auto; width: 100%;
     }
-
     .hero-tag {
         display: flex; align-items: center; gap: 10px;
         font-size: 9px; letter-spacing: 4px; color: var(--green);
-        text-transform: uppercase; margin-bottom: 20px;
+        text-transform: uppercase; margin-bottom: 22px;
     }
     .dot {
         width: 7px; height: 7px; border-radius: 50%;
@@ -77,107 +62,47 @@
     }
     @keyframes pulse {
         0%,100% { box-shadow: 0 0 0 0 rgba(57,255,20,0.5); }
-        50%      { box-shadow: 0 0 0 7px rgba(57,255,20,0); }
+        50%      { box-shadow: 0 0 0 8px rgba(57,255,20,0); }
     }
-
     h1 {
         font-family: var(--fhead);
-        font-size: clamp(64px, 17vw, 150px);
-        line-height: 0.86;
-        letter-spacing: 2px;
-        color: var(--w);
-        text-shadow: none;
+        font-size: clamp(60px, 16vw, 140px);
+        line-height: 0.86; letter-spacing: 1px; color: var(--w);
         margin-bottom: 32px;
     }
-    h1 .bolt { color: var(--green); text-shadow: 0 0 24px rgba(57,255,20,0.6); }
-
     .tagline {
-        font-size: 13px;
-        line-height: 1.9;
-        color: var(--wd);
-        border-left: 2px solid var(--afaint);
-        padding-left: 16px;
-        margin-bottom: 48px;
-        max-width: 560px;
-    }
-    .tagline em { color: var(--amber); font-style: normal; }
-
-    /* TWO BUTTONS */
-    .buttons {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 12px;
-        max-width: 480px;
-    }
-    @media (max-width: 440px) {
-        .buttons { grid-template-columns: 1fr; }
+        font-size: 13px; line-height: 1.95; color: var(--wd);
+        border-left: 2px solid var(--afaint); padding-left: 18px;
+        margin-bottom: 48px; max-width: 500px;
     }
 
+    /* BUTTONS */
+    .buttons { display: flex; gap: 10px; flex-wrap: wrap; }
     .btn {
-        display: block;
-        font-family: var(--fbody);
-        font-size: 12px; font-weight: 700;
+        font-family: var(--fbody); font-size: 11px; font-weight: 700;
         letter-spacing: 2.5px; text-transform: uppercase;
-        text-decoration: none;
-        padding: 18px 20px;
-        text-align: center;
-        transition: filter 0.15s, transform 0.15s;
+        text-decoration: none; padding: 16px 28px; text-align: center;
+        transition: filter 0.15s, transform 0.15s; white-space: nowrap;
     }
-    .btn:hover { filter: brightness(1.12); transform: translateY(-1px); }
+    .btn:hover  { filter: brightness(1.1); transform: translateY(-1px); }
     .btn:active { transform: translateY(0); }
-
-    .btn-database {
-        background: var(--amber);
-        color: var(--bg);
-    }
-    .btn-join {
-        background: transparent;
-        color: var(--green);
-        border: 2px solid var(--green);
-    }
-    .btn-join:hover { background: rgba(57,255,20,0.07); }
-
-    /* MANIFESTO */
-    .manifesto {
-        padding: 72px 24px;
-        max-width: 700px;
-        margin: 0 auto;
-        border-top: 1px solid var(--afaint);
-    }
-
-    .manifesto-eyebrow {
-        font-size: 9px; letter-spacing: 4px; color: var(--green);
-        text-transform: uppercase; margin-bottom: 24px;
-    }
-
-    .manifesto-text {
-        font-size: 14px; line-height: 2; color: var(--wd);
-        max-width: 520px; margin-bottom: 48px;
-    }
-    .manifesto-text em     { color: var(--amber); font-style: normal; }
-    .manifesto-text strong { color: var(--green); font-weight: normal; }
-
-    .charity {
-        display: inline-flex; flex-direction: column;
-        border: 1px solid rgba(57,255,20,0.2);
-        padding: 22px 28px;
-        background: rgba(57,255,20,0.025);
-    }
-    .charity-label { font-size: 8px; letter-spacing: 4px; color: var(--green); text-transform: uppercase; margin-bottom: 6px; }
-    .charity-num { font-family: var(--fhead); font-size: 52px; color: var(--green); letter-spacing: 3px; line-height: 1; text-shadow: 0 0 24px rgba(57,255,20,0.3); }
-    .charity-sub { font-size: 9px; letter-spacing: 2px; color: rgba(255,255,255,0.3); margin-top: 6px; }
+    .btn-primary { background: var(--amber); color: var(--bg); }
+    .btn-outline { background: transparent; color: var(--green); border: 2px solid var(--green); }
+    .btn-outline:hover { background: rgba(57,255,20,0.07); }
+    @media (max-width: 400px) { .buttons { flex-direction: column; } .btn { width: 100%; } }
 
     /* FOOTER */
     footer {
         border-top: 1px solid var(--afaint); background: var(--bg2);
-        padding: 24px 20px; display: flex; flex-wrap: wrap;
+        padding: 28px 24px; display: flex; flex-wrap: wrap;
         justify-content: space-between; align-items: center;
-        gap: 14px; font-size: 9px; letter-spacing: 1.5px; color: var(--adim);
+        gap: 16px; margin-top: 60px;
     }
-    .footer-logo { font-family: var(--fhead); font-size: 18px; letter-spacing: 3px; color: var(--amber); }
-    .footer-links { display: flex; gap: 16px; flex-wrap: wrap; }
-    footer a { color: var(--adim); text-decoration: none; transition: color 0.15s; }
-    footer a:hover { color: var(--w); }
+    .footer-logo { font-family: var(--fhead); font-size: 20px; letter-spacing: 3px; color: var(--amber); line-height: 1; }
+    .footer-right { display: flex; align-items: center; gap: 10px; font-size: 9px; letter-spacing: 1px; color: var(--adim); flex-wrap: wrap; }
+    .footer-right a { color: var(--adim); text-decoration: none; transition: color 0.15s; }
+    .footer-right a:hover { color: var(--w); }
+    .footer-sep { color: var(--afaint); }
     @media (max-width: 500px) { footer { flex-direction: column; align-items: flex-start; } }
     </style>
 </head>
@@ -187,38 +112,37 @@
     <a href="/" class="logo">CB<span class="bolt">⚡</span>DB</a>
     <ul class="nav-links">
         <li><a href="/database.html">Database</a></li>
+        <li class="hide"><a href="/stats.html">Stats</a></li>
+        <li class="hide"><a href="/about.html">About</a></li>
         <li class="hide"><a href="/format.html">Format</a></li>
-        <li><a href="/reviewer.html" class="pill">Join</a></li>
+        <li><a href="/contributor.html" class="pill">Contribute</a></li>
     </ul>
 </nav>
 
 <div class="hero">
     <div class="hero-tag">
         <div class="dot"></div>
-Open Source · Bluesky-native · No algorithms
+        Open Source · Community Reviewed · No Algorithms
     </div>
-
     <h1>CHEESEBURGER<br>DATABASE</h1>
-
     <p class="tagline">
-        A community-built record of the world's cheeseburgers. 
-        Posted to Bluesky, indexed here.<br>
-        No algorithms, no sponsored posts, no advertising.
+        A community-built record of the world's cheeseburgers.<br>
+        Posted to Bluesky, indexed here. No endless scrolling. No ads.
     </p>
-
     <div class="buttons">
-        <a href="/database.html" class="btn btn-database">Browse Database</a>
-        <a href="/reviewer.html" class="btn btn-join">Become a Reviewer</a>
+        <a href="/database.html" class="btn btn-primary">Browse Database</a>
+        <a href="/contributor.html" class="btn btn-outline">Contribute</a>
     </div>
 </div>
 
-
 <footer>
     <div class="footer-logo">CB⚡DB</div>
-    <div class="footer-links">
-        <a href="/database.html">Database</a>
-        <a href="/format.html">Format Guide</a>
+    <div class="footer-right">
         <a href="https://github.com/cheeseburgerworld/cbdb" target="_blank">GitHub</a>
-        <a href="/cdn-cgi/l/email-protection#cfa7aaa3a3a08faca7aaaabcaaadbabda8aabde1b8a0bda3ab">Contact</a>
+        <span class="footer-sep">·</span>
+        <span>© 2026 Cheeseburger World LLC</span>
     </div>
-    <div>© 2026 Cheeseburger World LLC
+</footer>
+
+</body>
+</html>
