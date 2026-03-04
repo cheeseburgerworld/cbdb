@@ -289,19 +289,9 @@
 </div>
 
 
+<script src="/config.js"></script>
 <script>
-// ── CONFIG ────────────────────────────────────────────
-// Add approved Bluesky handles here (lowercase, no @)
-const APPROVED = new Set([
-    'cheeseburger.world',
-    'ash.cheeseburger.world',
-    'ratbrigade.bsky.social',
-    'alleyhector.bsky.social',
-    // add more approved handles here as the program grows
-]);
-
-const BSKY_API    = 'https://public.api.bsky.app/xrpc';
-const FETCH_LIMIT = 100;
+// config loaded from config.js
 
 // ── RATING MAPS ───────────────────────────────────────
 const LABEL = {
@@ -486,10 +476,35 @@ function showError(err) {
         </div>`;
 }
 
+// ── CITY FILTERS ──────────────────────────────────────
+function buildCityFilters() {
+    const cities = [...new Set(ALL_REVIEWS.map(r => r.location))].sort();
+    const wrap   = document.getElementById('city-filters');
+    if (!wrap) return;
+    wrap.innerHTML = '<button class="fbtn fcity on" onclick="setCity(\'all\',this)">All Cities</button>';
+    cities.forEach(city => {
+        const btn = document.createElement('button');
+        btn.className = 'fbtn fcity';
+        btn.textContent = city;
+        btn.onclick = function() { setCity(city, this); };
+        wrap.appendChild(btn);
+    });
+    const bar = document.getElementById('city-bar');
+    if (bar) bar.style.display = cities.length <= 1 ? 'none' : '';
+}
+
+function setCity(val, btn) {
+    activeCity = val;
+    document.querySelectorAll('.fcity').forEach(b => b.classList.remove('on'));
+    btn.classList.add('on');
+    renderFiltered();
+}
+
 // ── FILTERS ───────────────────────────────────────────
 function setFilter(val, btn) {
     activeFilter = val;
-    document.querySelectorAll('.fbtn:not(#yearBtn)').forEach(b => b.classList.remove('on'));
+    // only touch rating buttons — not city buttons, not year button
+    document.querySelectorAll('.fbtn.fall, .fbtn.f3, .fbtn.f2, .fbtn.f1, .fbtn.f0').forEach(b => b.classList.remove('on'));
     btn.classList.add('on');
     renderFiltered();
 }
