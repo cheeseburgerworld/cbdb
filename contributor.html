@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Become a Reviewer — CB⚡DB</title>
+    <title>Become a Contributor — Cheeseburger Database</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;700&family=VT323&display=swap" rel="stylesheet">
@@ -24,32 +24,34 @@
         --fbody:  'IBM Plex Mono', 'Courier New', monospace;
         --fterm:  'VT323', 'Courier New', monospace;
     }
-    body { background: var(--bg); color: var(--w); font-family: var(--fbody); min-height: 100vh; }
 
     /* NAV */
     nav {
         position: sticky; top: 0; z-index: 100; height: 52px;
-        background: rgba(13,9,0,0.96);
+        background: rgba(13,9,0,0.97);
         -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
         border-bottom: 1px solid var(--afaint);
         display: flex; align-items: center; justify-content: space-between;
-        padding: 0 16px; gap: 12px;
+        padding: 0 20px; gap: 12px;
     }
     .logo { font-family: var(--fhead); font-size: 22px; letter-spacing: 3px; color: var(--amber); text-decoration: none; flex-shrink: 0; line-height: 1; }
     .logo .bolt { color: var(--green); }
-    .nav-links { display: flex; align-items: center; gap: 2px; list-style: none; }
+    .nav-links { display: flex; align-items: center; gap: 0; list-style: none; }
     .nav-links a { font-family: var(--fbody); font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--adim); text-decoration: none; padding: 6px 10px; white-space: nowrap; transition: color 0.15s; }
     .nav-links a:hover { color: var(--w); }
     .nav-links .active { color: var(--amber); }
-    .nav-links .pill { border: 1px solid var(--green); color: var(--green) !important; }
+    .nav-links .pill { border: 1px solid var(--green); color: var(--green) !important; margin-left: 6px; }
     .nav-links .pill:hover { background: rgba(57,255,20,0.08); }
-    @media (max-width: 600px) { .nav-links .hide { display: none; } }
+    @media (max-width: 580px) { .nav-links .hide { display: none; } }
+
+    body { background: var(--bg); color: var(--w); font-family: var(--fbody); min-height: 100vh; }
+
 
     /* PAGE */
     .page {
         max-width: 640px;
         margin: 0 auto;
-        padding: 56px 20px 80px;
+        padding: 32px 16px 64px;
         display: flex;
         flex-direction: column;
         gap: 0;
@@ -135,17 +137,33 @@
     .disclaimer em { color: var(--wf); font-style: normal; }
 
     /* FOOTER */
+
     footer {
         border-top: 1px solid var(--afaint); background: var(--bg2);
-        padding: 24px 20px; display: flex; flex-wrap: wrap;
+        padding: 28px 24px;
+        display: flex; flex-wrap: wrap;
         justify-content: space-between; align-items: center;
-        gap: 14px; font-size: 9px; letter-spacing: 1.5px; color: var(--adim);
-        margin-top: 60px;
+        gap: 16px;
+        margin-top: 40px;
     }
-    .footer-logo { font-family: var(--fhead); font-size: 18px; letter-spacing: 3px; color: var(--amber); }
-    .footer-links { display: flex; gap: 16px; flex-wrap: wrap; }
-    footer a { color: var(--adim); text-decoration: none; transition: color 0.15s; }
-    footer a:hover { color: var(--w); }
+    .footer-logo { font-family: var(--fhead); font-size: 20px; letter-spacing: 3px; color: var(--amber); line-height: 1; }
+    .footer-right { display: flex; align-items: center; gap: 10px; font-size: 9px; letter-spacing: 1px; color: var(--adim); flex-wrap: wrap; }
+    .footer-right a { color: var(--adim); text-decoration: none; transition: color 0.15s; }
+    .footer-right a:hover { color: var(--w); }
+    .footer-sep { color: var(--afaint); }
+    @media (max-width: 500px) { footer { flex-direction: column; align-items: flex-start; } }
+    /* FOOTER */
+    footer {
+        border-top: 1px solid var(--afaint); background: var(--bg2);
+        padding: 28px 24px; display: flex; flex-wrap: wrap;
+        justify-content: space-between; align-items: center;
+        gap: 16px; margin-top: 60px;
+    }
+    .footer-logo { font-family: var(--fhead); font-size: 20px; letter-spacing: 3px; color: var(--amber); line-height: 1; }
+    .footer-right { display: flex; align-items: center; gap: 10px; font-size: 9px; letter-spacing: 1px; color: var(--adim); flex-wrap: wrap; }
+    .footer-right a { color: var(--adim); text-decoration: none; transition: color 0.15s; }
+    .footer-right a:hover { color: var(--w); }
+    .footer-sep { color: var(--afaint); }
     @media (max-width: 500px) { footer { flex-direction: column; align-items: flex-start; } }
     </style>
 </head>
@@ -155,21 +173,23 @@
     <a href="/" class="logo">CB<span class="bolt">⚡</span>DB</a>
     <ul class="nav-links">
         <li><a href="/database.html">Database</a></li>
+        <li class="hide"><a href="/stats.html">Stats</a></li>
+        <li class="hide"><a href="/about.html">About</a></li>
         <li class="hide"><a href="/format.html">Format</a></li>
-        <li><a href="/reviewer.html" class="active pill">Join</a></li>
+        <li><a href="/contributor.html" class="active pill">Contribute</a></li>
     </ul>
 </nav>
 
 <div class="page">
 
-    <div class="eyebrow">◈ Reviewer Program</div>
-    <h1 class="page-title">BECOME A<br>REVIEWER</h1>
+    <div class="eyebrow">◈ Contributor Program</div>
+    <h1 class="page-title">BECOME A<br>CONTRIBUTOR</h1>
 
     <p class="page-intro">
-        CB⚡DB is built by real people with real opinions.
-        No algorithms. No sponsored content.
-        You post to your own <em>Bluesky</em> in our format,
-        we index it. Your reviews stay yours.
+        The Cheeseburger Database is built by approved contributors — people who eat
+        cheeseburgers and have something to say about them. Reviews are posted to
+        <em>Bluesky</em> in a structured format and indexed here automatically.
+        The review lives on your profile. We record it. Nobody owns the data but you.
     </p>
 
     <div class="section-label">◈ How it works</div>
@@ -178,40 +198,41 @@
             <div class="step-n">01</div>
             <div>
                 <div class="step-title">Apply below</div>
-                <div class="step-body">Fill out the application. We check you're a real person and that you've actually eaten a burger recently.</div>
+                <div class="step-body">Fill out the application. We verify you're a real person with a Bluesky account. Approved handles go live within 48 hours.</div>
             </div>
         </div>
         <div class="step">
             <div class="step-n">02</div>
             <div>
                 <div class="step-title">Learn the format</div>
-                <div class="step-body">Check the <a href="/format.html">format guide</a> — it's a simple 6-line post with a photo attached. Follow it exactly and the parser handles the rest.</div>
+                <div class="step-body">Read the <a href="/format.html">format guide</a>. Six lines, one photo, exact structure. The parser is unforgiving — follow it precisely and everything is automatic.</div>
             </div>
         </div>
         <div class="step">
             <div class="step-n">03</div>
             <div>
                 <div class="step-title">Post to Bluesky, get indexed</div>
-                <div class="step-body">Once approved, any <code>#CBDB</code> post from your handle gets picked up automatically, usually within the hour. You own the review. It lives on your profile.</div>
+                <div class="step-body">Any post from your approved handle tagged <code>#CBDB</code> in the correct format is indexed within the hour. The entry belongs to you — it lives on your Bluesky permanently.</div>
             </div>
         </div>
     </div>
 
     <a href="https://tally.so/r/dW6LRq" class="apply-btn" target="_blank" rel="noopener">
-        Apply Now →
+        Apply Now
     </a>
 
 </div>
 
+
+
+
 <footer>
     <div class="footer-logo">CB⚡DB</div>
-    <div class="footer-links">
-        <a href="/">Home</a>
-        <a href="/database.html">Database</a>
-        <a href="/format.html">Format Guide</a>
+    <div class="footer-right">
         <a href="https://github.com/cheeseburgerworld/cbdb" target="_blank">GitHub</a>
+        <span class="footer-sep">·</span>
+        <span>© 2026 Cheeseburger World LLC</span>
     </div>
-    <div>© 2026 Cheeseburger World LLC</div>
 </footer>
 
 </body>
