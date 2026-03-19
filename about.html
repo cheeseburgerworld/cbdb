@@ -1,302 +1,286 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="About the Cheeseburger Database — why it exists, how it works, and who builds it.">
-    <title>About — Cheeseburger Database</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { -webkit-text-size-adjust: 100%; }
-    :root {
-        --bg:     #0d0900;
-        --bg2:    #110e08;
-        --amber:  #FF8C00;
-        --adim:   #7A4200;
-        --afaint: #1e1408;
-        --green:  #39FF14;
-        --w:      #ffffff;
-        --wd:     rgba(255,255,255,0.75);
-        --fhead:  'Bebas Neue', 'Arial Black', Impact, sans-serif;
-        --fbody:  'IBM Plex Mono', 'Courier New', monospace;
-    }
-    body { background: var(--bg); color: var(--w); font-family: var(--fbody); min-height: 100vh; }
-
-    nav {
-        position: sticky; top: 0; z-index: 100; height: 52px;
-        background: rgba(13,9,0,0.96);
-        -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
-        border-bottom: 1px solid var(--afaint);
-        display: flex; align-items: center; justify-content: space-between;
-        padding: 0 16px; gap: 12px;
-    }
-    .logo { font-family: var(--fhead); font-size: 22px; letter-spacing: 3px; color: var(--amber); text-decoration: none; flex-shrink: 0; line-height: 1; }
-    .logo .bolt { color: var(--green); }
-    .nav-links { display: flex; align-items: center; gap: 2px; list-style: none; }
-    .nav-links a { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--adim); text-decoration: none; padding: 6px 10px; white-space: nowrap; transition: color 0.15s; }
-    .nav-links a:hover { color: var(--w); }
-    .nav-links .active { color: var(--amber); }
-    .nav-links .pill { border: 1px solid var(--green); color: var(--green) !important; }
-    .nav-links .pill:hover { background: rgba(57,255,20,0.08); }
-    @media (max-width: 600px) { .nav-links .hide { display: none; } }
-
-    /* PAGE */
-    .page { max-width: 640px; margin: 0 auto; padding: 32px 16px 64px; }
-
-    .eyebrow { font-size: 9px; letter-spacing: 4px; color: var(--green); text-transform: uppercase; margin-bottom: 14px; }
-    h1 { font-family: var(--fhead); font-size: clamp(44px, 11vw, 80px); color: var(--amber); letter-spacing: 3px; line-height: 0.88; margin-bottom: 40px; }
-
-    /* SECTIONS */
-    .section { margin-bottom: 52px; border-left: 2px solid var(--afaint); padding-left: 20px; }
-    .section-label { font-size: 9px; letter-spacing: 4px; color: var(--green); text-transform: uppercase; margin-bottom: 8px; }
-    .section-title { font-family: var(--fhead); font-size: 24px; letter-spacing: 2px; color: var(--w); margin-bottom: 16px; line-height: 1; }
-    .body { font-size: 13px; line-height: 2; color: var(--wd); }
-    .body p { margin-bottom: 16px; }
-    .body p:last-child { margin-bottom: 0; }
-    .body em { color: var(--amber); font-style: normal; }
-    .body strong { color: var(--w); font-weight: 700; }
-    .body a { color: var(--green); text-decoration: none; }
-    .body a:hover { text-decoration: underline; }
-
-    /* PRINCIPLES */
-    .principles { display: flex; flex-direction: column; gap: 2px; margin-top: 4px; }
-    .principle {
-        background: var(--bg2); border: 1px solid var(--afaint);
-        padding: 14px 18px;
-        display: grid; grid-template-columns: 28px 1fr;
-        gap: 12px; align-items: start;
-    }
-    .principle-num { font-family: var(--fhead); font-size: 18px; color: var(--adim); line-height: 1.2; }
-    .principle-body { font-size: 12px; line-height: 1.8; color: var(--wd); }
-    .principle-body strong { color: var(--w); }
-
-    /* COMPARISONS */
-    .compare { display: flex; flex-direction: column; gap: 2px; margin-top: 4px; }
-    .compare-row {
-        background: var(--bg2); border: 1px solid var(--afaint);
-        display: grid; grid-template-columns: 1fr 1fr;
-    }
-    .compare-cell { padding: 12px 16px; font-size: 11px; line-height: 1.7; }
-    .compare-cell:first-child { border-right: 1px solid var(--afaint); color: rgba(255,255,255,0.35); }
-    .compare-cell:last-child  { color: var(--wd); }
-    .compare-head { display: grid; grid-template-columns: 1fr 1fr; margin-bottom: 2px; }
-    .compare-head-cell { font-size: 8px; letter-spacing: 3px; text-transform: uppercase; padding: 6px 16px; color: var(--adim); }
-    .compare-head-cell:last-child { color: var(--green); }
-
-    /* CTA */
-    .cta-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 32px; }
-    .btn {
-        font-family: var(--fbody); font-size: 11px; font-weight: 700;
-        letter-spacing: 2px; text-transform: uppercase;
-        text-decoration: none; padding: 14px 22px;
-        transition: filter 0.15s, transform 0.15s;
-    }
-    .btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
-    .btn-primary   { background: var(--amber); color: var(--bg); }
-    .btn-secondary { background: transparent; color: var(--green); border: 2px solid var(--green); }
-    .btn-secondary:hover { background: rgba(57,255,20,0.07); }
-
-    footer {
-        border-top: 1px solid var(--afaint); background: var(--bg2);
-        padding: 28px 24px;
-        display: flex; flex-wrap: wrap;
-        justify-content: space-between; align-items: center;
-        gap: 16px;
-        margin-top: 40px;
-    }
-    .footer-logo { font-family: var(--fhead); font-size: 20px; letter-spacing: 3px; color: var(--amber); line-height: 1; }
-    .footer-right { display: flex; align-items: center; gap: 10px; font-size: 9px; letter-spacing: 1px; color: var(--adim); flex-wrap: wrap; }
-    .footer-right a { color: var(--adim); text-decoration: none; transition: color 0.15s; }
-    .footer-right a:hover { color: var(--w); }
-    .footer-sep { color: var(--afaint); }
-    @media (max-width: 500px) { footer { flex-direction: column; align-items: flex-start; } }
-    /* NAV */
-    nav {
-        position: sticky; top: 0; z-index: 100; height: 52px;
-        background: rgba(13,9,0,0.97);
-        -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
-        border-bottom: 1px solid var(--afaint);
-        display: flex; align-items: center; justify-content: space-between;
-        padding: 0 20px; gap: 12px;
-    }
-    .logo { font-family: var(--fhead); font-size: 22px; letter-spacing: 3px; color: var(--amber); text-decoration: none; flex-shrink: 0; line-height: 1; }
-    .logo .bolt { color: var(--green); }
-    .nav-links { display: flex; align-items: center; gap: 0; list-style: none; }
-    .nav-links a { font-family: var(--fbody); font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--adim); text-decoration: none; padding: 6px 10px; white-space: nowrap; transition: color 0.15s; }
-    .nav-links a:hover { color: var(--w); }
-    .nav-links .active { color: var(--amber); }
-    .nav-links .pill { border: 1px solid var(--green); color: var(--green) !important; margin-left: 6px; }
-    .nav-links .pill:hover { background: rgba(57,255,20,0.08); }
-    @media (max-width: 580px) { .nav-links .hide { display: none; } }
-
-    /* FOOTER */
-    footer {
-        border-top: 1px solid var(--afaint); background: var(--bg2);
-        padding: 28px 24px; display: flex; flex-wrap: wrap;
-        justify-content: space-between; align-items: center;
-        gap: 16px; margin-top: 60px;
-    }
-    .footer-logo { font-family: var(--fhead); font-size: 20px; letter-spacing: 3px; color: var(--amber); line-height: 1; }
-    .footer-right { display: flex; align-items: center; gap: 10px; font-size: 9px; letter-spacing: 1px; color: var(--adim); flex-wrap: wrap; }
-    .footer-right a { color: var(--adim); text-decoration: none; transition: color 0.15s; }
-    .footer-right a:hover { color: var(--w); }
-    .footer-sep { color: var(--afaint); }
-    @media (max-width: 500px) { footer { flex-direction: column; align-items: flex-start; } }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="About the Cheeseburger Database — why it exists, how it works, and who builds it.">
+<title>About — Cheeseburger Database</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { -webkit-text-size-adjust: 100%; }
+:root {
+--bg: #0d0900;
+--bg2: #110e08;
+--amber: #FF8C00;
+--adim: #7A4200;
+--afaint: #1e1408;
+--green: #39FF14;
+--w: #ffffff;
+--wd: rgba(255,255,255,0.75);
+--fhead: 'Bebas Neue', 'Arial Black', Impact, sans-serif;
+--fbody: 'IBM Plex Mono', 'Courier New', monospace;
+}
+body { background: var(--bg); color: var(--w); font-family: var(--fbody); min-height: 100vh; }
+nav {
+position: sticky; top: 0; z-index: 100; height: 52px;
+background: rgba(13,9,0,0.96);
+-webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+border-bottom: 1px solid var(--afaint);
+display: flex; align-items: center; justify-content: space-between;
+padding: 0 16px; gap: 12px;
+}
+.logo { font-family: var(--fhead); font-size: 22px; letter-spacing: 3px; color: var(--amber); text-decoration: none; flex-shrink: 0; line-height: 1; }
+.logo .bolt { color: var(--green); }
+.nav-links { display: flex; align-items: center; gap: 2px; list-style: none; }
+.nav-links a { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--adim); text-decoration: none; padding: 6px 10px; white-space: nowrap; transition: color 0.15s; }
+.nav-links a:hover { color: var(--w); }
+.nav-links .active { color: var(--amber); }
+.nav-links .pill { border: 1px solid var(--green); color: var(--green) !important; }
+.nav-links .pill:hover { background: rgba(57,255,20,0.08); }
+@media (max-width: 600px) { .nav-links .hide { display: none; } }
+/* PAGE */
+.page { max-width: 640px; margin: 0 auto; padding: 32px 16px 64px; }
+.eyebrow { font-size: 9px; letter-spacing: 4px; color: var(--green); text-transform: uppercase; margin-bottom: 14px; }
+h1 { font-family: var(--fhead); font-size: clamp(44px, 11vw, 80px); color: var(--amber); letter-spacing: 3px; line-height: 0.88; margin-bottom: 40px; }
+/* SECTIONS */
+.section { margin-bottom: 52px; border-left: 2px solid var(--afaint); padding-left: 20px; }
+.section-label { font-size: 9px; letter-spacing: 4px; color: var(--green); text-transform: uppercase; margin-bottom: 8px; }
+.section-title { font-family: var(--fhead); font-size: 24px; letter-spacing: 2px; color: var(--w); margin-bottom: 16px; line-height: 1; }
+.body { font-size: 13px; line-height: 2; color: var(--wd); }
+.body p { margin-bottom: 16px; }
+.body p:last-child { margin-bottom: 0; }
+.body em { color: var(--amber); font-style: normal; }
+.body strong { color: var(--w); font-weight: 700; }
+.body a { color: var(--green); text-decoration: none; }
+.body a:hover { text-decoration: underline; }
+/* PRINCIPLES */
+.principles { display: flex; flex-direction: column; gap: 2px; margin-top: 4px; }
+.principle {
+background: var(--bg2); border: 1px solid var(--afaint);
+padding: 14px 18px;
+display: grid; grid-template-columns: 28px 1fr;
+gap: 12px; align-items: start;
+}
+.principle-num { font-family: var(--fhead); font-size: 18px; color: var(--adim); line-height: 1.2; }
+.principle-body { font-size: 12px; line-height: 1.8; color: var(--wd); }
+.principle-body strong { color: var(--w); }
+/* COMPARISONS */
+.compare { display: flex; flex-direction: column; gap: 2px; margin-top: 4px; }
+.compare-row {
+background: var(--bg2); border: 1px solid var(--afaint);
+display: grid; grid-template-columns: 1fr 1fr;
+}
+.compare-cell { padding: 12px 16px; font-size: 11px; line-height: 1.7; }
+.compare-cell:first-child { border-right: 1px solid var(--afaint); color: rgba(255,255,255,0.35); }
+.compare-cell:last-child { color: var(--wd); }
+.compare-head { display: grid; grid-template-columns: 1fr 1fr; margin-bottom: 2px; }
+.compare-head-cell { font-size: 8px; letter-spacing: 3px; text-transform: uppercase; padding: 6px 16px; color: var(--adim); }
+.compare-head-cell:last-child { color: var(--green); }
+/* CTA */
+.cta-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 32px; }
+.btn {
+font-family: var(--fbody); font-size: 11px; font-weight: 700;
+letter-spacing: 2px; text-transform: uppercase;
+text-decoration: none; padding: 14px 22px;
+transition: filter 0.15s, transform 0.15s;
+}
+.btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
+.btn-primary { background: var(--amber); color: var(--bg); }
+.btn-secondary { background: transparent; color: var(--green); border: 2px solid var(--green); }
+.btn-secondary:hover { background: rgba(57,255,20,0.07); }
+footer {
+border-top: 1px solid var(--afaint); background: var(--bg2);
+padding: 28px 24px;
+display: flex; flex-wrap: wrap;
+justify-content: space-between; align-items: center;
+gap: 16px;
+margin-top: 40px;
+}
+.footer-logo { font-family: var(--fhead); font-size: 20px; letter-spacing: 3px; color: var(--amber); line-height: 1; }
+.footer-right { display: flex; align-items: center; gap: 10px; font-size: 9px; letter-spacing: 1px; color: var(--adim); flex-wrap: wrap; }
+.footer-right a { color: var(--adim); text-decoration: none; transition: color 0.15s; }
+.footer-right a:hover { color: var(--w); }
+.footer-sep { color: var(--afaint); }
+@media (max-width: 500px) { footer { flex-direction: column; align-items: flex-start; } }
+nav {
+position: sticky; top: 0; z-index: 100; height: 52px;
+background: rgba(13,9,0,0.97);
+-webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+border-bottom: 1px solid var(--afaint);
+display: flex; align-items: center; justify-content: space-between;
+padding: 0 20px; gap: 12px;
+}
+.logo { font-family: var(--fhead); font-size: 22px; letter-spacing: 3px; color: var(--amber); text-decoration: none; flex-shrink: 0; line-height: 1; }
+.logo .bolt { color: var(--green); }
+.nav-links { display: flex; align-items: center; gap: 0; list-style: none; }
+.nav-links a { font-family: var(--fbody); font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--adim); text-decoration: none; padding: 6px 10px; white-space: nowrap; transition: color 0.15s; }
+.nav-links a:hover { color: var(--w); }
+.nav-links .active { color: var(--amber); }
+.nav-links .pill { border: 1px solid var(--green); color: var(--green) !important; margin-left: 6px; }
+.nav-links .pill:hover { background: rgba(57,255,20,0.08); }
+@media (max-width: 580px) { .nav-links .hide { display: none; } }
+footer {
+border-top: 1px solid var(--afaint); background: var(--bg2);
+padding: 28px 24px; display: flex; flex-wrap: wrap;
+justify-content: space-between; align-items: center;
+gap: 16px; margin-top: 60px;
+}
+.footer-logo { font-family: var(--fhead); font-size: 20px; letter-spacing: 3px; color: var(--amber); line-height: 1; }
+.footer-right { display: flex; align-items: center; gap: 10px; font-size: 9px; letter-spacing: 1px; color: var(--adim); flex-wrap: wrap; }
+.footer-right a { color: var(--adim); text-decoration: none; transition: color 0.15s; }
+.footer-right a:hover { color: var(--w); }
+.footer-sep { color: var(--afaint); }
+@media (max-width: 500px) { footer { flex-direction: column; align-items: flex-start; } }
+</style>
 </head>
 <body>
-
 <nav>
-    <a href="/" class="logo">CB<span class="bolt">⚡</span>DB</a>
-    <ul class="nav-links">
-        <li><a href="/database.html">Database</a></li>
-        <li class="hide"><a href="/stats.html">Stats</a></li>
-        <li><a href="/about.html" class="active">About</a></li>
-        <li><a href="/contributor.html" class="pill">Contribute</a></li>
-    </ul>
+<a href="/" class="logo">CB<span class="bolt">⚡</span>DB</a>
+<ul class="nav-links">
+<li><a href="/database.html">Database</a></li>
+<li class="hide"><a href="/stats.html">Stats</a></li>
+<li><a href="/about.html" class="active">About</a></li>
+<li><a href="/contributor.html" class="pill">Contribute</a></li>
+</ul>
 </nav>
 
 <div class="page">
+<div class="eyebrow">◈ The Project</div>
+<h1>ABOUT<br>CBDB</h1>
 
-    <div class="eyebrow">◈ The Project</div>
-    <h1>ABOUT<br>CBDB</h1>
-
-    <!-- ORIGIN -->
-    <div class="section">
-        <div class="section-label">◈ Why it exists</div>
-        <div class="section-title">THE ORIGIN</div>
-        <div class="body">
-            <p>
-                Yelp can hide your review if a restaurant buys their ad program.
-                Google can quietly change what surfaces — and you'll never know why.
-                A restaurant can flag your review and have it removed without explanation.
-                The incentives behind every major review platform are commercial, not editorial.
-                The algorithms are designed to serve advertisers.
-                You are the product.
-            </p>
-            <p>
-                The Cheeseburger Database is built on different infrastructure entirely.
-                Reviews are posted to <strong>Bluesky</strong>, an open-source decentralized
-                network built on the <em>AT Protocol</em> — the technology stack
-                that lets you own your social identity regardless of what platform you use.
-                Your review lives on your profile. Permanently.
-                No platform can bury it, sell against it, or make it disappear.
-                We index it. We don't own it. Nobody does.
-            </p>
-            <p>
-                It started in Portland, OR in 2026.
-                One person, one city, one strong opinion about cheeseburgers.
-            </p>
-        </div>
-    </div>
-
-    <!-- HOW IT WORKS -->
-    <div class="section">
-        <div class="section-label">◈ The model</div>
-        <div class="section-title">HOW IT WORKS</div>
-        <div class="body">
-            <p>
-                Approved contributors post structured reviews to their own Bluesky profiles,
-                tag them <em>#CBDB</em>, and attach a photo of the actual burger.
-                The database indexes the post automatically.
-            </p>
-            <p>
-                The rating scale has four levels and every one of them matters.
-                <em>⭐⭐⭐ Legendary</em> is rare by design — overuse destroys it.
-                <em>ㄨ Skip It</em> is published without hesitation.
-                A list of reviews that only surface praise isn't helpful.
-                It's a marketing channel.
-            </p>
-            <p>
-                Michelin's guide has been authoritative for over a century because
-                the standards never bend to commercial pressure.
-                This works the same way — except the contributors are real people,
-                posting under their own names on Bluesky, with no intermediary between them and the record.
-            </p>
-        </div>
-    </div>
-
-    <!-- PRINCIPLES -->
-    <div class="section">
-        <div class="section-label">◈ Non-negotiable</div>
-        <div class="section-title">THE PRINCIPLES</div>
-        <div class="principles">
-            <div class="principle">
-                <div class="principle-num">01</div>
-                <div class="principle-body"><strong>Reviews are never for sale.</strong> No restaurant can pay to be listed, boosted, or removed.</div>
-            </div>
-            <div class="principle">
-                <div class="principle-num">02</div>
-                <div class="principle-body"><strong>The data belongs to contributors.</strong> Every review lives on the contributor's Bluesky profile. We index it — we don't host it, and we can't delete it.</div>
-            </div>
-            <div class="principle">
-                <div class="principle-num">03</div>
-                <div class="principle-body"><strong>No algorithms. No tracking.</strong> No feed optimization, no engagement loops, no ad targeting, no analytics cookies. We are not participants in the online advertising ecosystem.</div>
-            </div>
-            <div class="principle">
-                <div class="principle-num">04</div>
-                <div class="principle-body"><strong>No advertising.</strong> The database doesn't run ads. There is no ad-supported tier. There will never be one.</div>
-            </div>
-            <div class="principle">
-                <div class="principle-num">05</div>
-                <div class="principle-body"><strong>Negative reviews are protected.</strong> A Skip It is worth more than ten uncalibrated five-stars.</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- VS -->
-    <div class="section">
-        <div class="section-label">◈ Context</div>
-        <div class="section-title">DIFFERENT BY DESIGN</div>
-        <div class="compare-head">
-            <div class="compare-head-cell">Other platforms</div>
-            <div class="compare-head-cell">Cheeseburger Database</div>
-        </div>
-        <div class="compare">
-            <div class="compare-row">
-                <div class="compare-cell">Platform owns your reviews. They can delete them.</div>
-                <div class="compare-cell">Your review lives on your Bluesky profile. Permanently.</div>
-            </div>
-            <div class="compare-row">
-                <div class="compare-cell">Restaurants can pay to suppress bad reviews or boost their listing.</div>
-                <div class="compare-cell">No paid placement. No suppression. The data is public.</div>
-            </div>
-            <div class="compare-row">
-                <div class="compare-cell">Anyone can post. Ratings are inflated. Five stars means nothing.</div>
-                <div class="compare-cell">Approved contributors only. Calibrated ratings. Legendary means something.</div>
-            </div>
-            <div class="compare-row">
-                <div class="compare-cell">Algorithmic feeds optimized for engagement, not accuracy.</div>
-                <div class="compare-cell">A database. Filter by city, rating, or style. No feed.</div>
-            </div>
-            <div class="compare-row">
-                <div class="compare-cell">Business model requires your attention. Scroll forever.</div>
-                <div class="compare-cell">Find what you need. Leave. No endless scroll.</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- CTA -->
-    <div class="cta-row">
-        <a href="/database.html" class="btn btn-primary">Browse the Database</a>
-        <a href="/contributor.html" class="btn btn-secondary">Become a Contributor</a>
-    </div>
-
+<!-- ORIGIN -->
+<div class="section">
+<div class="section-label">◈ Why it exists</div>
+<div class="section-title">THE ORIGIN</div>
+<div class="body">
+<p>
+Yelp can hide your review if a restaurant pays for that feature.
+Google fully controls what surfaces in search results — and changes it whenever they want.
+A restaurant can flag your review and have it removed without explanation.
+</p>
+<p>
+Every major review platform runs on commercial incentives, not editorial ones.
+The algorithm serves advertisers.
+You are the product.
+</p>
+<p>
+The Cheeseburger Database works differently.
+Reviews are posted to <strong>Bluesky</strong> — a decentralized network
+where your posts belong to you, not the platform.
+Your review lives on your profile. Permanently.
+No one can bury it, sell against it, or make it disappear.
+We index it. We don't own it. Nobody does.
+</p>
+<p>
+It started in Portland, OR in 2026.
+One person, one city, one strong opinion about cheeseburgers.
+</p>
+</div>
 </div>
 
+<!-- HOW IT WORKS -->
+<div class="section">
+<div class="section-label">◈ The model</div>
+<div class="section-title">HOW IT WORKS</div>
+<div class="body">
+<p>
+Approved contributors post structured reviews to their own Bluesky profiles,
+tag them <em>#CBDB</em>, and attach a photo of the actual burger.
+The database indexes the post automatically.
+</p>
+<p>
+The rating scale has four levels and every one of them matters.
+<em>⭐⭐⭐ Legendary</em> is rare by design — overuse destroys it.
+<em>ㄨ Skip It</em> is published without hesitation.
+A list of reviews that only surface praise isn't helpful.
+It's a marketing channel.
+</p>
+<p>
+Michelin's guide has been authoritative for over a century because
+the standards never bend to commercial pressure.
+This works the same way — except the contributors are real people,
+posting under their own names on Bluesky, with no intermediary between them and the record.
+</p>
+</div>
+</div>
 
+<!-- PRINCIPLES -->
+<div class="section">
+<div class="section-label">◈ Non-negotiable</div>
+<div class="section-title">THE PRINCIPLES</div>
+<div class="principles">
+<div class="principle">
+<div class="principle-num">01</div>
+<div class="principle-body"><strong>Reviews are never for sale.</strong> No restaurant can pay to be listed, boosted, or removed.</div>
+</div>
+<div class="principle">
+<div class="principle-num">02</div>
+<div class="principle-body"><strong>The data belongs to contributors.</strong> Every review lives on the contributor's Bluesky profile. We index it — we don't host it, and we can't delete it.</div>
+</div>
+<div class="principle">
+<div class="principle-num">03</div>
+<div class="principle-body"><strong>No algorithms. No tracking.</strong> No feed optimization, no engagement loops, no ad targeting, no analytics cookies. We are not participants in the online advertising ecosystem.</div>
+</div>
+<div class="principle">
+<div class="principle-num">04</div>
+<div class="principle-body"><strong>No advertising.</strong> The database doesn't run ads. There is no ad-supported tier. There will never be one.</div>
+</div>
+<div class="principle">
+<div class="principle-num">05</div>
+<div class="principle-body"><strong>Negative reviews are protected.</strong> A Skip It is worth more than ten uncalibrated five-stars.</div>
+</div>
+</div>
+</div>
+
+<!-- VS -->
+<div class="section">
+<div class="section-label">◈ Context</div>
+<div class="section-title">DIFFERENT BY DESIGN</div>
+<div class="compare-head">
+<div class="compare-head-cell">Other platforms</div>
+<div class="compare-head-cell">Cheeseburger Database</div>
+</div>
+<div class="compare">
+<div class="compare-row">
+<div class="compare-cell">Platform owns your reviews. They can delete them.</div>
+<div class="compare-cell">Your review lives on your Bluesky profile. Permanently.</div>
+</div>
+<div class="compare-row">
+<div class="compare-cell">Restaurants can pay to suppress bad reviews or boost their listing.</div>
+<div class="compare-cell">No paid placement. No suppression. The data is public.</div>
+</div>
+<div class="compare-row">
+<div class="compare-cell">Anyone can post. Ratings are inflated. Five stars means nothing.</div>
+<div class="compare-cell">Approved contributors only. Calibrated ratings. Legendary means something.</div>
+</div>
+<div class="compare-row">
+<div class="compare-cell">Algorithmic feeds optimized for engagement, not accuracy.</div>
+<div class="compare-cell">A database. Filter by city, rating, or style. No feed.</div>
+</div>
+<div class="compare-row">
+<div class="compare-cell">Business model requires your attention. Scroll forever.</div>
+<div class="compare-cell">Find what you need. Leave. No endless scroll.</div>
+</div>
+</div>
+</div>
+
+<!-- CTA -->
+<div class="cta-row">
+<a href="/database.html" class="btn btn-primary">Browse the Database</a>
+<a href="/contributor.html" class="btn btn-secondary">Become a Contributor</a>
+</div>
+</div>
 
 <footer>
-    <div class="footer-logo">CB⚡DB</div>
-    <div class="footer-right">
-        <a href="https://github.com/cheeseburgerworld/cbdb" target="_blank">GitHub</a>
-        <span class="footer-sep">·</span>
-        <span>© 2026 Cheeseburger World LLC</span>
-    </div>
+<div class="footer-logo">CB⚡DB</div>
+<div class="footer-right">
+<a href="https://github.com/cheeseburgerworld/cbdb" target="_blank">GitHub</a>
+<span class="footer-sep">·</span>
+<span>© 2026 Cheeseburger World LLC</span>
+</div>
 </footer>
-
 </body>
 </html>
