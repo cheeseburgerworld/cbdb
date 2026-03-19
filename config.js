@@ -7,6 +7,7 @@ const APPROVED = new Set([
     'ash.cheeseburger.world',
     'ratbrigade.bsky.social',
     'alleyhector.bsky.social',
+    'hacer.bsky.social',
     // add new approved contributors below this line
 ]);
 
