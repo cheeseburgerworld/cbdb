@@ -1,602 +1,446 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Database — CB⚡DB</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { -webkit-text-size-adjust: 100%; }
-
-    :root {
-        --bg:     #0d0900;
-        --bg2:    #110e08;
-        --amber:  #FF8C00;
-        --adim:   #7A4200;
-        --afaint: #1e1408;
-        --green:  #39FF14;
-        --gold:   #FFD000;
-        --w:      #ffffff;
-        --wd:     rgba(255,255,255,0.75);
-        --fhead:  'Bebas Neue', 'Arial Black', Impact, sans-serif;
-        --fbody:  'IBM Plex Mono', 'Courier New', monospace;
-    }
-
-    /* NAV */
-    nav {
-        position: sticky; top: 0; z-index: 100; height: 52px;
-        background: rgba(13,9,0,0.97);
-        -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
-        border-bottom: 1px solid var(--afaint);
-        display: flex; align-items: center; justify-content: space-between;
-        padding: 0 20px; gap: 12px;
-    }
-    .logo { font-family: var(--fhead); font-size: 22px; letter-spacing: 3px; color: var(--amber); text-decoration: none; flex-shrink: 0; line-height: 1; }
-    .logo .bolt { color: var(--green); }
-    .nav-links { display: flex; align-items: center; gap: 0; list-style: none; }
-    .nav-links a { font-family: var(--fbody); font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--adim); text-decoration: none; padding: 6px 10px; white-space: nowrap; transition: color 0.15s; }
-    .nav-links a:hover { color: var(--w); }
-    .nav-links .active { color: var(--amber); }
-    .nav-links .pill { border: 1px solid var(--green); color: var(--green) !important; margin-left: 6px; }
-    .nav-links .pill:hover { background: rgba(57,255,20,0.08); }
-    @media (max-width: 580px) { .nav-links .hide { display: none; } }
-
-    body { background: var(--bg); color: var(--w); font-family: var(--fbody); min-height: 100vh; }
-
-
-    /* PAGE HEADER */
-    .page-head {
-        padding: 32px 20px 24px;
-        max-width: 1100px; margin: 0 auto;
-        border-bottom: 1px solid var(--afaint);
-        display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap;
-    }
-    .eyebrow { font-size: 9px; letter-spacing: 4px; color: var(--green); text-transform: uppercase; margin-bottom: 8px; }
-    .page-title { font-family: var(--fhead); font-size: clamp(36px, 8vw, 60px); color: var(--amber); letter-spacing: 3px; line-height: 1; }
-    .live-badge {
-        display: flex; align-items: center; gap: 6px;
-        font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--green);
-        padding-bottom: 4px;
-    }
-    .live-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: pulse 2s ease-in-out infinite; }
-    @keyframes pulse {
-        0%,100% { box-shadow: 0 0 0 0 rgba(57,255,20,.5); }
-        50%      { box-shadow: 0 0 0 6px rgba(57,255,20,0); }
-    }
-
-    /* FILTER BAR */
-    .filter-bar {
-        padding: 12px 20px;
-        max-width: 1100px; margin: 0 auto;
-        display: flex; gap: 6px; flex-wrap: wrap; align-items: center;
-        border-bottom: 1px solid var(--afaint);
-    }
-    .filter-label { font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--adim); margin-right: 2px; white-space: nowrap; }
-    .fbtn {
-        font-family: var(--fbody); font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase;
-        background: transparent; border: 1px solid var(--afaint); color: rgba(255,255,255,0.5);
-        padding: 5px 11px; cursor: pointer; transition: all 0.15s; white-space: nowrap;
-    }
-    .fbtn:hover { border-color: var(--adim); color: var(--w); }
-    .fbtn.on  { font-weight: 700; }
-    .fall.on  { background: var(--amber); border-color: var(--amber); color: var(--bg); }
-    .f3.on    { background: #39FF14; border-color: #39FF14; color: var(--bg); }
-    .f2.on    { background: #FFD000; border-color: #FFD000; color: var(--bg); }
-    .f1.on    { background: #FF8C00; border-color: #FF8C00; color: var(--bg); }
-    .f0.on    { background: #444;    border-color: #555;    color: #ccc; }
-    .filter-sep { width: 1px; height: 20px; background: var(--afaint); flex-shrink: 0; }
-    .fcity.on { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.25); color: var(--w); }
-
-    .search-wrap { margin-left: auto; position: relative; flex-shrink: 0; }
-    .search-input {
-        font-family: var(--fbody); font-size: 11px;
-        background: var(--bg2); border: 1px solid var(--afaint);
-        color: var(--w); padding: 6px 28px 6px 10px; outline: none;
-        transition: border-color 0.15s; width: 160px;
-    }
-    .search-input:focus { border-color: var(--adim); }
-    .search-input::placeholder { color: rgba(255,255,255,0.25); }
-    .search-icon { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); color: var(--adim); font-size: 13px; pointer-events: none; }
-    @media (max-width: 540px) { .search-wrap { margin-left: 0; width: 100%; } .search-input { width: 100%; } }
-
-    /* GRID */
-    .grid-wrap { padding: 20px; max-width: 1100px; margin: 0 auto; }
-    .result-count { font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--adim); margin-bottom: 16px; }
-
-    .grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 12px;
-    }
-    @media (max-width: 840px) { .grid { grid-template-columns: repeat(2,1fr); } }
-    @media (max-width: 480px) { .grid { grid-template-columns: 1fr; } }
-
-    /* CARD */
-    .card {
-        background: var(--bg2); border: 1px solid var(--afaint);
-        display: flex; flex-direction: column; overflow: hidden;
-        transition: transform 0.18s, border-color 0.18s;
-    }
-    .card:hover { transform: translateY(-2px); border-color: #3a2800; }
-
-    .card-img {
-        height: 200px; background: #0a0700;
-        display: flex; align-items: center; justify-content: center;
-        font-size: 48px; position: relative; overflow: hidden; flex-shrink: 0;
-    }
-    .card-img img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-    /* no gradient — show the burger */
-
-    /* Rating stamp */
-    .stamp {
-        position: absolute; top: 0; left: 0;
-        font-family: var(--fhead); font-size: 12px; letter-spacing: 2px;
-        padding: 5px 12px; z-index: 1; line-height: 1.3;
-        text-transform: uppercase;
-    }
-    .s3 { background: #39FF14; color: #0d0900; }
-    .s2 { background: #FFD000; color: #0d0900; }
-    .s1 { background: #FF8C00; color: #0d0900; }
-    .s0 { background: #1a1a1a; color: #666; border-bottom: 1px solid #2a2a2a; border-right: 1px solid #2a2a2a; }
-
-    .card-body { padding: 14px 16px 16px; display: flex; flex-direction: column; flex: 1; }
-    .card-name { font-family: var(--fhead); font-size: 20px; letter-spacing: 2px; line-height: 1; margin-bottom: 3px; color: var(--w); }
-    .card-loc  { font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 12px; }
-    .card-sep  { border: none; border-top: 1px solid var(--afaint); margin-bottom: 12px; }
-    .card-text { font-size: 12px; line-height: 1.75; color: var(--wd); flex: 1; margin-bottom: 14px; }
-    .card-foot {
-        display: flex; justify-content: space-between; align-items: center;
-        font-size: 9px; letter-spacing: 1px;
-        padding-top: 10px; border-top: 1px solid var(--afaint); gap: 6px;
-    }
-    .card-handle { color: var(--green); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; text-decoration: none; }
-    .card-handle:hover { text-decoration: underline; }
-    .card-price  { border: 1px solid var(--afaint); color: rgba(255,255,255,0.5); padding: 2px 6px; font-size: 8px; letter-spacing: 2px; flex-shrink: 0; }
-    .card-date   { color: rgba(255,255,255,0.35); flex-shrink: 0; }
-
-    /* STATES */
-    .state {
-        grid-column: 1 / -1;
-        padding: 60px 20px;
-        text-align: center;
-        font-size: 12px; letter-spacing: 2px; color: var(--adim);
-    }
-    .state-icon { font-size: 40px; margin-bottom: 16px; line-height: 1; }
-    .state-title { font-family: var(--fhead); font-size: 20px; letter-spacing: 3px; color: var(--amber); margin-bottom: 8px; }
-    .state-body { font-size: 11px; line-height: 1.8; color: var(--adim); }
-    .state-body a { color: var(--green); text-decoration: none; }
-    .state-body a:hover { text-decoration: underline; }
-
-    /* Spinner */
-    .spinner {
-        grid-column: 1 / -1;
-        display: flex; flex-direction: column; align-items: center; gap: 16px;
-        padding: 60px 20px; color: var(--adim); font-size: 11px; letter-spacing: 2px;
-    }
-    .spinner-ring {
-        width: 32px; height: 32px;
-        border: 2px solid var(--afaint);
-        border-top-color: var(--amber);
-        border-radius: 50%;
-        animation: spin 0.8s linear infinite;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* FOOTER */
-
-    footer {
-        border-top: 1px solid var(--afaint); background: var(--bg2);
-        padding: 28px 24px;
-        display: flex; flex-wrap: wrap;
-        justify-content: space-between; align-items: center;
-        gap: 16px;
-        margin-top: 40px;
-    }
-    .footer-logo { font-family: var(--fhead); font-size: 20px; letter-spacing: 3px; color: var(--amber); line-height: 1; }
-    .footer-right { display: flex; align-items: center; gap: 10px; font-size: 9px; letter-spacing: 1px; color: var(--adim); flex-wrap: wrap; }
-    .footer-right a { color: var(--adim); text-decoration: none; transition: color 0.15s; }
-    .footer-right a:hover { color: var(--w); }
-    .footer-sep { color: var(--afaint); }
-    @media (max-width: 500px) { footer { flex-direction: column; align-items: flex-start; } }
-    /* NAV */
-    nav {
-        position: sticky; top: 0; z-index: 100; height: 52px;
-        background: rgba(13,9,0,0.97);
-        -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
-        border-bottom: 1px solid var(--afaint);
-        display: flex; align-items: center; justify-content: space-between;
-        padding: 0 20px; gap: 12px;
-    }
-    .logo { font-family: var(--fhead); font-size: 22px; letter-spacing: 3px; color: var(--amber); text-decoration: none; flex-shrink: 0; line-height: 1; }
-    .logo .bolt { color: var(--green); }
-    .nav-links { display: flex; align-items: center; gap: 0; list-style: none; }
-    .nav-links a { font-family: var(--fbody); font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--adim); text-decoration: none; padding: 6px 10px; white-space: nowrap; transition: color 0.15s; }
-    .nav-links a:hover { color: var(--w); }
-    .nav-links .active { color: var(--amber); }
-    .nav-links .pill { border: 1px solid var(--green); color: var(--green) !important; margin-left: 6px; }
-    .nav-links .pill:hover { background: rgba(57,255,20,0.08); }
-    @media (max-width: 580px) { .nav-links .hide { display: none; } }
-
-    /* FOOTER */
-    footer {
-        border-top: 1px solid var(--afaint); background: var(--bg2);
-        padding: 28px 24px; display: flex; flex-wrap: wrap;
-        justify-content: space-between; align-items: center;
-        gap: 16px; margin-top: 60px;
-    }
-    .footer-logo { font-family: var(--fhead); font-size: 20px; letter-spacing: 3px; color: var(--amber); line-height: 1; }
-    .footer-right { display: flex; align-items: center; gap: 10px; font-size: 9px; letter-spacing: 1px; color: var(--adim); flex-wrap: wrap; }
-    .footer-right a { color: var(--adim); text-decoration: none; transition: color 0.15s; }
-    .footer-right a:hover { color: var(--w); }
-    .footer-sep { color: var(--afaint); }
-    @media (max-width: 500px) { footer { flex-direction: column; align-items: flex-start; } }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Database — CB⚡DB</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { -webkit-text-size-adjust: 100%; }
+:root {
+--bg: #0d0900;
+--bg2: #110e08;
+--amber: #FF8C00;
+--afaint: #1e1408;
+--green: #39FF14;
+--gold: #FFD000;
+--w: #ffffff;
+--wd: rgba(255,255,255,0.88);
+--fhead: 'Bebas Neue', 'Arial Black', Impact, sans-serif;
+--fbody: 'IBM Plex Mono', 'Courier New', monospace;
+}
+nav {
+position: sticky; top: 0; z-index: 100; height: 52px;
+background: rgba(13,9,0,0.97);
+-webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+border-bottom: 1px solid var(--afaint);
+display: flex; align-items: center; justify-content: space-between;
+padding: 0 20px; gap: 12px;
+}
+.logo { font-family: var(--fhead); font-size: 22px; letter-spacing: 3px; color: var(--amber); text-decoration: none; flex-shrink: 0; line-height: 1; }
+.logo .bolt { color: var(--green); }
+.nav-links { display: flex; align-items: center; gap: 0; list-style: none; }
+.nav-links a { font-family: var(--fbody); font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(255,255,255,0.6); text-decoration: none; padding: 6px 10px; white-space: nowrap; transition: color 0.15s; }
+.nav-links a:hover { color: var(--w); }
+.nav-links .active { color: var(--amber); }
+.nav-links .pill { border: 1px solid var(--green); color: var(--green) !important; margin-left: 6px; }
+.nav-links .pill:hover { background: rgba(57,255,20,0.08); }
+@media (max-width: 580px) { .nav-links .hide { display: none; } }
+body { background: var(--bg); color: var(--w); font-family: var(--fbody); min-height: 100vh; }
+.page-head {
+padding: 32px 20px 24px;
+max-width: 1100px; margin: 0 auto;
+border-bottom: 1px solid var(--afaint);
+display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+}
+.eyebrow { font-size: 9px; letter-spacing: 4px; color: var(--green); text-transform: uppercase; margin-bottom: 8px; }
+.page-title { font-family: var(--fhead); font-size: clamp(36px, 8vw, 60px); color: var(--amber); letter-spacing: 3px; line-height: 1; }
+.live-badge {
+display: flex; align-items: center; gap: 6px;
+font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--green);
+padding-bottom: 4px;
+}
+.live-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: pulse 2s ease-in-out infinite; }
+@keyframes pulse {
+0%,100% { box-shadow: 0 0 0 0 rgba(57,255,20,.5); }
+50% { box-shadow: 0 0 0 6px rgba(57,255,20,0); }
+}
+/* FILTER BAR */
+.filter-bar {
+padding: 12px 20px;
+max-width: 1100px; margin: 0 auto;
+display: flex; gap: 6px; flex-wrap: wrap; align-items: center;
+border-bottom: 1px solid var(--afaint);
+}
+.filter-label { font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,0.75); margin-right: 2px; white-space: nowrap; }
+.fbtn {
+font-family: var(--fbody); font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase;
+background: transparent; border: 1px solid var(--afaint); color: rgba(255,255,255,0.55);
+padding: 5px 11px; cursor: pointer; transition: all 0.15s; white-space: nowrap;
+}
+.fbtn:hover { border-color: rgba(255,255,255,0.3); color: var(--w); }
+.fbtn.on { font-weight: 700; }
+.fall.on { background: var(--amber); border-color: var(--amber); color: var(--bg); }
+.f3.on { background: #39FF14; border-color: #39FF14; color: var(--bg); }
+.f2.on { background: #FFD000; border-color: #FFD000; color: var(--bg); }
+.f1.on { background: #FF8C00; border-color: #FF8C00; color: var(--bg); }
+.f0.on { background: #444; border-color: #555; color: #ccc; }
+.filter-sep { width: 1px; height: 20px; background: var(--afaint); flex-shrink: 0; }
+.fcity.on { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.35); color: var(--w); }
+/* GRID */
+.grid-wrap { padding: 20px; max-width: 1100px; margin: 0 auto; }
+.result-count { font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,0.6); margin-bottom: 16px; }
+.grid {
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 12px;
+}
+@media (max-width: 840px) { .grid { grid-template-columns: repeat(2,1fr); } }
+@media (max-width: 480px) { .grid { grid-template-columns: 1fr; } }
+/* CARD */
+.card {
+background: var(--bg2); border: 1px solid var(--afaint);
+display: flex; flex-direction: column; overflow: hidden;
+transition: transform 0.18s, border-color 0.18s;
+}
+.card:hover { transform: translateY(-2px); border-color: #3a2800; }
+.card-img {
+height: 200px; background: #0a0700;
+display: flex; align-items: center; justify-content: center;
+font-size: 48px; position: relative; overflow: hidden; flex-shrink: 0;
+}
+.card-img img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.stamp {
+position: absolute; top: 0; left: 0;
+font-family: var(--fhead); font-size: 12px; letter-spacing: 2px;
+padding: 5px 12px; z-index: 1; line-height: 1.3; text-transform: uppercase;
+}
+.s3 { background: #39FF14; color: #0d0900; }
+.s2 { background: #FFD000; color: #0d0900; }
+.s1 { background: #FF8C00; color: #0d0900; }
+.s0 { background: #1a1a1a; color: #666; border-bottom: 1px solid #2a2a2a; border-right: 1px solid #2a2a2a; }
+.card-body { padding: 14px 16px 16px; display: flex; flex-direction: column; flex: 1; }
+.card-name { font-family: var(--fhead); font-size: 20px; letter-spacing: 2px; line-height: 1; margin-bottom: 3px; color: var(--w); }
+.card-loc { font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,0.55); margin-bottom: 12px; }
+.card-sep { border: none; border-top: 1px solid var(--afaint); margin-bottom: 12px; }
+.card-text { font-size: 12px; line-height: 1.75; color: rgba(255,255,255,0.88); flex: 1; margin-bottom: 14px; }
+.card-foot {
+display: flex; justify-content: space-between; align-items: center;
+font-size: 9px; letter-spacing: 1px;
+padding-top: 10px; border-top: 1px solid var(--afaint); gap: 6px;
+}
+.card-handle { color: var(--green); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; text-decoration: none; }
+.card-handle:hover { text-decoration: underline; }
+.card-price { border: 1px solid var(--afaint); color: rgba(255,255,255,0.5); padding: 2px 6px; font-size: 8px; letter-spacing: 2px; flex-shrink: 0; }
+.card-date { color: rgba(255,255,255,0.5); flex-shrink: 0; }
+/* STATES */
+.state {
+grid-column: 1 / -1; padding: 60px 20px;
+text-align: center; font-size: 12px; letter-spacing: 2px;
+}
+.state-icon { font-size: 40px; margin-bottom: 16px; line-height: 1; }
+.state-title { font-family: var(--fhead); font-size: 20px; letter-spacing: 3px; color: var(--amber); margin-bottom: 8px; }
+.state-body { font-size: 11px; line-height: 1.8; color: rgba(255,255,255,0.58); }
+.state-body a { color: var(--green); text-decoration: none; }
+.state-body a:hover { text-decoration: underline; }
+.spinner {
+grid-column: 1 / -1;
+display: flex; flex-direction: column; align-items: center; gap: 16px;
+padding: 60px 20px; font-size: 11px; letter-spacing: 2px; color: rgba(255,255,255,0.4);
+}
+.spinner-ring {
+width: 32px; height: 32px;
+border: 2px solid var(--afaint); border-top-color: var(--amber);
+border-radius: 50%; animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+footer {
+border-top: 1px solid var(--afaint); background: var(--bg2);
+padding: 28px 24px; display: flex; flex-wrap: wrap;
+justify-content: space-between; align-items: center;
+gap: 16px; margin-top: 60px;
+}
+.footer-logo { font-family: var(--fhead); font-size: 20px; letter-spacing: 3px; color: var(--amber); line-height: 1; }
+.footer-right { display: flex; align-items: center; gap: 10px; font-size: 9px; letter-spacing: 1px; color: rgba(255,255,255,0.65); flex-wrap: wrap; }
+.footer-right a { color: rgba(255,255,255,0.65); text-decoration: none; transition: color 0.15s; }
+.footer-right a:hover { color: var(--w); }
+.footer-sep { color: rgba(255,255,255,0.25); }
+@media (max-width: 500px) { footer { flex-direction: column; align-items: flex-start; } }
+</style>
 </head>
 <body>
-
 <nav>
-    <a href="/" class="logo">CB<span class="bolt">⚡</span>DB</a>
-    <ul class="nav-links">
-        <li><a href="/database.html" class="active">Database</a></li>
-        <li class="hide"><a href="/stats.html">Stats</a></li>
-        <li class="hide"><a href="/about.html">About</a></li>
-        <li class="hide"><a href="/format.html">Format</a></li>
-        <li><a href="/contributor.html" class="pill">Contribute</a></li>
-    </ul>
+<a href="/" class="logo">CB<span class="bolt">⚡</span>DB</a>
+<ul class="nav-links">
+<li><a href="/database.html" class="active">Database</a></li>
+<li class="hide"><a href="/stats.html">Stats</a></li>
+<li class="hide"><a href="/about.html">About</a></li>
+<li class="hide"><a href="/format.html">Format</a></li>
+<li><a href="/contributor.html" class="pill">Contribute</a></li>
+</ul>
 </nav>
 
 <div class="page-head">
-    <div>
-        <div class="eyebrow">◈ Live index · #CBDB on Bluesky</div>
-        <div class="page-title">THE DATABASE</div>
-    </div>
-
+<div>
+<div class="eyebrow">◈ Live index · #CBDB on Bluesky</div>
+<div class="page-title">THE DATABASE</div>
+</div>
 </div>
 
 <div class="filter-bar">
-    <span class="filter-label">Filter:</span>
-    <button class="fbtn fall on" onclick="setFilter('all',this)">All</button>
-    <button class="fbtn f3"     onclick="setFilter('3',this)">Legendary</button>
-    <button class="fbtn f2"     onclick="setFilter('2',this)">Worth A Trip</button>
-    <button class="fbtn f1"     onclick="setFilter('1',this)">Solid</button>
-    <button class="fbtn f0"     onclick="setFilter('0',this)">Skip It</button>
-    <div class="filter-sep"></div>
-    <button class="fbtn" id="yearBtn" onclick="toggleYear(this)">Last Year</button>
-    <div class="search-wrap">
-        <input class="search-input" id="q" type="text" placeholder="Search..." oninput="renderFiltered()">
-        <span class="search-icon">⌕</span>
-    </div>
+<span class="filter-label">Filter:</span>
+<button class="fbtn fall on" onclick="setFilter('all',this)">All</button>
+<button class="fbtn f3" onclick="setFilter('3',this)">Legendary</button>
+<button class="fbtn f2" onclick="setFilter('2',this)">Worth A Trip</button>
+<button class="fbtn f1" onclick="setFilter('1',this)">Solid</button>
+<button class="fbtn f0" onclick="setFilter('0',this)">Skip It</button>
+<div class="filter-sep"></div>
+<button class="fbtn" id="yearBtn" onclick="toggleYear(this)">Last Year</button>
 </div>
 
 <div class="filter-bar" id="city-bar" style="padding-top:8px; padding-bottom:8px;">
-    <span class="filter-label">City:</span>
-    <div id="city-filters" style="display:flex; gap:6px; flex-wrap:wrap;">
-        <button class="fbtn fcity on" onclick="setCity('all',this)">All Cities</button>
-    </div>
+<span class="filter-label">City:</span>
+<div id="city-filters" style="display:flex; gap:6px; flex-wrap:wrap;">
+<button class="fbtn fcity on" onclick="setCity('all',this)">All Cities</button>
+</div>
 </div>
 
 <div class="grid-wrap">
-    <div class="result-count" id="count"></div>
-    <div class="grid" id="grid">
-        <div class="spinner">
-            <div class="spinner-ring"></div>
-            Loading...
-        </div>
-    </div>
+<div class="result-count" id="count"></div>
+<div class="grid" id="grid">
+<div class="spinner">
+<div class="spinner-ring"></div>
+Loading...
+</div>
+</div>
 </div>
 
-
-<script src="/config.js"></script>
 <script>
-// config loaded from config.js
+const APPROVED = new Set([
+'cheeseburger.world',
+'ash.cheeseburger.world',
+'ratbrigade.bsky.social',
+'alleyhector.bsky.social',
+// add more approved handles here as the program grows
+]);
+const BSKY_API = 'https://public.api.bsky.app/xrpc';
+const FETCH_LIMIT = 100;
 
-// ── RATING MAPS ───────────────────────────────────────
-const LABEL = {
-    3: 'Legendary',
-    2: 'Worth A Trip',
-    1: 'Solid',
-    0: 'Skip It'
-};
+const LABEL = { 3: 'Legendary', 2: 'Worth A Trip', 1: 'Solid', 0: 'Skip It' };
 const STAMP_CLASS = { 3:'s3', 2:'s2', 1:'s1', 0:'s0' };
-const NAME_COLOR  = { 3:'#39FF14', 2:'#FFD000', 1:'#FF8C00', 0:'#888' };
 
-// ── STATE ─────────────────────────────────────────────
-let ALL_REVIEWS   = [];
-let activeFilter  = 'all';
-let yearOnly      = false;
-let activeCity    = 'all';
+let ALL_REVIEWS = [];
+let activeFilter = 'all';
+let yearOnly = false;
+let activeCity = 'all';
 
-// ── FETCH ─────────────────────────────────────────────
-// Fetches each approved handle's feed directly — more reliable than search API
 async function loadReviews() {
-    ALL_REVIEWS = [];
-    const errors = [];
-
-    await Promise.all([...APPROVED].map(async handle => {
-        try {
-            const url  = `${BSKY_API}/app.bsky.feed.getAuthorFeed?actor=${encodeURIComponent(handle)}&limit=${FETCH_LIMIT}&filter=posts_no_replies`;
-            const res  = await fetch(url);
-            if (!res.ok) throw new Error(`HTTP ${res.status} for ${handle}`);
-            const data = await res.json();
-            const feed = data.feed || [];
-
-            for (const item of feed) {
-                const post = item.post;
-                if (!post) continue;
-
-                const text = post.record?.text || '';
-                if (!/\#CBDB/i.test(text)) continue;
-
-                const parsed = parsePost(text);
-                if (!parsed) continue;
-
-                ALL_REVIEWS.push({
-                    restaurant: parsed.restaurant,
-                    location:   parsed.location,
-                    r:          parsed.ratingNum,
-                    price:      parsed.price,
-                    notes:      parsed.reviewText,
-                    handle:     post.author?.handle || handle,
-                    date:       formatDate(post.record?.createdAt),
-                    imageUrl:   extractImage(post),
-                    postUrl:    buildPostUrl(post.author?.handle || handle, post.uri),
-                    _ts:        post.record?.createdAt || '',
-                });
-            }
-        } catch(err) {
-            errors.push(err);
-            console.warn(`Failed to fetch feed for ${handle}:`, err);
-        }
-    }));
-
-    // Sort newest first
-    ALL_REVIEWS.sort((a, b) => b._ts.localeCompare(a._ts));
-
-    // Build city filter buttons
-    buildCityFilters();
-
-    if (ALL_REVIEWS.length === 0 && errors.length === APPROVED.size) {
-        showError(errors[0]);
-        return;
-    }
-
-    renderFiltered();
+ALL_REVIEWS = [];
+const errors = [];
+await Promise.all([...APPROVED].map(async handle => {
+try {
+const url = `${BSKY_API}/app.bsky.feed.getAuthorFeed?actor=${encodeURIComponent(handle)}&limit=${FETCH_LIMIT}&filter=posts_no_replies`;
+const res = await fetch(url);
+if (!res.ok) throw new Error(`HTTP ${res.status} for ${handle}`);
+const data = await res.json();
+for (const item of (data.feed || [])) {
+const post = item.post;
+if (!post) continue;
+const text = post.record?.text || '';
+if (!/#CBDB/i.test(text)) continue;
+const parsed = parsePost(text);
+if (!parsed) continue;
+ALL_REVIEWS.push({
+restaurant: parsed.restaurant,
+location: parsed.location,
+r: parsed.ratingNum,
+price: parsed.price,
+notes: parsed.reviewText,
+handle: post.author?.handle || handle,
+date: formatDate(post.record?.createdAt),
+imageUrl: extractImage(post),
+postUrl: buildPostUrl(post.author?.handle || handle, post.uri),
+_ts: post.record?.createdAt || '',
+});
+}
+} catch(err) {
+errors.push(err);
+console.warn(`Failed to fetch feed for ${handle}:`, err);
+}
+}));
+ALL_REVIEWS.sort((a, b) => b._ts.localeCompare(a._ts));
+buildCityFilters();
+if (ALL_REVIEWS.length === 0 && errors.length === APPROVED.size) {
+showError(errors[0]); return;
+}
+renderFiltered();
 }
 
-// ── PARSER ────────────────────────────────────────────
-// Format:
-//   Line 0: Restaurant name
-//   Line 1: City, State
-//   Line 2: Rating (⭐ / ⭐⭐ / ⭐⭐⭐ / ㄨ)
-//   Line 3: Price ($ / $$ / $$$)
-//   Line 4: blank
-//   Line 5+: Review text
-//   blank
-//   #CBDB
 function parsePost(text) {
-    if (!text || !/\#CBDB/i.test(text)) return null;
-
-    const lines = text.replace(/\r/g, '').split('\n');
-    if (lines.length < 6) return null;
-
-    const restaurant = lines[0].trim();
-    const location   = lines[1].trim();
-    const ratingLine = lines[2].trim();
-    const priceLine  = lines[3].trim();
-
-    if (!restaurant || restaurant.startsWith('#')) return null;
-    if (!location || !location.includes(','))       return null;
-
-    const rating = parseRating(ratingLine);
-    if (!rating) return null;
-
-    const price = (priceLine.match(/^(\${1,3})/) || [])[1] || '';
-
-    // Collect review lines after line 3 (skipping leading blank, stopping at blank or #CBDB)
-    const afterMeta   = lines.slice(4);
-    const reviewLines = [];
-    let inReview = false;
-
-    for (const line of afterMeta) {
-        const t = line.trim();
-        if (/^#CBDB/i.test(t)) break;
-        if (!inReview && t === '') continue;
-        inReview = true;
-        if (t === '') break;
-        reviewLines.push(line);
-    }
-
-    const reviewText = reviewLines.join('\n').trim();
-    if (!reviewText) return null;
-
-    return {
-        restaurant,
-        location,
-        ratingNum:   rating.num,
-        ratingLabel: rating.label,
-        price,
-        reviewText
-    };
+if (!text || !/#CBDB/i.test(text)) return null;
+const lines = text.replace(/\r/g, '').split('\n');
+if (lines.length < 6) return null;
+const restaurant = lines[0].trim();
+const location = lines[1].trim();
+const ratingLine = lines[2].trim();
+const priceLine = lines[3].trim();
+if (!restaurant || restaurant.startsWith('#')) return null;
+if (!location || !location.includes(',')) return null;
+const rating = parseRating(ratingLine);
+if (!rating) return null;
+const price = (priceLine.match(/^(\${1,3})/) || [])[1] || '';
+const afterMeta = lines.slice(4);
+const reviewLines = [];
+let inReview = false;
+for (const line of afterMeta) {
+const t = line.trim();
+if (/^#CBDB/i.test(t)) break;
+if (!inReview && t === '') continue;
+inReview = true;
+if (t === '') break;
+reviewLines.push(line);
+}
+const reviewText = reviewLines.join('\n').trim();
+if (!reviewText) return null;
+return { restaurant, location, ratingNum: rating.num, ratingLabel: rating.label, price, reviewText };
 }
 
 function parseRating(line) {
-    const stars = (line.match(/⭐/g) || []).length;
-    const skip  = stars === 0 && /^[ㄨ✗Xx]/.test(line);
-    if (skip)              return { num: 0, label: 'ㄨ Skip It' };
-    if (stars >= 1 && stars <= 3) {
-        const labels = { 1:'⭐ Solid', 2:'⭐⭐ Worth A Trip', 3:'⭐⭐⭐ Legendary' };
-        return { num: stars, label: labels[stars] };
-    }
-    return null;
+const stars = (line.match(/⭐/g) || []).length;
+const skip = stars === 0 && /^[ㄨ✗Xx]/.test(line);
+if (skip) return { num: 0, label: 'ㄨ Skip It' };
+if (stars >= 1 && stars <= 3) {
+const labels = { 1:'⭐ Solid', 2:'⭐⭐ Worth A Trip', 3:'⭐⭐⭐ Legendary' };
+return { num: stars, label: labels[stars] };
+}
+return null;
 }
 
-// ── HELPERS ───────────────────────────────────────────
 function extractImage(post) {
-    try {
-        const embed = post.embed || post.record?.embed;
-        if (!embed) return null;
-        if (embed.images?.length)       return embed.images[0].thumb || embed.images[0].fullsize || null;
-        if (embed.media?.images?.length) return embed.media.images[0].thumb || null;
-    } catch(e) {}
-    return null;
+try {
+const embed = post.embed || post.record?.embed;
+if (!embed) return null;
+if (embed.images?.length) return embed.images[0].thumb || embed.images[0].fullsize || null;
+if (embed.media?.images?.length) return embed.media.images[0].thumb || null;
+} catch(e) {}
+return null;
 }
 
 function buildPostUrl(handle, uri) {
-    if (!handle || !uri) return '#';
-    const id = uri.split('/').pop();
-    return `https://bsky.app/profile/${handle}/post/${id}`;
+if (!handle || !uri) return '#';
+const id = uri.split('/').pop();
+return `https://bsky.app/profile/${handle}/post/${id}`;
 }
 
 function formatDate(iso) {
-    if (!iso) return '';
-    const d = new Date(iso);
-    return d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
-}
-
-function parseReviewDate(dateStr) {
-    if (!dateStr) return null;
-    const d = new Date(dateStr);
-    return isNaN(d.getTime()) ? null : d;
+if (!iso) return '';
+const d = new Date(iso);
+return d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
 }
 
 function showError(err) {
-    console.error(err);
-    document.getElementById('count').textContent = '';
-    document.getElementById('grid').innerHTML = `
-        <div class="state">
-            <div class="state-icon">⚠️</div>
-            <div class="state-title">COULD NOT LOAD</div>
-            <div class="state-body">
-                Could not connect to Bluesky. Check your connection and try again.<br>
-                <a href="https://bsky.app/hashtag/CBDB" target="_blank">View #CBDB on Bluesky directly →</a>
-            </div>
-        </div>`;
+console.error(err);
+document.getElementById('count').textContent = '';
+document.getElementById('grid').innerHTML = `
+<div class="state">
+<div class="state-icon">⚠️</div>
+<div class="state-title">COULD NOT LOAD</div>
+<div class="state-body">
+Could not connect to Bluesky. Check your connection and try again.<br>
+<a href="https://bsky.app/hashtag/CBDB" target="_blank">View #CBDB on Bluesky directly →</a>
+</div>
+</div>`;
 }
 
-// ── CITY FILTERS ──────────────────────────────────────
 function buildCityFilters() {
-    const cities = [...new Set(ALL_REVIEWS.map(r => r.location))].sort();
-    const wrap   = document.getElementById('city-filters');
-    if (!wrap) return;
-    wrap.innerHTML = '<button class="fbtn fcity on" onclick="setCity(\'all\',this)">All Cities</button>';
-    cities.forEach(city => {
-        const btn = document.createElement('button');
-        btn.className = 'fbtn fcity';
-        btn.textContent = city;
-        btn.onclick = function() { setCity(city, this); };
-        wrap.appendChild(btn);
-    });
-    const bar = document.getElementById('city-bar');
-    if (bar) bar.style.display = cities.length <= 1 ? 'none' : '';
+const cities = [...new Set(ALL_REVIEWS.map(r => r.location))].sort();
+const container = document.getElementById('city-filters');
+cities.forEach(city => {
+const btn = document.createElement('button');
+btn.className = 'fbtn fcity';
+btn.textContent = city;
+btn.onclick = () => setCity(city, btn);
+container.appendChild(btn);
+});
 }
 
-function setCity(val, btn) {
-    activeCity = val;
-    document.querySelectorAll('.fcity').forEach(b => b.classList.remove('on'));
-    btn.classList.add('on');
-    renderFiltered();
-}
-
-// ── FILTERS ───────────────────────────────────────────
 function setFilter(val, btn) {
-    activeFilter = val;
-    // only touch rating buttons — not city buttons, not year button
-    document.querySelectorAll('.fbtn.fall, .fbtn.f3, .fbtn.f2, .fbtn.f1, .fbtn.f0').forEach(b => b.classList.remove('on'));
-    btn.classList.add('on');
-    renderFiltered();
+activeFilter = val;
+document.querySelectorAll('.fbtn:not(#yearBtn):not(.fcity)').forEach(b => b.classList.remove('on'));
+btn.classList.add('on');
+renderFiltered();
 }
 
 function toggleYear(btn) {
-    yearOnly = !yearOnly;
-    btn.classList.toggle('on', yearOnly);
-    renderFiltered();
+yearOnly = !yearOnly;
+btn.classList.toggle('on', yearOnly);
+renderFiltered();
+}
+
+function setCity(val, btn) {
+activeCity = val;
+document.querySelectorAll('.fcity').forEach(b => b.classList.remove('on'));
+btn.classList.add('on');
+renderFiltered();
 }
 
 function renderFiltered() {
-    const q          = (document.getElementById('q').value || '').toLowerCase().trim();
-    const oneYearAgo = new Date();
-    oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
-
-    const list = ALL_REVIEWS.filter(r => {
-        const rOk  = activeFilter === 'all' || String(r.r) === activeFilter;
-        const cOk  = activeCity === 'all'   || r.location === activeCity;
-        const qOk  = !q
-            || r.restaurant.toLowerCase().includes(q)
-            || r.location.toLowerCase().includes(q)
-            || r.notes.toLowerCase().includes(q);
-        const yOk  = !yearOnly || (() => {
-            const d = parseReviewDate(r.date);
-            return d && d >= oneYearAgo;
-        })();
-        return rOk && cOk && qOk && yOk;
-    });
-
-    render(list);
+const oneYearAgo = new Date();
+oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+const list = ALL_REVIEWS.filter(r => {
+const rOk = activeFilter === 'all' || String(r.r) === activeFilter;
+const cOk = activeCity === 'all' || r.location === activeCity;
+const yOk = !yearOnly || (r._ts && new Date(r._ts) >= oneYearAgo);
+return rOk && cOk && yOk;
+});
+render(list);
 }
 
-// ── RENDER ────────────────────────────────────────────
 function render(list) {
-    const grid  = document.getElementById('grid');
-    const count = document.getElementById('count');
-
-    if (ALL_REVIEWS.length === 0) {
-        count.textContent = '';
-        grid.innerHTML = `
-            <div class="state">
-                <div class="state-icon">🍔</div>
-                <div class="state-title">NO REVIEWS YET</div>
-                <div class="state-body">
-                    Nothing here yet. The database grows one burger at a time.<br><br>
-                    <a href="/format.html">Read the format guide →</a>
-                </div>
-            </div>`;
-        return;
-    }
-
-    count.textContent = list.length + ' review' + (list.length !== 1 ? 's' : '');
-
-    if (!list.length) {
-        grid.innerHTML = `<div class="state"><div class="state-body">No reviews match — try a different filter.</div></div>`;
-        return;
-    }
-
-    grid.innerHTML = list.map(r => `
-        <div class="card">
-            <div class="card-img">
-                ${r.imageUrl ? `<img src="${r.imageUrl}" alt="${r.restaurant}" loading="lazy">` : '🍔'}
-                <div class="stamp ${STAMP_CLASS[r.r]}">${LABEL[r.r]}</div>
-            </div>
-            <div class="card-body">
-                <div class="card-name">${r.restaurant}</div>
-                <div class="card-loc">${r.location}</div>
-                <hr class="card-sep">
-                <div class="card-text">${r.notes}</div>
-                <div class="card-foot">
-                    <a class="card-handle" href="${r.postUrl}" target="_blank" rel="noopener">@${r.handle}</a>
-                    ${r.price ? `<span class="card-price">${r.price}</span>` : ''}
-                    <span class="card-date">${r.date}</span>
-                </div>
-            </div>
-        </div>
-    `).join('');
+const grid = document.getElementById('grid');
+const count = document.getElementById('count');
+if (ALL_REVIEWS.length === 0) {
+count.textContent = '';
+grid.innerHTML = `
+<div class="state">
+<div class="state-icon">🍔</div>
+<div class="state-title">NO REVIEWS YET</div>
+<div class="state-body">
+Nothing here yet. The database grows one burger at a time.<br><br>
+<a href="/format.html">Read the format guide →</a>
+</div>
+</div>`;
+return;
+}
+count.textContent = list.length + ' review' + (list.length !== 1 ? 's' : '');
+if (!list.length) {
+grid.innerHTML = `<div class="state"><div class="state-body">No reviews match — try a different filter.</div></div>`;
+return;
+}
+grid.innerHTML = list.map(r => `
+<div class="card">
+<div class="card-img">
+${r.imageUrl ? `<img src="${r.imageUrl}" alt="${r.restaurant}" loading="lazy">` : '🍔'}
+<div class="stamp ${STAMP_CLASS[r.r]}">${LABEL[r.r]}</div>
+</div>
+<div class="card-body">
+<div class="card-name">${r.restaurant}</div>
+<div class="card-loc">${r.location}</div>
+<hr class="card-sep">
+<div class="card-text">${r.notes}</div>
+<div class="card-foot">
+<a class="card-handle" href="${r.postUrl}" target="_blank" rel="noopener">@${r.handle}</a>
+${r.price ? `<span class="card-price">${r.price}</span>` : ''}
+<span class="card-date">${r.date}</span>
+</div>
+</div>
+</div>
+`).join('');
 }
 
-// ── INIT ──────────────────────────────────────────────
 loadReviews();
 </script>
 
-
 <footer>
-    <div class="footer-logo">CB⚡DB</div>
-    <div class="footer-right">
-        <a href="https://github.com/cheeseburgerworld/cbdb" target="_blank">GitHub</a>
-        <span class="footer-sep">·</span>
-        <span>© 2026 Cheeseburger World LLC</span>
-    </div>
+<div class="footer-logo">CB⚡DB</div>
+<div class="footer-right">
+<a href="https://github.com/cheeseburgerworld/cbdb" target="_blank">GitHub</a>
+<span class="footer-sep">·</span>
+<span>© 2026 Cheeseburger World LLC</span>
+</div>
 </footer>
-
 </body>
 </html>
