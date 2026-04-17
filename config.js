@@ -8,7 +8,8 @@ const APPROVED = new Set([
     'ratbrigade.bsky.social',
     'alleyhector.bsky.social',
     'hacer.bsky.social',
-    // add new approved contributors below this line
+    'burgernotomato.bsky.social',
+    // add new approved contributors above this line
 ]);
 
 const BSKY_API    = 'https://public.api.bsky.app/xrpc';
