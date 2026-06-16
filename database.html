@@ -204,7 +204,7 @@ footer { border-top: 1px solid var(--afaint); background: var(--bg2); padding: 2
 </div>
 
 <!-- FILTER ROW 2: Style + City -->
-<div class="filter-bar">
+<div class="filter-bar" id="city-row">
   <span class="filter-label">Style</span>
   <button class="fbtn fstyle on" onclick="setStyle('all',this)">All</button>
   <button class="fbtn fstyle" onclick="setStyle('Smash',this)">Smash</button>
@@ -440,7 +440,16 @@ function formatDate(iso) {
    ═══════════════════════════════════════════════════════════ */
 function buildCityFilters() {
   const cities = [...new Set(ALL_REVIEWS.map(r => r.location))].sort();
+  const row = document.getElementById('city-row');
   const container = document.getElementById('city-filters');
+
+  // Clear any previously appended city buttons (keep the hardcoded All button)
+  [...container.querySelectorAll('.fcity:not([onclick*="all"])')].forEach(b => b.remove());
+
+  // Hide row entirely when only one city — no noise
+  if (cities.length <= 1) { row.style.display = 'none'; return; }
+  row.style.display = '';
+
   cities.forEach(city => {
     const btn = document.createElement('button');
     btn.className = 'fbtn fcity';
@@ -469,6 +478,18 @@ function setCity(val, btn) {
   document.querySelectorAll('.fcity').forEach(b => b.classList.remove('on'));
   btn.classList.add('on');
   renderFiltered();
+  // In map view, re-center on selected city
+  if (currentView === 'map' && val !== 'all' && leafletMap) {
+    const pins = ALL_REVIEWS.filter(r => r.location === val && (r.lat || GEO_CACHE[r.restaurant + ', ' + r.location]));
+    if (pins.length) {
+      const coords = pins.map(r => {
+        if (r.lat) return [r.lat, r.lng];
+        const c = GEO_CACHE[r.restaurant + ', ' + r.location];
+        return c ? [c.lat, c.lng] : null;
+      }).filter(Boolean);
+      if (coords.length) leafletMap.fitBounds(coords, { padding: [60,60], maxZoom: 14, animate: true });
+    }
+  }
 }
 
 function toggleBW(btn) {
