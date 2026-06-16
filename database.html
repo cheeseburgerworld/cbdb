@@ -524,45 +524,41 @@ function renderList(list) {
 }
 
 /* ═══════════════════════════════════════════════════════════
-   GEOCODING
-   Uses Nominatim to resolve "Restaurant Name, City, ST" to
-   lat/lng. Results cached in memory for the session.
-   AUGMENTS coordinates take priority when present.
+   GEOCODING — city-level fallback only
+   AUGMENTS provides real coords for known restaurants.
+   Nominatim is the fallback for any location not in AUGMENTS.
+   One request per unique city string, cached for the session.
    ═══════════════════════════════════════════════════════════ */
-const GEO_CACHE = {};
+const CITY_COORDS = {};
 
-async function geocode(restaurant, location) {
-  // Build query: "Restaurant Name, City, ST" gives best results
-  const query = `${restaurant}, ${location}`;
-  if (GEO_CACHE[query] !== undefined) return GEO_CACHE[query];
+async function getCityCoords(location) {
+  if (CITY_COORDS[location] !== undefined) return CITY_COORDS[location];
   try {
-    const url = `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(query)}`;
-    const res = await fetch(url, { headers: { 'Accept-Language': 'en' } });
+    const url = `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(location)}`;
+    const res  = await fetch(url, { headers: { 'Accept-Language': 'en' } });
     const data = await res.json();
-    if (data.length) {
-      const result = { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) };
-      GEO_CACHE[query] = result;
-      return result;
-    }
-    // Fall back to just the city if restaurant lookup fails
-    const cityUrl = `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(location)}`;
-    const cityRes = await fetch(cityUrl, { headers: { 'Accept-Language': 'en' } });
-    const cityData = await cityRes.json();
-    if (cityData.length) {
-      const result = { lat: parseFloat(cityData[0].lat), lng: parseFloat(cityData[0].lon) };
-      GEO_CACHE[query] = result;
-      return result;
-    }
-  } catch(e) { console.warn('Geocode failed for', query, e); }
-  GEO_CACHE[query] = null;
-  return null;
+    CITY_COORDS[location] = data.length
+      ? { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) }
+      : null;
+  } catch(e) {
+    console.warn('Geocode failed for', location, e);
+    CITY_COORDS[location] = null;
+  }
+  return CITY_COORDS[location];
 }
+
+// Small jitter so city-fallback pins don't all stack
+function jitter(v, amt = 0.004) { return v + (Math.random() - 0.5) * amt; }
 
 /* ═══════════════════════════════════════════════════════════
    MAP RENDER
+   Initial view: center on the city with the most reviews at
+   zoom 13 — leads with your strongest content. User can zoom
+   out to see other cities. City filter re-centers the map.
    ═══════════════════════════════════════════════════════════ */
 function initMap() {
   if (leafletMap) return;
+  // Default center Portland — will be overridden by renderMap
   leafletMap = L.map('leafletMap', { center: [45.523, -122.676], zoom: 13, zoomControl: true });
   L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
     attribution: '© <a href="https://www.openstreetmap.org/copyright">OSM</a> © <a href="https://carto.com/attributions">CARTO</a>',
@@ -574,24 +570,32 @@ function initMap() {
 async function renderMap(list) {
   initMap();
   markerLayer.clearLayers();
-  document.getElementById('count').textContent = 'Locating burgers…';
+  document.getElementById('count').textContent = 'Mapping…';
 
-  // Resolve coordinates: AUGMENTS first, then geocode
-  const resolved = await Promise.all(list.map(async r => {
-    if (r.lat && r.lng) return r; // already has coords from AUGMENTS
-    const geo = await geocode(r.restaurant, r.location);
-    if (!geo) return null;
-    return { ...r, lat: geo.lat, lng: geo.lng };
-  }));
+  // Geocode only unique cities not already cached
+  const cities = [...new Set(list.map(r => r.location))];
+  await Promise.all(cities.map(getCityCoords));
 
-  const mappable = resolved.filter(Boolean);
-  markerLayer.clearLayers();
+  const mappable = [];
 
-  mappable.forEach(r => {
-    const color = r.r === 3 ? '#39FF14' : r.r === 2 ? '#FFD000' : r.r === 0 ? '#555' : '#FF8C00';
-    const html  = `<div style="width:12px;height:12px;border-radius:50%;background:${color};border:2px solid #0d0900;"></div>`;
-    const icon  = L.divIcon({ html, className:'', iconSize:[12,12], iconAnchor:[6,6] });
-    const marker = L.marker([r.lat, r.lng], { icon });
+  list.forEach(r => {
+    let lat, lng;
+    if (r.lat && r.lng) {
+      // Real coords from AUGMENTS — use exactly
+      lat = r.lat; lng = r.lng;
+    } else if (CITY_COORDS[r.location]) {
+      // City-level fallback with jitter
+      lat = jitter(CITY_COORDS[r.location].lat);
+      lng = jitter(CITY_COORDS[r.location].lng);
+    } else {
+      return; // no coords at all, skip
+    }
+
+    const color  = r.r === 3 ? '#39FF14' : r.r === 2 ? '#FFD000' : r.r === 0 ? '#666' : '#FF8C00';
+    const size   = r.r === 3 ? 14 : 11; // Legendary pins slightly larger
+    const html   = `<div style="width:${size}px;height:${size}px;border-radius:50%;background:${color};border:2px solid #0d0900;margin:${(14-size)/2}px;"></div>`;
+    const icon   = L.divIcon({ html, className:'', iconSize:[14,14], iconAnchor:[7,7] });
+    const marker = L.marker([lat, lng], { icon });
 
     marker.bindPopup(`
       <div class="popup-name">${r.restaurant}</div>
@@ -602,14 +606,25 @@ async function renderMap(list) {
     `);
 
     markerLayer.addLayer(marker);
+    mappable.push({ lat, lng, location: r.location });
   });
 
-  const coords = mappable.map(r => [r.lat, r.lng]);
-  if (coords.length) leafletMap.fitBounds(coords, { padding: [40,40], maxZoom: 15 });
-  setTimeout(() => leafletMap.invalidateSize(), 50);
+  // Find the city with the most reviews in this filtered set
+  // and center there at zoom 13 — leads with strongest content
+  const cityCounts = {};
+  mappable.forEach(p => { cityCounts[p.location] = (cityCounts[p.location] || 0) + 1; });
+  const topCity = Object.entries(cityCounts).sort((a,b) => b[1]-a[1])[0];
 
+  if (topCity && CITY_COORDS[topCity[0]]) {
+    const c = CITY_COORDS[topCity[0]];
+    leafletMap.setView([c.lat, c.lng], 13, { animate: true });
+  } else if (mappable.length) {
+    leafletMap.fitBounds(mappable.map(p => [p.lat, p.lng]), { padding: [40,40], maxZoom: 14 });
+  }
+
+  setTimeout(() => leafletMap.invalidateSize(), 50);
   document.getElementById('count').textContent =
-    `${mappable.length} of ${list.length} burger${list.length !== 1 ? 's' : ''} mapped`;
+    `${mappable.length} burger${mappable.length !== 1 ? 's' : ''} mapped`;
 }
 
 /* ═══════════════════════════════════════════════════════════
