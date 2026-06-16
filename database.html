@@ -290,7 +290,7 @@ function jitter(v, amt = 0.0008) { return v + (Math.random() - 0.5) * amt; }
 
 async function geocodeRestaurant(name, location, delayMs = 0) {
   const key = `${name}, ${location}`;
-  if (GEO_CACHE[key] !== undefined) return GEO_CACHE[key];
+  if (GEO_CACHE[key]?.lat) return GEO_CACHE[key]; // only use cache if it has real coords
   if (delayMs > 0) await new Promise(r => setTimeout(r, delayMs));
   try {
     // Try restaurant + city first, fall back to city only
@@ -429,7 +429,7 @@ function buildCityFilters() {
 
   // In map view always show city row; in list view only when multiple cities
   if (cities.length <= 1 && currentView !== 'map') { row.style.display = 'none'; return; }
-  row.style.display = '';
+  row.style.display = 'flex';
 
   cities.forEach(city => {
     const btn = document.createElement('button');
@@ -540,7 +540,8 @@ async function renderMap(list) {
   document.getElementById('count').textContent = 'Mapping…';
 
   // Geocode only restaurants not in AUGMENTS and not yet cached
-  const needsGeocode = list.filter(r => !r.lat && GEO_CACHE[`${r.restaurant}, ${r.location}`] === undefined);
+  // Retry null cache entries — international cities may have failed on a previous attempt
+  const needsGeocode = list.filter(r => !r.lat && !GEO_CACHE[`${r.restaurant}, ${r.location}`]?.lat);
   for (let i = 0; i < needsGeocode.length; i++) {
     const r = needsGeocode[i];
     await geocodeRestaurant(r.restaurant, r.location, i > 0 ? 1100 : 0);
@@ -603,13 +604,13 @@ function setView(v) {
   const ratingRow = document.getElementById('rating-row');
 
   if (v === 'map') {
-    cityRow.style.display  = '';      // always show city on map
+    cityRow.style.display  = 'flex';  // always show city on map
     styleRow.style.display = 'none';  // style lives in popup on map
   } else {
     styleRow.style.display = '';
     // city row visibility handled by buildCityFilters
     if (document.querySelectorAll('#city-filters button').length > 1) {
-      cityRow.style.display = '';
+      cityRow.style.display = 'flex';
     }
   }
 
