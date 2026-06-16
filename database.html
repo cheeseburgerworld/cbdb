@@ -150,9 +150,9 @@ footer { border-top: 1px solid var(--afaint); background: var(--bg2); padding: 2
 </div>
 
 <!-- ROW 1: Rating + view toggle -->
-<div class="filter-bar">
+<div class="filter-bar" id="rating-row">
   <span class="filter-label">Rating</span>
-  <button class="fbtn fall on" onclick="setRating('all',this)">All</button>
+  <button class="fbtn fall on" onclick="setRating('all',this)">All ratings</button>
   <button class="fbtn f3"      onclick="setRating('3',this)">⭐⭐⭐ Legendary</button>
   <button class="fbtn f2"      onclick="setRating('2',this)">⭐⭐ Worth A Trip</button>
   <button class="fbtn f1"      onclick="setRating('1',this)">⭐ Solid</button>
@@ -163,10 +163,10 @@ footer { border-top: 1px solid var(--afaint); background: var(--bg2); padding: 2
   </div>
 </div>
 
-<!-- ROW 2: Style — always visible -->
-<div class="filter-bar">
+<!-- ROW 2: Style — visible in list view -->
+<div class="filter-bar" id="style-row">
   <span class="filter-label">Style</span>
-  <button class="fbtn fstyle on" onclick="setStyle('all',this)">All</button>
+  <button class="fbtn fstyle on" onclick="setStyle('all',this)">All styles</button>
   <button class="fbtn fstyle" onclick="setStyle('Smash',this)">Smash</button>
   <button class="fbtn fstyle" onclick="setStyle('Classic',this)">Classic</button>
   <button class="fbtn fstyle" onclick="setStyle('Pub/Tavern',this)">Pub/Tavern</button>
@@ -175,11 +175,11 @@ footer { border-top: 1px solid var(--afaint); background: var(--bg2); padding: 2
   <button class="fbtn fstyle" onclick="setStyle('Diner',this)">Diner</button>
 </div>
 
-<!-- ROW 3: City — hidden until multiple cities exist -->
+<!-- ROW 3: City — hidden in list view unless multiple cities; primary in map view -->
 <div class="filter-bar" id="city-row">
   <span class="filter-label">City</span>
   <div id="city-filters" style="display:flex;gap:6px;flex-wrap:wrap;">
-    <button class="fbtn fcity on" onclick="setCity('all',this)">All</button>
+    <button class="fbtn fcity on" onclick="setCity('all',this)">All cities</button>
   </div>
 </div>
 
@@ -427,8 +427,8 @@ function buildCityFilters() {
   // Remove any previously built city buttons (keep the All button)
   [...container.querySelectorAll('button:not(:first-child)')].forEach(b => b.remove());
 
-  // Only show the city row when there are multiple cities
-  if (cities.length <= 1) { row.style.display = 'none'; return; }
+  // In map view always show city row; in list view only when multiple cities
+  if (cities.length <= 1 && currentView !== 'map') { row.style.display = 'none'; return; }
   row.style.display = '';
 
   cities.forEach(city => {
@@ -595,6 +595,24 @@ function setView(v) {
   document.getElementById('mapView').style.display  = v === 'map'  ? 'block' : 'none';
   document.getElementById('listBtn').classList.toggle('on', v === 'list');
   document.getElementById('mapBtn').classList.toggle('on', v === 'map');
+
+  // Map view: city is the primary filter — show it always, hide style row (use popups instead)
+  // List view: rating + style shown; city row shows only if multiple cities exist
+  const cityRow   = document.getElementById('city-row');
+  const styleRow  = document.getElementById('style-row');
+  const ratingRow = document.getElementById('rating-row');
+
+  if (v === 'map') {
+    cityRow.style.display  = '';      // always show city on map
+    styleRow.style.display = 'none';  // style lives in popup on map
+  } else {
+    styleRow.style.display = '';
+    // city row visibility handled by buildCityFilters
+    if (document.querySelectorAll('#city-filters button').length > 1) {
+      cityRow.style.display = '';
+    }
+  }
+
   renderFiltered();
 }
 
