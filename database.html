@@ -12,24 +12,14 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { -webkit-text-size-adjust: 100%; }
 :root {
-  --bg:    #0d0900;
-  --bg2:   #110e08;
-  --amber: #FF8C00;
-  --afaint:#2a1e0a;
-  --green: #39FF14;
-  --gold:  #FFD000;
-  --w:     #ffffff;
-  --wd:    rgba(255,255,255,0.92);
+  --bg: #0d0900; --bg2: #110e08; --amber: #FF8C00; --afaint: #1e1408;
+  --green: #39FF14; --gold: #FFD000; --w: #ffffff; --wd: rgba(255,255,255,0.88);
   --fhead: 'Bebas Neue', 'Arial Black', Impact, sans-serif;
   --fbody: 'IBM Plex Mono', 'Courier New', monospace;
 }
-body { background: var(--bg); color: var(--w); font-family: var(--fbody); min-height: 100vh; }
-
-/* NAV */
 nav {
   position: sticky; top: 0; z-index: 200; height: 52px;
-  background: rgba(13,9,0,0.97);
-  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+  background: rgba(13,9,0,0.97); backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--afaint);
   display: flex; align-items: center; justify-content: space-between;
   padding: 0 20px; gap: 12px;
@@ -43,11 +33,9 @@ nav {
 .nav-links .pill { border: 1px solid var(--green); color: var(--green) !important; margin-left: 6px; }
 .nav-links .pill:hover { background: rgba(57,255,20,0.08); }
 @media (max-width: 580px) { .nav-links .hide { display: none; } }
-
-/* PAGE HEAD */
+body { background: var(--bg); color: var(--w); font-family: var(--fbody); min-height: 100vh; }
 .page-head {
-  padding: 28px 20px 20px;
-  max-width: 1100px; margin: 0 auto;
+  padding: 28px 20px 20px; max-width: 1100px; margin: 0 auto;
   border-bottom: 1px solid var(--afaint);
   display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap;
 }
@@ -56,11 +44,9 @@ nav {
 .live-badge { display: flex; align-items: center; gap: 6px; font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--green); padding-bottom: 4px; }
 .live-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: pulse 2s ease-in-out infinite; }
 @keyframes pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(57,255,20,.5); } 50% { box-shadow: 0 0 0 6px rgba(57,255,20,0); } }
-
 /* FILTER BAR */
 .filter-bar {
-  padding: 10px 20px;
-  max-width: 1100px; margin: 0 auto;
+  padding: 10px 20px; max-width: 1100px; margin: 0 auto;
   display: flex; gap: 6px; flex-wrap: wrap; align-items: center;
   border-bottom: 1px solid var(--afaint);
 }
@@ -73,20 +59,13 @@ nav {
 }
 .fbtn:hover { border-color: rgba(255,255,255,0.3); color: var(--w); }
 .fbtn.on { font-weight: 700; }
-/* Rating colors */
-.fall.on  { background: var(--amber);  border-color: var(--amber);  color: #0d0900; }
-.f3.on    { background: #39FF14;       border-color: #39FF14;       color: #0d0900; }
-.f2.on    { background: #FFD000;       border-color: #FFD000;       color: #0d0900; }
-.f1.on    { background: #FF8C00;       border-color: #FF8C00;       color: #0d0900; }
-.f0.on    { background: #333;          border-color: #555;          color: #999; }
-/* Style + city */
+.fall.on  { background: var(--amber); border-color: var(--amber); color: #0d0900; }
+.f3.on    { background: #39FF14; border-color: #39FF14; color: #0d0900; }
+.f2.on    { background: #FFD000; border-color: #FFD000; color: #0d0900; }
+.f1.on    { background: #FF8C00; border-color: #FF8C00; color: #0d0900; }
+.f0.on    { background: #333; border-color: #555; color: #999; }
 .fstyle.on { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.4); color: var(--w); }
 .fcity.on  { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.4); color: var(--w); }
-/* Burger Week */
-.fbw { border-color: var(--amber) !important; color: var(--amber) !important; }
-.fbw.on { background: var(--amber) !important; color: #0d0900 !important; }
-
-/* VIEW TOGGLE */
 .view-toggle { display: flex; gap: 4px; margin-left: auto; }
 .vtbtn {
   font-family: var(--fbody); font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase;
@@ -94,28 +73,23 @@ nav {
   padding: 5px 10px; cursor: pointer; transition: all 0.15s;
 }
 .vtbtn.on { border-color: rgba(255,255,255,0.4); color: var(--w); background: rgba(255,255,255,0.06); }
-
-/* RESULT COUNT */
+/* city row hidden until multiple cities exist */
+#city-row { display: none; }
+/* GRID */
 .grid-wrap { padding: 16px 20px 40px; max-width: 1100px; margin: 0 auto; }
 .result-count { font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,0.45); margin-bottom: 14px; }
-
-/* GRID */
 .grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; }
 @media (max-width: 840px) { .grid { grid-template-columns: repeat(2,1fr); } }
 @media (max-width: 480px) { .grid { grid-template-columns: 1fr; } }
-
 /* CARD */
 .card { background: var(--bg2); border: 1px solid var(--afaint); display: flex; flex-direction: column; overflow: hidden; transition: transform 0.18s, border-color 0.18s; }
 .card:hover { transform: translateY(-2px); border-color: #3a2800; }
 .card-img { height: 220px; background: #0a0700; display: flex; align-items: center; justify-content: center; font-size: 48px; position: relative; overflow: hidden; flex-shrink: 0; }
 .card-img img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .stamp { position: absolute; top: 0; left: 0; font-family: var(--fhead); font-size: 11px; letter-spacing: 2px; padding: 4px 10px; z-index: 1; line-height: 1.3; text-transform: uppercase; }
-.s3 { background: #39FF14; color: #0d0900; }
-.s2 { background: #FFD000; color: #0d0900; }
-.s1 { background: #FF8C00; color: #0d0900; }
-.s0 { background: #1a1a1a; color: #666; border-bottom: 1px solid #2a2a2a; border-right: 1px solid #2a2a2a; }
-.bw-badge { position: absolute; top: 0; right: 0; background: var(--amber); color: #0d0900; font-family: var(--fhead); font-size: 9px; letter-spacing: 1px; padding: 4px 8px; z-index: 1; }
-.style-tag { position: absolute; bottom: 0; right: 0; background: rgba(13,9,0,0.82); color: rgba(255,255,255,0.6); font-size: 8px; letter-spacing: 2px; text-transform: uppercase; padding: 3px 8px; }
+.s3 { background: #39FF14; color: #0d0900; } .s2 { background: #FFD000; color: #0d0900; }
+.s1 { background: #FF8C00; color: #0d0900; } .s0 { background: #1a1a1a; color: #666; }
+.style-tag { position: absolute; bottom: 0; right: 0; background: rgba(13,9,0,0.82); color: rgba(255,255,255,0.5); font-size: 8px; letter-spacing: 2px; text-transform: uppercase; padding: 3px 7px; }
 .card-body { padding: 12px 14px 14px; display: flex; flex-direction: column; flex: 1; }
 .card-name { font-family: var(--fhead); font-size: 19px; letter-spacing: 2px; line-height: 1; margin-bottom: 3px; color: var(--w); }
 .card-loc { font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,0.45); margin-bottom: 10px; }
@@ -126,26 +100,16 @@ nav {
 .card-handle:hover { text-decoration: underline; }
 .card-price { border: 1px solid var(--afaint); color: rgba(255,255,255,0.45); padding: 2px 5px; font-size: 8px; letter-spacing: 2px; flex-shrink: 0; }
 .card-date { color: rgba(255,255,255,0.4); flex-shrink: 0; }
-
-/* MAP VIEW */
+/* MAP */
 #mapView { display: none; }
 #leafletMap { width: 100%; height: calc(100vh - 160px); min-height: 400px; }
-
-/* Leaflet popup overrides */
-.leaflet-popup-content-wrapper {
-  background: #110e08 !important; border: 1px solid #FF8C00 !important;
-  border-radius: 0 !important; box-shadow: none !important;
-  color: rgba(255,255,255,0.92) !important; font-family: 'IBM Plex Mono', monospace !important; font-size: 12px !important;
-}
+.leaflet-popup-content-wrapper { background: #110e08 !important; border: 1px solid #FF8C00 !important; border-radius: 0 !important; box-shadow: none !important; color: rgba(255,255,255,0.92) !important; font-family: 'IBM Plex Mono',monospace !important; font-size: 12px !important; }
 .leaflet-popup-tip { background: #110e08 !important; }
 .leaflet-popup-content { margin: 12px 16px !important; }
-.popup-name { font-family: 'Bebas Neue', sans-serif; font-size: 16px; letter-spacing: 2px; color: #fff; margin-bottom: 4px; }
+.popup-name { font-family: 'Bebas Neue',sans-serif; font-size: 16px; letter-spacing: 2px; color: #fff; margin-bottom: 4px; }
 .popup-rating { font-size: 11px; margin-bottom: 3px; }
 .popup-meta { font-size: 10px; color: rgba(255,255,255,0.5); margin-bottom: 2px; }
 .popup-link { font-size: 10px; color: #39FF14; text-decoration: none; display: block; margin-top: 6px; }
-.popup-link:hover { text-decoration: underline; }
-.popup-bw { font-size: 10px; color: #FF8C00; margin-top: 4px; }
-
 /* STATES */
 .state { grid-column: 1/-1; padding: 60px 20px; text-align: center; }
 .state-icon { font-size: 40px; margin-bottom: 16px; line-height: 1; }
@@ -155,8 +119,6 @@ nav {
 .spinner { grid-column: 1/-1; display: flex; flex-direction: column; align-items: center; gap: 16px; padding: 60px 20px; font-size: 11px; letter-spacing: 2px; color: rgba(255,255,255,0.35); }
 .spinner-ring { width: 32px; height: 32px; border: 2px solid var(--afaint); border-top-color: var(--amber); border-radius: 50%; animation: spin 0.8s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
-
-/* FOOTER */
 footer { border-top: 1px solid var(--afaint); background: var(--bg2); padding: 28px 24px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px; margin-top: 40px; }
 .footer-logo { font-family: var(--fhead); font-size: 20px; letter-spacing: 3px; color: var(--amber); line-height: 1; }
 .footer-right { display: flex; align-items: center; gap: 10px; font-size: 9px; letter-spacing: 1px; color: rgba(255,255,255,0.65); flex-wrap: wrap; }
@@ -187,7 +149,7 @@ footer { border-top: 1px solid var(--afaint); background: var(--bg2); padding: 2
   <div class="live-badge"><div class="live-dot"></div>Live</div>
 </div>
 
-<!-- FILTER ROW 1: Rating + BW + View toggle -->
+<!-- ROW 1: Rating + view toggle -->
 <div class="filter-bar">
   <span class="filter-label">Rating</span>
   <button class="fbtn fall on" onclick="setRating('all',this)">All</button>
@@ -195,16 +157,14 @@ footer { border-top: 1px solid var(--afaint); background: var(--bg2); padding: 2
   <button class="fbtn f2"      onclick="setRating('2',this)">⭐⭐ Worth A Trip</button>
   <button class="fbtn f1"      onclick="setRating('1',this)">⭐ Solid</button>
   <button class="fbtn f0"      onclick="setRating('0',this)">ㄨ Skip It</button>
-  <div class="filter-sep"></div>
-  <button class="fbtn fbw" id="bwBtn" onclick="toggleBW(this)" style="display:none">🗓 Burger Week</button>
   <div class="view-toggle">
     <button class="vtbtn on" id="listBtn" onclick="setView('list')">☰ List</button>
     <button class="vtbtn"    id="mapBtn"  onclick="setView('map')">◎ Map</button>
   </div>
 </div>
 
-<!-- FILTER ROW 2: Style + City -->
-<div class="filter-bar" id="city-row">
+<!-- ROW 2: Style — always visible -->
+<div class="filter-bar">
   <span class="filter-label">Style</span>
   <button class="fbtn fstyle on" onclick="setStyle('all',this)">All</button>
   <button class="fbtn fstyle" onclick="setStyle('Smash',this)">Smash</button>
@@ -213,8 +173,10 @@ footer { border-top: 1px solid var(--afaint); background: var(--bg2); padding: 2
   <button class="fbtn fstyle" onclick="setStyle('Fast Food',this)">Fast Food</button>
   <button class="fbtn fstyle" onclick="setStyle('Bistro',this)">Bistro</button>
   <button class="fbtn fstyle" onclick="setStyle('Diner',this)">Diner</button>
-  <button class="fbtn fstyle" onclick="setStyle('Sliders',this)">Sliders</button>
-  <div class="filter-sep"></div>
+</div>
+
+<!-- ROW 3: City — hidden until multiple cities exist -->
+<div class="filter-bar" id="city-row">
   <span class="filter-label">City</span>
   <div id="city-filters" style="display:flex;gap:6px;flex-wrap:wrap;">
     <button class="fbtn fcity on" onclick="setCity('all',this)">All</button>
@@ -248,9 +210,7 @@ footer { border-top: 1px solid var(--afaint); background: var(--bg2); padding: 2
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script>
 
-/* ═══════════════════════════════════════════════════════════
-   APPROVED CONTRIBUTORS
-   ═══════════════════════════════════════════════════════════ */
+/* ── APPROVED CONTRIBUTORS ───────────────────────────────── */
 const APPROVED = new Set([
   'cheeseburger.world',
   'ash.cheeseburger.world',
@@ -260,88 +220,106 @@ const APPROVED = new Set([
   'hacer.bsky.social',
 ]);
 
-/* ═══════════════════════════════════════════════════════════
-   AUGMENTATION LAYER
-   Metadata that can't come from Bluesky posts: coordinates,
-   style override, Burger Week flag.
-   Key = restaurant name (lowercase, spaces ok — matched case-insensitively).
-   To add Burger Week entries in August: set burger_week: true here.
-   ═══════════════════════════════════════════════════════════ */
+/* ── AUGMENTS ────────────────────────────────────────────────
+   Manual lat/lng for known restaurants. Key = restaurant name
+   from the post, lowercased exactly. Anything not listed here
+   gets geocoded automatically via Nominatim and cached in
+   localStorage so it only runs once per browser.
+   To add: right-click a pin in Google Maps → copy coordinates.
+   ─────────────────────────────────────────────────────────── */
 const AUGMENTS = {
-  // ── LIVE REVIEWS ──────────────────────────────────────────
-  // 2105 N Killingsworth St (North Portland)
-  'the old gold':        { lat: 45.5629, lng: -122.6892, burger_week: false },
-  // 3155 E Burnside St (Kerns/SE)
-  'laurelhurst market':  { lat: 45.5232, lng: -122.6320, burger_week: false },
-  // 8150 SW Swede Hill Dr (West Hills)
-  'amaterra winery':     { lat: 45.5164, lng: -122.7594, burger_week: false },
-  // 3944 N Williams Ave (Boise/North Portland)
-  "lo's burgers":       { lat: 45.5560, lng: -122.6700, burger_week: false },
-  // 627 SE Morrison St (Buckman/SE)
-  "creepy's":           { lat: 45.5174, lng: -122.6590, burger_week: false },
-  // 1233 N Killingsworth St (North Portland)
-  'haymaker bar':        { lat: 45.5628, lng: -122.6868, burger_week: false },
-  // 1016 W Burnside St (West End/Downtown)
-  'shake shack':         { lat: 45.5235, lng: -122.6835, burger_week: false },
-  // 825 N Killingsworth St (Humboldt/North Portland)
-  'tulip shop tavern':   { lat: 45.5628, lng: -122.6756, burger_week: true  },
-  // 5013 NE 42nd Ave at Oakshire Brewing (Concordia/NE)
-  'sure shot burger':    { lat: 45.5592, lng: -122.6206, burger_week: false },
+  // Portland, OR — verified street addresses
+  'the old gold':       { lat: 45.5629, lng: -122.6892 },
+  'laurelhurst market': { lat: 45.5232, lng: -122.6320 },
+  'amaterra winery':    { lat: 45.5164, lng: -122.7594 },
+  "lo's burgers":       { lat: 45.5560, lng: -122.6700 },
+  "creepy's":           { lat: 45.5174, lng: -122.6590 },
+  'haymaker bar':       { lat: 45.5628, lng: -122.6868 },
+  'shake shack':        { lat: 45.5235, lng: -122.6835 },
+  'tulip shop tavern':  { lat: 45.5628, lng: -122.6756 },
+  'sure shot burger':   { lat: 45.5592, lng: -122.6206 },
 };
 
 function getAug(name) {
   return AUGMENTS[(name || '').toLowerCase().trim()] || {};
 }
 
-/* ═══════════════════════════════════════════════════════════
-   STYLE CLASSIFIER
-   Runs against review text. Returns a style string.
-   ═══════════════════════════════════════════════════════════ */
+/* ── STYLE CLASSIFIER ────────────────────────────────────── */
 function classifyStyle(notes) {
   const t = (notes || '').toLowerCase();
-  if (/smash|smashed|griddle.smash|thin.crisp|flat.top|lacy.edge/.test(t))  return 'Smash';
-  if (/tavern|pub burger|bar burger|neighborhood bar|draft/.test(t))          return 'Pub/Tavern';
-  if (/drive.in|drive.thru|fast food|chain|counter service|car hop/.test(t)) return 'Fast Food';
+  if (/smash|smashed|griddle.smash|thin.crisp|flat.top|lacy.edge/.test(t)) return 'Smash';
+  if (/tavern|pub burger|bar burger|neighborhood bar|draft/.test(t))         return 'Pub/Tavern';
+  if (/drive.in|drive.thru|fast food|chain|counter service/.test(t))         return 'Fast Food';
   if (/bistro|white tablecloth|wagyu|truffle|fine dining|upscale/.test(t))   return 'Bistro';
-  if (/slider|sliders|small format|mini burger/.test(t))                     return 'Sliders';
-  if (/diner|short order|greasy spoon|24.hour/.test(t))                      return 'Diner';
+  if (/diner|short order|greasy spoon/.test(t))                               return 'Diner';
   return 'Classic';
 }
 
-/* ═══════════════════════════════════════════════════════════
-   CONSTANTS
-   ═══════════════════════════════════════════════════════════ */
-const BSKY_API   = 'https://public.api.bsky.app/xrpc';
+/* ── CONSTANTS ───────────────────────────────────────────── */
+const BSKY_API    = 'https://public.api.bsky.app/xrpc';
 const FETCH_LIMIT = 100;
-const LABEL      = { 3:'⭐⭐⭐ Legendary', 2:'⭐⭐ Worth A Trip', 1:'⭐ Solid', 0:'ㄨ Skip It' };
-const STAMP_CLS  = { 3:'s3', 2:'s2', 1:'s1', 0:'s0' };
+const LABEL       = { 3:'⭐⭐⭐ Legendary', 2:'⭐⭐ Worth A Trip', 1:'⭐ Solid', 0:'ㄨ Skip It' };
+const STAMP_CLS   = { 3:'s3', 2:'s2', 1:'s1', 0:'s0' };
 
-/* ═══════════════════════════════════════════════════════════
-   STATE
-   ═══════════════════════════════════════════════════════════ */
+/* ── STATE ───────────────────────────────────────────────── */
 let ALL_REVIEWS  = [];
 let activeRating = 'all';
 let activeStyle  = 'all';
 let activeCity   = 'all';
-let burgerWeek   = false;
 let currentView  = 'list';
 let leafletMap   = null;
 let markerLayer  = null;
 
-/* ═══════════════════════════════════════════════════════════
-   FETCH + PARSE
-   ═══════════════════════════════════════════════════════════ */
+/* ── GEO CACHE (localStorage) ───────────────────────────────
+   Geocodes each restaurant exactly once per browser.
+   Key: "Restaurant Name, City, ST"
+   Value: { lat, lng } or null (failed lookup)
+   ─────────────────────────────────────────────────────────── */
+const GEO_KEY = 'cbdb_geo_v1';
+const GEO_CACHE = (() => {
+  try { return JSON.parse(localStorage.getItem(GEO_KEY) || '{}'); }
+  catch(e) { return {}; }
+})();
+
+function saveGeoCache() {
+  try { localStorage.setItem(GEO_KEY, JSON.stringify(GEO_CACHE)); }
+  catch(e) {}
+}
+
+function jitter(v, amt = 0.0008) { return v + (Math.random() - 0.5) * amt; }
+
+async function geocodeRestaurant(name, location, delayMs = 0) {
+  const key = `${name}, ${location}`;
+  if (GEO_CACHE[key] !== undefined) return GEO_CACHE[key];
+  if (delayMs > 0) await new Promise(r => setTimeout(r, delayMs));
+  try {
+    // Try restaurant + city first, fall back to city only
+    for (const q of [`${name}, ${location}`, location]) {
+      const res  = await fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(q)}`, { headers: { 'Accept-Language': 'en' } });
+      const data = await res.json();
+      if (data.length) {
+        const coords = { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) };
+        GEO_CACHE[key] = coords;
+        saveGeoCache();
+        return coords;
+      }
+    }
+  } catch(e) { console.warn('Geocode failed:', key, e); }
+  GEO_CACHE[key] = null;
+  saveGeoCache();
+  return null;
+}
+
+/* ── FETCH + PARSE ───────────────────────────────────────── */
 async function loadReviews() {
   ALL_REVIEWS = [];
   const errors = [];
 
   await Promise.all([...APPROVED].map(async handle => {
     try {
-      const url = `${BSKY_API}/app.bsky.feed.getAuthorFeed?actor=${encodeURIComponent(handle)}&limit=${FETCH_LIMIT}&filter=posts_no_replies`;
-      const res = await fetch(url);
-      if (!res.ok) throw new Error(`HTTP ${res.status} for ${handle}`);
+      const res  = await fetch(`${BSKY_API}/app.bsky.feed.getAuthorFeed?actor=${encodeURIComponent(handle)}&limit=${FETCH_LIMIT}&filter=posts_no_replies`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
-
       for (const item of (data.feed || [])) {
         const post = item.post;
         if (!post) continue;
@@ -363,7 +341,6 @@ async function loadReviews() {
           postUrl:     buildPostUrl(post.author?.handle || handle, post.uri),
           lat:         aug.lat || null,
           lng:         aug.lng || null,
-          burger_week: aug.burger_week || false,
           _ts:         post.record?.createdAt || '',
         });
       }
@@ -435,18 +412,22 @@ function formatDate(iso) {
   return new Date(iso).toLocaleDateString('en-US', { month:'short', year:'numeric' });
 }
 
-/* ═══════════════════════════════════════════════════════════
-   FILTERS
-   ═══════════════════════════════════════════════════════════ */
+function showError(err) {
+  console.error(err);
+  document.getElementById('count').textContent = '';
+  document.getElementById('grid').innerHTML = `<div class="state"><div class="state-icon">⚠️</div><div class="state-title">COULD NOT LOAD</div><div class="state-body">Could not connect to Bluesky.<br><a href="https://bsky.app/hashtag/CBDB" target="_blank">View #CBDB on Bluesky →</a></div></div>`;
+}
+
+/* ── FILTERS ─────────────────────────────────────────────── */
 function buildCityFilters() {
   const cities = [...new Set(ALL_REVIEWS.map(r => r.location))].sort();
-  const row = document.getElementById('city-row');
+  const row       = document.getElementById('city-row');
   const container = document.getElementById('city-filters');
 
-  // Clear any previously appended city buttons (keep the hardcoded All button)
-  [...container.querySelectorAll('.fcity:not([onclick*="all"])')].forEach(b => b.remove());
+  // Remove any previously built city buttons (keep the All button)
+  [...container.querySelectorAll('button:not(:first-child)')].forEach(b => b.remove());
 
-  // Hide row entirely when only one city — no noise
+  // Only show the city row when there are multiple cities
   if (cities.length <= 1) { row.style.display = 'none'; return; }
   row.style.display = '';
 
@@ -478,24 +459,17 @@ function setCity(val, btn) {
   document.querySelectorAll('.fcity').forEach(b => b.classList.remove('on'));
   btn.classList.add('on');
   renderFiltered();
-  // In map view, re-center on selected city
-  if (currentView === 'map' && val !== 'all' && leafletMap) {
-    const pins = ALL_REVIEWS.filter(r => r.location === val && (r.lat || GEO_CACHE[r.restaurant + ', ' + r.location]));
-    if (pins.length) {
-      const coords = pins.map(r => {
+  // In map view, fly to that city's pins
+  if (currentView === 'map' && leafletMap && val !== 'all') {
+    const pins = ALL_REVIEWS
+      .filter(r => r.location === val)
+      .map(r => {
         if (r.lat) return [r.lat, r.lng];
-        const c = GEO_CACHE[r.restaurant + ', ' + r.location];
+        const c = GEO_CACHE[`${r.restaurant}, ${r.location}`];
         return c ? [c.lat, c.lng] : null;
       }).filter(Boolean);
-      if (coords.length) leafletMap.fitBounds(coords, { padding: [60,60], maxZoom: 14, animate: true });
-    }
+    if (pins.length) leafletMap.fitBounds(pins, { padding:[60,60], maxZoom:14, animate:true });
   }
-}
-
-function toggleBW(btn) {
-  burgerWeek = !burgerWeek;
-  btn.classList.toggle('on', burgerWeek);
-  renderFiltered();
 }
 
 function filtered() {
@@ -503,7 +477,6 @@ function filtered() {
     if (activeRating !== 'all' && String(r.r) !== activeRating) return false;
     if (activeStyle  !== 'all' && r.style !== activeStyle)       return false;
     if (activeCity   !== 'all' && r.location !== activeCity)     return false;
-    if (burgerWeek   && !r.burger_week)                          return false;
     return true;
   });
 }
@@ -514,32 +487,25 @@ async function renderFiltered() {
   else await renderMap(list);
 }
 
-/* ═══════════════════════════════════════════════════════════
-   LIST RENDER
-   ═══════════════════════════════════════════════════════════ */
+/* ── LIST RENDER ─────────────────────────────────────────── */
 function renderList(list) {
   const grid  = document.getElementById('grid');
   const count = document.getElementById('count');
-
   if (ALL_REVIEWS.length === 0) {
     count.textContent = '';
-    grid.innerHTML = `<div class="state"><div class="state-icon">🍔</div><div class="state-title">NO REVIEWS YET</div><div class="state-body">Nothing indexed yet. <a href="/format.html">Read the format guide →</a></div></div>`;
+    grid.innerHTML = `<div class="state"><div class="state-icon">🍔</div><div class="state-title">NO REVIEWS YET</div><div class="state-body">Nothing here yet.<br><a href="/format.html">Read the format guide →</a></div></div>`;
     return;
   }
-
   count.textContent = `${list.length} review${list.length !== 1 ? 's' : ''}`;
-
   if (!list.length) {
     grid.innerHTML = `<div class="state"><div class="state-body">No reviews match — try a different filter.</div></div>`;
     return;
   }
-
   grid.innerHTML = list.map(r => `
     <div class="card">
       <div class="card-img">
         ${r.imageUrl ? `<img src="${r.imageUrl}" alt="${r.restaurant}" loading="lazy">` : '🍔'}
         <div class="stamp ${STAMP_CLS[r.r]}">${LABEL[r.r]}</div>
-        ${r.burger_week ? `<div class="bw-badge">Burger Week</div>` : ''}
         <div class="style-tag">${r.style}</div>
       </div>
       <div class="card-body">
@@ -557,75 +523,13 @@ function renderList(list) {
   `).join('');
 }
 
-/* ═══════════════════════════════════════════════════════════
-   GEOCODING — restaurant-level, localStorage-cached
-   Priority: AUGMENTS (manual, exact) → localStorage (cached)
-   → Nominatim (first-time lookup, then stored forever).
-
-   localStorage key: cbdb_geo_v1
-   Value: { "Restaurant Name, City, ST": { lat, lng } }
-
-   A new restaurant is geocoded exactly once per browser.
-   Subsequent visits — including filter changes — are instant.
-   The cache never expires; it only grows.
-
-   When you hit ~100 restaurants or want cross-device sync,
-   replace this with a Supabase geocache table + Netlify Function.
-   ═══════════════════════════════════════════════════════════ */
-const GEO_STORE_KEY = 'cbdb_geo_v1';
-const GEO_CACHE = (() => {
-  try { return JSON.parse(localStorage.getItem(GEO_STORE_KEY) || '{}'); }
-  catch(e) { return {}; }
-})();
-
-function saveGeoCache() {
-  try { localStorage.setItem(GEO_STORE_KEY, JSON.stringify(GEO_CACHE)); }
-  catch(e) { /* storage full or blocked — no-op */ }
-}
-
-// Geocode a single restaurant; rate-limited to 1 req/sec via delay param
-async function geocodeRestaurant(name, location, delayMs = 0) {
-  const key = `${name}, ${location}`;
-  if (GEO_CACHE[key] !== undefined) return GEO_CACHE[key]; // cache hit
-
-  if (delayMs > 0) await new Promise(r => setTimeout(r, delayMs));
-
-  try {
-    // Try specific restaurant first, fall back to city only
-    for (const query of [`${name}, ${location}`, location]) {
-      const url = `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(query)}`;
-      const res  = await fetch(url, { headers: { 'Accept-Language': 'en' } });
-      const data = await res.json();
-      if (data.length) {
-        const coords = { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) };
-        GEO_CACHE[key] = coords;
-        saveGeoCache();
-        return coords;
-      }
-    }
-  } catch(e) { console.warn('Geocode failed for', key, e); }
-
-  GEO_CACHE[key] = null;
-  saveGeoCache();
-  return null;
-}
-
-// Small jitter so stacked pins (same address, different reviews) spread out
-function jitter(v, amt = 0.0008) { return v + (Math.random() - 0.5) * amt; }
-
-/* ═══════════════════════════════════════════════════════════
-   MAP RENDER
-   Initial view: center on the city with the most reviews at
-   zoom 13 — leads with your strongest content. User can zoom
-   out to see other cities. City filter re-centers the map.
-   ═══════════════════════════════════════════════════════════ */
+/* ── MAP RENDER ──────────────────────────────────────────── */
 function initMap() {
   if (leafletMap) return;
-  // Default center Portland — will be overridden by renderMap
-  leafletMap = L.map('leafletMap', { center: [45.523, -122.676], zoom: 13, zoomControl: true });
+  leafletMap = L.map('leafletMap', { center:[45.523,-122.676], zoom:13 });
   L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-    attribution: '© <a href="https://www.openstreetmap.org/copyright">OSM</a> © <a href="https://carto.com/attributions">CARTO</a>',
-    subdomains: 'abcd', maxZoom: 19
+    attribution:'© <a href="https://www.openstreetmap.org/copyright">OSM</a> © <a href="https://carto.com/attributions">CARTO</a>',
+    subdomains:'abcd', maxZoom:19
   }).addTo(leafletMap);
   markerLayer = L.layerGroup().addTo(leafletMap);
 }
@@ -635,36 +539,27 @@ async function renderMap(list) {
   markerLayer.clearLayers();
   document.getElementById('count').textContent = 'Mapping…';
 
-  // Resolve coords for every review:
-  // 1. AUGMENTS (manual, exact) — instant
-  // 2. localStorage cache — instant after first visit
-  // 3. Nominatim geocode — only for new restaurants, rate-limited to 1/sec
-  const needsGeocode = list.filter(r => !r.lat && !r.lng && !GEO_CACHE[`${r.restaurant}, ${r.location}`]);
+  // Geocode only restaurants not in AUGMENTS and not yet cached
+  const needsGeocode = list.filter(r => !r.lat && GEO_CACHE[`${r.restaurant}, ${r.location}`] === undefined);
   for (let i = 0; i < needsGeocode.length; i++) {
     const r = needsGeocode[i];
     await geocodeRestaurant(r.restaurant, r.location, i > 0 ? 1100 : 0);
   }
 
-  const mappable = [];
-
+  const pins = [];
   list.forEach(r => {
     let lat, lng;
     if (r.lat && r.lng) {
-      // AUGMENTS — exact placement, no jitter
-      lat = r.lat; lng = r.lng;
+      lat = r.lat; lng = r.lng; // AUGMENTS — exact
     } else {
-      const cached = GEO_CACHE[`${r.restaurant}, ${r.location}`];
-      if (!cached) return;
-      // Geocoded — tiny jitter so same-block restaurants don't stack
-      lat = jitter(cached.lat); lng = jitter(cached.lng);
+      const c = GEO_CACHE[`${r.restaurant}, ${r.location}`];
+      if (!c) return;
+      lat = jitter(c.lat); lng = jitter(c.lng); // geocoded — tiny jitter
     }
-
     const color = r.r === 3 ? '#39FF14' : r.r === 2 ? '#FFD000' : r.r === 0 ? '#666' : '#FF8C00';
     const size  = r.r === 3 ? 14 : 11;
-    const html  = `<div style="width:${size}px;height:${size}px;border-radius:50%;background:${color};border:2px solid #0d0900;margin:${(14-size)/2}px;"></div>`;
-    const icon  = L.divIcon({ html, className:'', iconSize:[14,14], iconAnchor:[7,7] });
-    const marker = L.marker([lat, lng], { icon });
-
+    const html  = `<div style="width:${size}px;height:${size}px;border-radius:50%;background:${color};border:2px solid #0d0900;margin:${(14-size)/2}px"></div>`;
+    const marker = L.marker([lat, lng], { icon: L.divIcon({ html, className:'', iconSize:[14,14], iconAnchor:[7,7] }) });
     marker.bindPopup(`
       <div class="popup-name">${r.restaurant}</div>
       <div class="popup-rating">${LABEL[r.r]}</div>
@@ -672,34 +567,28 @@ async function renderMap(list) {
       <div class="popup-meta">${r.style}</div>
       <a class="popup-link" href="${r.postUrl}" target="_blank" rel="noopener">View on Bluesky →</a>
     `);
-
     markerLayer.addLayer(marker);
-    mappable.push({ lat, lng, location: r.location });
+    pins.push({ lat, lng, location: r.location });
   });
 
-  // Center on city with most reviews at zoom 13
-  const cityCounts = {};
-  mappable.forEach(p => { cityCounts[p.location] = (cityCounts[p.location] || 0) + 1; });
-  const topCity = Object.entries(cityCounts).sort((a,b) => b[1]-a[1])[0];
-
-  if (topCity) {
-    // Use the centroid of that city's pins rather than a separate geocode call
-    const cityPins = mappable.filter(p => p.location === topCity[0]);
-    const avgLat = cityPins.reduce((s,p) => s + p.lat, 0) / cityPins.length;
-    const avgLng = cityPins.reduce((s,p) => s + p.lng, 0) / cityPins.length;
+  // Center on city with most pins, zoom 13
+  const counts = {};
+  pins.forEach(p => { counts[p.location] = (counts[p.location] || 0) + 1; });
+  const top = Object.entries(counts).sort((a,b) => b[1]-a[1])[0];
+  if (top) {
+    const cityPins = pins.filter(p => p.location === top[0]);
+    const avgLat = cityPins.reduce((s,p) => s+p.lat, 0) / cityPins.length;
+    const avgLng = cityPins.reduce((s,p) => s+p.lng, 0) / cityPins.length;
     leafletMap.setView([avgLat, avgLng], 13, { animate: true });
-  } else if (mappable.length) {
-    leafletMap.fitBounds(mappable.map(p => [p.lat, p.lng]), { padding: [40,40], maxZoom: 14 });
+  } else if (pins.length) {
+    leafletMap.fitBounds(pins.map(p => [p.lat, p.lng]), { padding:[40,40], maxZoom:14 });
   }
 
   setTimeout(() => leafletMap.invalidateSize(), 50);
-  document.getElementById('count').textContent =
-    `${mappable.length} burger${mappable.length !== 1 ? 's' : ''} mapped`;
+  document.getElementById('count').textContent = `${pins.length} burger${pins.length !== 1 ? 's' : ''} mapped`;
 }
 
-/* ═══════════════════════════════════════════════════════════
-   VIEW SWITCHING
-   ═══════════════════════════════════════════════════════════ */
+/* ── VIEW SWITCHING ──────────────────────────────────────── */
 function setView(v) {
   currentView = v;
   document.getElementById('listView').style.display = v === 'list' ? 'block' : 'none';
@@ -707,18 +596,6 @@ function setView(v) {
   document.getElementById('listBtn').classList.toggle('on', v === 'list');
   document.getElementById('mapBtn').classList.toggle('on', v === 'map');
   renderFiltered();
-}
-
-function showError(err) {
-  console.error(err);
-  document.getElementById('count').textContent = '';
-  document.getElementById('grid').innerHTML = `
-    <div class="state">
-      <div class="state-icon">⚠️</div>
-      <div class="state-title">COULD NOT LOAD</div>
-      <div class="state-body">Could not connect to Bluesky. Check your connection and try again.<br><br>
-      <a href="https://bsky.app/hashtag/CBDB" target="_blank">View #CBDB on Bluesky →</a></div>
-    </div>`;
 }
 
 loadReviews();
