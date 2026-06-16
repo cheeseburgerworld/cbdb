@@ -474,10 +474,10 @@ function filtered() {
   });
 }
 
-function renderFiltered() {
+async function renderFiltered() {
   const list = filtered();
   if (currentView === 'list') renderList(list);
-  else renderMap(list);
+  else await renderMap(list);
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -524,6 +524,41 @@ function renderList(list) {
 }
 
 /* ═══════════════════════════════════════════════════════════
+   GEOCODING
+   Uses Nominatim to resolve "Restaurant Name, City, ST" to
+   lat/lng. Results cached in memory for the session.
+   AUGMENTS coordinates take priority when present.
+   ═══════════════════════════════════════════════════════════ */
+const GEO_CACHE = {};
+
+async function geocode(restaurant, location) {
+  // Build query: "Restaurant Name, City, ST" gives best results
+  const query = `${restaurant}, ${location}`;
+  if (GEO_CACHE[query] !== undefined) return GEO_CACHE[query];
+  try {
+    const url = `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(query)}`;
+    const res = await fetch(url, { headers: { 'Accept-Language': 'en' } });
+    const data = await res.json();
+    if (data.length) {
+      const result = { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) };
+      GEO_CACHE[query] = result;
+      return result;
+    }
+    // Fall back to just the city if restaurant lookup fails
+    const cityUrl = `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(location)}`;
+    const cityRes = await fetch(cityUrl, { headers: { 'Accept-Language': 'en' } });
+    const cityData = await cityRes.json();
+    if (cityData.length) {
+      const result = { lat: parseFloat(cityData[0].lat), lng: parseFloat(cityData[0].lon) };
+      GEO_CACHE[query] = result;
+      return result;
+    }
+  } catch(e) { console.warn('Geocode failed for', query, e); }
+  GEO_CACHE[query] = null;
+  return null;
+}
+
+/* ═══════════════════════════════════════════════════════════
    MAP RENDER
    ═══════════════════════════════════════════════════════════ */
 function initMap() {
@@ -536,25 +571,33 @@ function initMap() {
   markerLayer = L.layerGroup().addTo(leafletMap);
 }
 
-function renderMap(list) {
+async function renderMap(list) {
   initMap();
   markerLayer.clearLayers();
+  document.getElementById('count').textContent = 'Locating burgers…';
 
-  const mappable = list.filter(r => r.lat && r.lng);
+  // Resolve coordinates: AUGMENTS first, then geocode
+  const resolved = await Promise.all(list.map(async r => {
+    if (r.lat && r.lng) return r; // already has coords from AUGMENTS
+    const geo = await geocode(r.restaurant, r.location);
+    if (!geo) return null;
+    return { ...r, lat: geo.lat, lng: geo.lng };
+  }));
+
+  const mappable = resolved.filter(Boolean);
+  markerLayer.clearLayers();
 
   mappable.forEach(r => {
-    const color  = r.r === 3 ? '#39FF14' : r.r === 2 ? '#FFD000' : r.r === 0 ? '#555' : '#FF8C00';
-    const ring   = r.burger_week ? `box-shadow:0 0 0 2px #FF8C00,0 0 0 4px rgba(255,140,0,0.3);` : '';
-    const html   = `<div style="width:12px;height:12px;border-radius:50%;background:${color};border:2px solid #0d0900;${ring}"></div>`;
-    const icon   = L.divIcon({ html, className:'', iconSize:[12,12], iconAnchor:[6,6] });
+    const color = r.r === 3 ? '#39FF14' : r.r === 2 ? '#FFD000' : r.r === 0 ? '#555' : '#FF8C00';
+    const html  = `<div style="width:12px;height:12px;border-radius:50%;background:${color};border:2px solid #0d0900;"></div>`;
+    const icon  = L.divIcon({ html, className:'', iconSize:[12,12], iconAnchor:[6,6] });
     const marker = L.marker([r.lat, r.lng], { icon });
 
     marker.bindPopup(`
       <div class="popup-name">${r.restaurant}</div>
       <div class="popup-rating">${LABEL[r.r]}</div>
-      <div class="popup-meta">${r.location} ${r.price ? '· ' + r.price : ''}</div>
+      <div class="popup-meta">${r.location}${r.price ? ' · ' + r.price : ''}</div>
       <div class="popup-meta">${r.style}</div>
-      ${r.burger_week ? '<div class="popup-bw">🗓 Burger Week</div>' : ''}
       <a class="popup-link" href="${r.postUrl}" target="_blank" rel="noopener">View on Bluesky →</a>
     `);
 
@@ -565,7 +608,8 @@ function renderMap(list) {
   if (coords.length) leafletMap.fitBounds(coords, { padding: [40,40], maxZoom: 15 });
   setTimeout(() => leafletMap.invalidateSize(), 50);
 
-  document.getElementById('count').textContent = `${mappable.length} of ${list.length} review${list.length !== 1 ? 's' : ''} mapped`;
+  document.getElementById('count').textContent =
+    `${mappable.length} of ${list.length} burger${list.length !== 1 ? 's' : ''} mapped`;
 }
 
 /* ═══════════════════════════════════════════════════════════
