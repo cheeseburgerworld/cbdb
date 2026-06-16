@@ -268,12 +268,25 @@ const APPROVED = new Set([
    To add Burger Week entries in August: set burger_week: true here.
    ═══════════════════════════════════════════════════════════ */
 const AUGMENTS = {
-  'killer burger':      { lat: 45.5231, lng: -122.6484, burger_week: false },
-  'tulip shop tavern':  { lat: 45.5289, lng: -122.6469, burger_week: true  },
-  'burgerville':        { lat: 45.5200, lng: -122.6783, burger_week: false },
-  "mike's drive in":    { lat: 45.4771, lng: -122.6403, burger_week: true  },
-  'skyline':            { lat: 45.5455, lng: -122.7157, burger_week: false },
-  'burger stevens':     { lat: 45.5244, lng: -122.6576, burger_week: true  },
+  // ── LIVE REVIEWS ──────────────────────────────────────────
+  // 2105 N Killingsworth St (North Portland)
+  'the old gold':        { lat: 45.5629, lng: -122.6892, burger_week: false },
+  // 3155 E Burnside St (Kerns/SE)
+  'laurelhurst market':  { lat: 45.5232, lng: -122.6320, burger_week: false },
+  // 8150 SW Swede Hill Dr (West Hills)
+  'amaterra winery':     { lat: 45.5164, lng: -122.7594, burger_week: false },
+  // 3944 N Williams Ave (Boise/North Portland)
+  "lo's burgers":       { lat: 45.5560, lng: -122.6700, burger_week: false },
+  // 627 SE Morrison St (Buckman/SE)
+  "creepy's":           { lat: 45.5174, lng: -122.6590, burger_week: false },
+  // 1233 N Killingsworth St (North Portland)
+  'haymaker bar':        { lat: 45.5628, lng: -122.6868, burger_week: false },
+  // 1016 W Burnside St (West End/Downtown)
+  'shake shack':         { lat: 45.5235, lng: -122.6835, burger_week: false },
+  // 825 N Killingsworth St (Humboldt/North Portland)
+  'tulip shop tavern':   { lat: 45.5628, lng: -122.6756, burger_week: true  },
+  // 5013 NE 42nd Ave at Oakshire Brewing (Concordia/NE)
+  'sure shot burger':    { lat: 45.5592, lng: -122.6206, burger_week: false },
 };
 
 function getAug(name) {
