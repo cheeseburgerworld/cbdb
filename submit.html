@@ -102,7 +102,9 @@
   input::placeholder, textarea::placeholder { color:#948D80; }
   input:focus, textarea:focus, select:focus { outline:none; border-color:#FF9D2E; }
   .missing { border-color:#FF5A4E !important; box-shadow:0 0 0 1px #FF5A4E; }
-  .posted { text-align:center; padding:40px 24px; border:1px solid #38332b; background:#211e1a; }
+  .posted-overlay { display:none; position:fixed; inset:0; background:rgba(8,6,3,0.9); z-index:300; align-items:center; justify-content:center; padding:20px; }
+  .posted-overlay.show { display:flex; }
+  .posted { text-align:center; padding:40px 28px; border:2px solid #5BD94B; background:#211e1a; max-width:440px; width:100%; }
   .posted-check { font-size:48px; line-height:1; margin-bottom:14px; }
   .posted-title { font-family:'Bebas Neue',sans-serif; font-size:40px; letter-spacing:1.5px; color:#5BD94B; line-height:1; margin-bottom:10px; }
   .posted-sub { font-size:13px; color:#C3BDB2; max-width:380px; margin:0 auto 26px; line-height:1.6; }
@@ -300,6 +302,12 @@
     .card-grid { grid-template-columns:1fr; }
     .bar-lab { min-width:120px; font-size:12px; }
     .drawer { width:100%; max-width:100%; }
+    .row { flex-direction:column; gap:0; }
+    .rate-row { flex-direction:column; gap:8px; }
+    .ratings { flex-wrap:wrap; }
+    .posted { padding:30px 20px; }
+    .posted-title { font-size:34px; }
+    .rv-name { font-size:28px; }
   }
 
 
@@ -317,6 +325,10 @@
   .footer-copy { font-size:11px; color:#948D80; }
   .footer-sep { color:#38332b; }
 
+
+  @media (min-width:761px) and (max-width:1100px){
+    .card-grid { grid-template-columns:repeat(2,1fr); }
+  }
 </style>
 </head>
 <body>
@@ -395,9 +407,9 @@
       <input type="hidden" name="rating" id="ratingInput" required>
 
       <div class="crosspost">
+        <input type="checkbox" id="xpost" checked style="display:none;">
         <div class="cp-head">
-          <label class="switch"><input type="checkbox" id="xpost" checked onchange="renderPreview()"><span class="slider"></span></label>
-          <div><div class="cp-label">Cross-post to Bluesky</div><div class="cp-sub">Posts the photo + summary to your profile, tagged #CBDB</div></div>
+          <div><div class="cp-label">Your review posts to Bluesky</div><div class="cp-sub">It lives on your profile under your handle, tagged #CBDB. CBDB just indexes it — you own it, and can delete it anytime.</div></div>
         </div>
         <div class="preview" id="preview">
           <div class="preview-tag"><span>Preview · your Bluesky post</span><span class="cc" id="cc">0 / 300</span></div>
@@ -416,14 +428,16 @@
       <button type="submit" class="submit-btn">Post Review</button>
     </form>
 
-    <!-- Success confirmation (shown after a post; replaces the form) -->
-    <div class="posted" id="postedPanel" style="display:none;">
-      <div class="posted-check">⚡</div>
-      <div class="posted-title">Posted!</div>
-      <div class="posted-sub" id="postedSub">Your review is live on your Bluesky profile and in the database.</div>
-      <a class="posted-btn bsky" id="postedBsky" href="#" target="_blank" rel="noopener">View &amp; discuss on Bluesky →</a>
-      <a class="posted-btn map" href="map.html">See it on the map →</a>
-      <button class="posted-again" onclick="postAnother()">Post another review</button>
+    <!-- Success confirmation (centered overlay; always visible regardless of scroll) -->
+    <div class="posted-overlay" id="postedOverlay">
+      <div class="posted" id="postedPanel">
+        <div class="posted-check">⚡</div>
+        <div class="posted-title">Posted!</div>
+        <div class="posted-sub" id="postedSub">Your review is live on your Bluesky profile and in the database.</div>
+        <a class="posted-btn bsky" id="postedBsky" href="#" target="_blank" rel="noopener">View &amp; discuss on Bluesky →</a>
+        <a class="posted-btn map" href="map.html">See it on the map →</a>
+        <button class="posted-again" onclick="postAnother()">Post another review</button>
+      </div>
     </div>
   </div>
 </div>
@@ -512,6 +526,36 @@
   const seg = (typeof Intl!=='undefined'&&Intl.Segmenter)?new Intl.Segmenter('en',{granularity:'grapheme'}):null;
   function graphemes(str){ if(seg){let n=0;for(const _ of seg.segment(str))n++;return n;} return [...str].length; }
 function onPhoto(e){ const f=e.target.files[0]; if(!f)return; state.photoURL=URL.createObjectURL(f); renderPreview(); }
+  // Downscale + JPEG-compress an image so it fits Bluesky's ~1MB blob limit.
+  // Phone photos are often 3–8MB; this keeps them sharp but well under the cap.
+  async function prepareImage(file){
+    const MAX_DIM=1600;          // longest edge in px
+    const TARGET_BYTES=950000;   // stay safely under Bluesky's limit
+    const img=await new Promise((res,rej)=>{
+      const im=new Image();
+      im.onload=()=>res(im);
+      im.onerror=()=>rej(new Error('Could not read image'));
+      im.src=URL.createObjectURL(file);
+    });
+    let w=img.naturalWidth, h=img.naturalHeight;
+    if(Math.max(w,h)>MAX_DIM){
+      const scale=MAX_DIM/Math.max(w,h);
+      w=Math.round(w*scale); h=Math.round(h*scale);
+    }
+    const canvas=document.createElement('canvas');
+    canvas.width=w; canvas.height=h;
+    canvas.getContext('2d').drawImage(img,0,0,w,h);
+    // step quality down until it fits
+    let quality=0.9, blob=null;
+    for(let i=0;i<6;i++){
+      blob=await new Promise(r=>canvas.toBlob(r,'image/jpeg',quality));
+      if(blob && blob.size<=TARGET_BYTES) break;
+      quality-=0.13;
+    }
+    if(!blob) throw new Error('Could not compress image');
+    const bytes=new Uint8Array(await blob.arrayBuffer());
+    return { bytes, width:w, height:h };
+  }
 function renderPreview(){
   try{
     const f=document.getElementById('reviewForm');
@@ -555,8 +599,38 @@ function renderPreview(){
   }
 function acceptGuidelines(){
     state.agreedAt=new Date().toISOString();
+    try{ if(state.did) localStorage.setItem('cbdb_agreed_'+state.did, state.agreedAt); }catch(e){}
+    // persist on the contributor record so it follows the user across devices
+    if(state.did){
+      fetch(CBDB_SUPABASE_URL+'/rest/v1/contributors', {
+        method:'POST',
+        headers:{ apikey:CBDB_SUPABASE_ANON, Authorization:'Bearer '+CBDB_SUPABASE_ANON,
+                  'Content-Type':'application/json', Prefer:'resolution=merge-duplicates' },
+        body: JSON.stringify({ did:state.did, handle:state.handle, display_name:state.displayName, agreed_at:state.agreedAt })
+      }).catch(e=>console.warn('Could not persist agreement:', e));
+    }
     document.getElementById('guidelinesModal').classList.remove('show');
     postReview();
+  }
+  // Restore prior agreement: Supabase (cross-device truth) first, then local cache.
+  async function restoreAgreement(){
+    if(!state.did) return;
+    try{
+      const a=localStorage.getItem('cbdb_agreed_'+state.did);
+      if(a){ state.agreedAt=a; }
+    }catch(e){}
+    // authoritative check: has this contributor agreed before, on any device?
+    try{
+      const res=await fetch(CBDB_SUPABASE_URL+'/rest/v1/contributors?select=agreed_at&did=eq.'+encodeURIComponent(state.did),
+        { headers:{ apikey:CBDB_SUPABASE_ANON, Authorization:'Bearer '+CBDB_SUPABASE_ANON } });
+      if(res.ok){
+        const rows=await res.json();
+        if(rows && rows[0] && rows[0].agreed_at){
+          state.agreedAt=rows[0].agreed_at;
+          try{ localStorage.setItem('cbdb_agreed_'+state.did, state.agreedAt); }catch(e){}
+        }
+      }
+    }catch(e){ /* offline or first-timer — modal will show, which is correct */ }
   }
 async function postReview(){
     const t=document.getElementById('toast');
@@ -597,23 +671,19 @@ async function postReview(){
       const photoInput=f.elements['photo'];
       if(photoInput && photoInput.files[0]){
         const file=photoInput.files[0];
-        const bytes=new Uint8Array(await file.arrayBuffer());
-        const up=await agent.uploadBlob(bytes, { encoding: file.type });
-        // Read the image's true pixel dimensions so Bluesky frames it correctly.
-        // Without aspectRatio, Bluesky pads the image with grey bars to fill a default box.
-        const dims = await new Promise(resolve=>{
-          const im=new Image();
-          im.onload=()=>resolve({ width:im.naturalWidth, height:im.naturalHeight });
-          im.onerror=()=>resolve(null);
-          im.src=URL.createObjectURL(file);
-        });
-        // Native image embed — sized to the image's real aspect ratio, no grey letterbox.
-        const imageRecord={ image:up.data.blob, alt:get('alt')||restaurant };
-        if(dims && dims.width && dims.height){ imageRecord.aspectRatio={ width:dims.width, height:dims.height }; }
-        embed={ $type:'app.bsky.embed.images', images:[imageRecord] };
-        // Correct CDN url for our own database display, built from the blob CID.
-        const cid = (up.data.blob.ref && (up.data.blob.ref.$link || up.data.blob.ref.toString())) || '';
-        photoUrl = cid ? 'https://cdn.bsky.app/img/feed_fullsize/plain/'+state.did+'/'+cid+'@jpeg' : '';
+        try{
+          const prepared=await prepareImage(file); // downscaled + compressed under the limit
+          const up=await agent.uploadBlob(prepared.bytes, { encoding:'image/jpeg' });
+          const imageRecord={ image:up.data.blob, alt:get('alt')||restaurant };
+          if(prepared.width && prepared.height){ imageRecord.aspectRatio={ width:prepared.width, height:prepared.height }; }
+          embed={ $type:'app.bsky.embed.images', images:[imageRecord] };
+          const cid = (up.data.blob.ref && (up.data.blob.ref.$link || up.data.blob.ref.toString())) || '';
+          photoUrl = cid ? 'https://cdn.bsky.app/img/feed_fullsize/plain/'+state.did+'/'+cid+'@jpeg' : '';
+        }catch(upErr){
+          console.error('Image upload failed — posting review without photo:', upErr);
+          embed=undefined; photoUrl='';
+          alert('Heads up: the photo could not be uploaded, so your review will post without it. You can add a photo by editing the post on Bluesky.');
+        }
       }
 
       const rt = embed
@@ -686,19 +756,15 @@ async function postReview(){
     }
   }
   function showPosted(restaurant, bskyUrl){
-    document.getElementById('reviewForm').style.display='none';
-    const panel=document.getElementById('postedPanel');
     document.getElementById('postedSub').textContent =
       (restaurant?('Your review of '+restaurant+' is live'):'Your review is live')+
       ' on your Bluesky profile and in the database.';
     const b=document.getElementById('postedBsky');
     if(bskyUrl){ b.href=bskyUrl; b.style.display='block'; } else { b.style.display='none'; }
-    panel.style.display='block';
-    window.scrollTo({top:0, behavior:'smooth'});
+    document.getElementById('postedOverlay').classList.add('show');
   }
   function postAnother(){
-    document.getElementById('postedPanel').style.display='none';
-    document.getElementById('reviewForm').style.display='';
+    document.getElementById('postedOverlay').classList.remove('show');
     renderPreview();
     window.scrollTo({top:0, behavior:'smooth'});
   }
@@ -734,6 +800,8 @@ async function postReview(){
     postReview();
   });
   // session restore + form reveal is handled by auth.js + auth-bridge.js (cbdb-auth event)
+  window.addEventListener('cbdb-auth', restoreAgreement);
+  restoreAgreement();
   // load reviews so the profile drawer can show this contributor's history
   loadReviews();
 
