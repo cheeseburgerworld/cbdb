@@ -38,11 +38,18 @@ async function initAuth() {
   if (session) {
     agent = new Agent(session);
     state.did = session.did;
-    // resolve handle + display name from the profile
+    // resolve handle + display name via the PUBLIC appview (no auth needed → no 401)
     try {
-      const prof = await agent.getProfile({ actor: session.did });
-      state.handle = prof.data.handle;
-      state.displayName = prof.data.displayName || prof.data.handle;
+      const pub = await fetch(
+        'https://public.api.bsky.app/xrpc/app.bsky.actor.getProfile?actor=' + encodeURIComponent(session.did)
+      );
+      if (pub.ok) {
+        const d = await pub.json();
+        state.handle = d.handle;
+        state.displayName = d.displayName || d.handle;
+      } else {
+        state.handle = session.did; state.displayName = session.did;
+      }
     } catch {
       state.handle = session.did;
       state.displayName = session.did;
