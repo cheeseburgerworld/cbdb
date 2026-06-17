@@ -291,6 +291,12 @@
     .card-grid { grid-template-columns:1fr; }
     .bar-lab { min-width:120px; font-size:12px; }
     .drawer { width:100%; max-width:100%; }
+    .row { flex-direction:column; gap:0; }
+    .rate-row { flex-direction:column; gap:8px; }
+    .ratings { flex-wrap:wrap; }
+    .posted { padding:30px 20px; }
+    .posted-title { font-size:34px; }
+    .rv-name { font-size:28px; }
   }
 
 
@@ -310,6 +316,10 @@
 
   .db-empty { grid-column:1/-1; text-align:center; padding:60px 20px; color:#948D80; font-size:14px; }
   .db-empty a { color:#FF9D2E; text-decoration:none; }
+
+  @media (min-width:761px) and (max-width:1100px){
+    .card-grid { grid-template-columns:repeat(2,1fr); }
+  }
 </style>
 </head>
 <body>
@@ -417,7 +427,7 @@ function renderCards(){
     }
     grid.innerHTML = list.map((r,i)=>{
       const rt=RATING[r.rating];
-      const snippet = r.burger.length>110 ? r.burger.slice(0,107)+'…' : r.burger;
+      const snippet = r.burger;
       const idx=reviews.indexOf(r);
       const date=(typeof shortDate==='function')?shortDate(r.createdAt):'';
       // Card click → full view on the map. Handle click → Bluesky discussion.
