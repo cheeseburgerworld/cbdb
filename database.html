@@ -209,16 +209,19 @@
   .card { background:#211e1a; border:1px solid #38332b; overflow:hidden; cursor:pointer; transition:transform .12s, border-color .12s; display:flex; flex-direction:column; }
   .card:hover { transform:translateY(-3px); border-color:#FF9D2E; }
   .card-img { width:100%; aspect-ratio:4/3; background:#2a2620; background-size:cover; background-position:center; position:relative; }
-  .card-rating { position:absolute; top:10px; left:10px; font-size:13px; padding:4px 9px; background:rgba(22,20,15,0.9); border:1px solid; }
+  .card-rating { position:absolute; top:10px; left:10px; font-size:11px; font-weight:600; letter-spacing:0.5px; padding:4px 9px; background:rgba(22,20,15,0.92); border:1px solid; }
   .card-body { padding:15px 16px 17px; flex:1; display:flex; flex-direction:column; }
-  .card-name { font-family:'Bebas Neue',sans-serif; font-size:24px; letter-spacing:0.5px; color:#F5F4F2; line-height:1.05; }
+  .card-name { font-family:'Bebas Neue',sans-serif; font-size:24px; letter-spacing:0.5px; color:#F5F4F2; line-height:1.05; cursor:pointer; }
+  .card-name:hover { color:#FF9D2E; }
   .card-loc { font-size:12px; color:#C3BDB2; margin:3px 0 10px; }
   .card-meta { display:flex; gap:10px; align-items:center; margin-bottom:11px; }
   .card-tier { font-size:13px; color:#4ADE52; font-weight:600; }
   .card-style { font-size:10px; letter-spacing:1px; text-transform:uppercase; color:#C3BDB2; border:1px solid #38332b; padding:2px 7px; }
-  .card-snippet { font-size:13px; color:#E4DFD6; line-height:1.55; flex:1; }
-  .card-by { font-size:11px; color:#948D80; margin-top:12px; }
-  .card-by b { color:#C3BDB2; }
+  .card-snippet { font-size:13px; color:#E4DFD6; line-height:1.55; flex:1; cursor:pointer; }
+  .card-foot { display:flex; justify-content:space-between; align-items:baseline; margin-top:12px; gap:10px; }
+  .card-by { font-size:11px; color:#3B9AF8; cursor:pointer; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .card-by:hover { text-decoration:underline; }
+  .card-date { font-size:11px; color:#948D80; flex-shrink:0; }
 
   /* ── STATS ── */
   .stat-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-top:8px; }
@@ -415,16 +418,21 @@ function renderCards(){
     grid.innerHTML = list.map((r,i)=>{
       const rt=RATING[r.rating];
       const snippet = r.burger.length>110 ? r.burger.slice(0,107)+'…' : r.burger;
-      return '<div class="card" onclick="goReview('+reviews.indexOf(r)+')">'+
-        '<div class="card-img" style="background:'+cardImage(r)+'">'+
-          '<div class="card-rating" style="color:'+rt.color+';border-color:'+rt.color+'">'+rt.glyph+'</div>'+
+      const idx=reviews.indexOf(r);
+      const date=(typeof shortDate==='function')?shortDate(r.createdAt):'';
+      return '<div class="card">'+
+        '<div class="card-img" style="background:'+cardImage(r)+'" onclick="goReview('+idx+')">'+
+          '<div class="card-rating" style="color:'+rt.color+';border-color:'+rt.color+'">'+rt.glyph+' '+rt.label+'</div>'+
         '</div>'+
         '<div class="card-body">'+
-          '<div class="card-name">'+r.name+'</div>'+
+          '<div class="card-name" onclick="goReview('+idx+')">'+r.name+'</div>'+
           '<div class="card-loc">'+r.loc+'</div>'+
           '<div class="card-meta"><span class="card-tier">'+r.tier+'</span><span class="card-style">'+r.style+'</span></div>'+
-          '<div class="card-snippet">'+snippet+'</div>'+
-          '<div class="card-by">by <b>'+r.by+'</b></div>'+
+          '<div class="card-snippet" onclick="goReview('+idx+')">'+snippet+'</div>'+
+          '<div class="card-foot">'+
+            '<span class="card-by" onclick="goReview('+idx+')">'+(r.by?'@'+r.by:'')+'</span>'+
+            (date?'<span class="card-date">'+date+'</span>':'')+
+          '</div>'+
         '</div></div>';
     }).join('');
   }
