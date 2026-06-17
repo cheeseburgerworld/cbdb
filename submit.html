@@ -102,6 +102,17 @@
   input::placeholder, textarea::placeholder { color:#948D80; }
   input:focus, textarea:focus, select:focus { outline:none; border-color:#FF9D2E; }
   .missing { border-color:#FF5A4E !important; box-shadow:0 0 0 1px #FF5A4E; }
+  .posted { text-align:center; padding:40px 24px; border:1px solid #38332b; background:#211e1a; }
+  .posted-check { font-size:48px; line-height:1; margin-bottom:14px; }
+  .posted-title { font-family:'Bebas Neue',sans-serif; font-size:40px; letter-spacing:1.5px; color:#5BD94B; line-height:1; margin-bottom:10px; }
+  .posted-sub { font-size:13px; color:#C3BDB2; max-width:380px; margin:0 auto 26px; line-height:1.6; }
+  .posted-btn { display:block; max-width:340px; margin:0 auto 12px; padding:13px 18px; text-decoration:none; font-size:14px; font-weight:600; }
+  .posted-btn.bsky { background:#3B9AF8; color:#fff; }
+  .posted-btn.bsky:hover { background:#5aabfa; }
+  .posted-btn.map { background:#211e1a; color:#F5F4F2; border:1px solid #38332b; }
+  .posted-btn.map:hover { border-color:#FF9D2E; }
+  .posted-again { background:none; border:none; color:#948D80; font-family:'IBM Plex Mono',monospace; font-size:12px; cursor:pointer; text-decoration:underline; margin-top:8px; }
+  .posted-again:hover { color:#F5F4F2; }
   input[type=file] { width:100%; background:#211e1a; border:1px solid #38332b; color:#C3BDB2; font-family:'IBM Plex Mono',monospace; font-size:13px; padding:10px 13px; margin-bottom:16px; }
   input[type=file]::file-selector-button { background:#38332b; color:#F5F4F2; border:none; font-family:'IBM Plex Mono',monospace; font-size:12px; padding:6px 12px; margin-right:12px; cursor:pointer; }
   .row { display:flex; gap:14px; } .row > div { flex:1; }
@@ -405,6 +416,16 @@
 
       <button type="submit" class="submit-btn">Post Review</button>
     </form>
+
+    <!-- Success confirmation (shown after a post; replaces the form) -->
+    <div class="posted" id="postedPanel" style="display:none;">
+      <div class="posted-check">⚡</div>
+      <div class="posted-title">Posted!</div>
+      <div class="posted-sub" id="postedSub">Your review is live on your Bluesky profile and in the database.</div>
+      <a class="posted-btn bsky" id="postedBsky" href="#" target="_blank" rel="noopener">View &amp; discuss on Bluesky →</a>
+      <a class="posted-btn map" href="map.html">See it on the map →</a>
+      <button class="posted-again" onclick="postAnother()">Post another review</button>
+    </div>
   </div>
 </div>
 
@@ -493,11 +514,13 @@
   function graphemes(str){ if(seg){let n=0;for(const _ of seg.segment(str))n++;return n;} return [...str].length; }
 function onPhoto(e){ const f=e.target.files[0]; if(!f)return; state.photoURL=URL.createObjectURL(f); renderPreview(); }
 function renderPreview(){
+  try{
     const f=document.getElementById('reviewForm');
+    if(!f) return;
     const on=document.getElementById('xpost').checked;
     document.getElementById('preview').classList.toggle('show',on);
     if(!on)return;
-    const get=n=>f.elements[n]?f.elements[n].value.trim():'';
+    const get=n=>f.elements[n]?String(f.elements[n].value||'').trim():'';
     const restaurant=get('restaurant')||'[Restaurant name]';
     const loc=get('location')||'[City, State]';
     const glyph=state.ratingGlyph||'[rating]';
@@ -529,6 +552,7 @@ function renderPreview(){
       if(alt){ badge.classList.remove('warn'); document.getElementById('altText').textContent=alt; }
       else { badge.classList.add('warn'); document.getElementById('altText').innerHTML='<span style="color:#FF9D2E">Add a description above for screen readers</span>'; }
     } else { img.style.backgroundImage=''; img.textContent='No photo attached yet'; altRow.style.display='none'; }
+  }catch(err){ console.error('renderPreview error:', err); }
   }
 function acceptGuidelines(){
     state.agreedAt=new Date().toISOString();
@@ -647,17 +671,37 @@ async function postReview(){
       });
       if(!res.ok){ console.warn('Supabase insert failed', await res.text()); }
 
-      t.textContent='Review posted to your Bluesky profile. ⚡';
-      t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3400);
+      // reset the form for next time (behind the scenes; success screen is now shown)
       f.reset();
       document.querySelectorAll('.rating-opt').forEach(o=>{o.classList.remove('sel');o.setAttribute('aria-checked','false');});
-      state.rating=null; state.ratingGlyph=null; state.photoURL=null; renderPreview();
+      state.rating=null; state.ratingGlyph=null; state.photoURL=null;
+
+      // ---- Show the confirmation screen with both links ----
+      const bskyUrl=(typeof bskyWebUrl==='function')?bskyWebUrl(bskyUri, state.handle):'';
+      showPosted(restaurant, bskyUrl);
     }catch(e){
       alert('Something went wrong posting your review: '+(e.message||e));
       console.error(e);
     }finally{
       if(btn){ btn.disabled=false; btn.textContent='Post Review'; }
     }
+  }
+  function showPosted(restaurant, bskyUrl){
+    document.getElementById('reviewForm').style.display='none';
+    const panel=document.getElementById('postedPanel');
+    document.getElementById('postedSub').textContent =
+      (restaurant?('Your review of '+restaurant+' is live'):'Your review is live')+
+      ' on your Bluesky profile and in the database.';
+    const b=document.getElementById('postedBsky');
+    if(bskyUrl){ b.href=bskyUrl; b.style.display='block'; } else { b.style.display='none'; }
+    panel.style.display='block';
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+  function postAnother(){
+    document.getElementById('postedPanel').style.display='none';
+    document.getElementById('reviewForm').style.display='';
+    renderPreview();
+    window.scrollTo({top:0, behavior:'smooth'});
   }
   function selectRating(opt){
     document.querySelectorAll('.rating-opt').forEach(o=>{ o.classList.remove('sel'); o.setAttribute('aria-checked','false'); });
