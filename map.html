@@ -74,6 +74,8 @@
   .rv-verdict { padding:16px 26px; font-size:13px; color:#F5F4F2; font-style:italic; border-bottom:1px solid #2a2620; line-height:1.6; }
   .rv-by { padding:14px 26px; font-size:11px; color:#948D80; letter-spacing:0.5px; }
   .rv-by b { color:#C3BDB2; }
+  .rv-bsky { display:block; margin:4px 26px 22px; padding:10px 14px; background:#3B9AF8; color:#fff; text-decoration:none; font-size:13px; text-align:center; font-weight:600; }
+  .rv-bsky:hover { background:#5aabfa; }
 
   .cb-pin { width:22px; height:22px; border-radius:50%; border:3px solid #1a1815; box-shadow:0 0 0 1px rgba(0,0,0,0.6), 0 0 10px rgba(0,0,0,0.4); }
   .pin-legendary { background:#5BD94B; } .pin-trip { background:#FFC72C; } .pin-solid { background:#E8843C; } .pin-skip { background:#9A7B4F; }
@@ -372,6 +374,7 @@
         <div class="rv-bucket"><div class="rv-bucket-label">Value &amp; Experience</div><div class="rv-bucket-text" id="rValue"></div></div>
         <div class="rv-verdict" id="rVerdict"></div>
         <div class="rv-by">Reviewed by <b id="rBy"></b></div>
+        <a class="rv-bsky" id="rBsky" href="#" target="_blank" rel="noopener" style="display:none;">View &amp; discuss on Bluesky →</a>
       </div>
     </div>
   </div>
@@ -452,6 +455,10 @@ function showReview(r){
     rName.textContent=r.name; rLoc.textContent=r.loc; rGlyph.textContent=rt.glyph; rLabel.textContent=rt.label;
     rTier.textContent=r.tier; rStyle.textContent=r.style; rBurger.textContent=r.burger;
     rValue.textContent=r.value; rVerdict.textContent=r.verdict?'“'+r.verdict+'”':''; rBy.textContent=r.by;
+    // View on Bluesky link
+    const bsky=document.getElementById('rBsky');
+    const url=(typeof bskyWebUrl==='function')?bskyWebUrl(r.bskyUri, r.by):'';
+    if(bsky){ if(url){ bsky.href=url; bsky.style.display='block'; } else { bsky.style.display='none'; } }
     // photo (Bluesky blob url) if present
     const ph=document.getElementById('rPhoto');
     if(ph){
