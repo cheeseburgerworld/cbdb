@@ -346,16 +346,8 @@
       <input type="text" name="restaurant" placeholder="Tulip Shop Tavern" required>
       <label class="fl">Location</label>
       <input type="text" name="location" placeholder="Portland, OR" required>
-      <div class="row">
-        <div>
-          <label class="fl">Style</label>
-          <select name="style" required><option value="">Select…</option><option>Classic</option><option>Smash</option><option>Bistro</option><option>Fast Food</option><option>Veggie</option></select>
-        </div>
-        <div>
-          <label class="fl">Price paid</label>
-          <input type="text" name="price" placeholder="$14.50" required>
-        </div>
-      </div>
+      <label class="fl">Style</label>
+      <select name="style" required><option value="">Select…</option><option>Classic</option><option>Smash</option><option>Bistro</option><option>Fast Food</option><option>Veggie</option></select>
       <label class="fl">Price tier</label>
       <div class="tier-help">$ under $11 · $$ $12–21 · $$$ $22+</div>
       <select name="tier" required><option value="">Select…</option><option value="$">$ — under $11</option><option value="$$">$$ — $12–21</option><option value="$$$">$$$ — $22+</option></select>
@@ -363,12 +355,12 @@
       <div class="bucket">
         <div class="bucket-head"><span class="bucket-num">1</span><span class="bucket-label">The Burger</span></div>
         <p class="bucket-hint">Patty, bun, toppings, how it was cooked. One paragraph on the thing itself.</p>
-        <textarea name="burger" placeholder="8oz beef cooked medium, good sear, juicy through the center. Brioche held up to the last bite. House sauce, sharp cheddar, house pickles — no filler toppings getting in the way." required></textarea>
+        <textarea name="burger" required></textarea>
       </div>
       <div class="bucket">
         <div class="bucket-head"><span class="bucket-num">2</span><span class="bucket-label">Value &amp; Experience</span></div>
-        <p class="bucket-hint">Worth the price? Plus the sides, the room, the wait, how clean it was. One paragraph.</p>
-        <textarea name="value" placeholder="Fries included and crisp — not an afterthought. Fair for the size; you're not paying for the room. Counter service, ~10 min wait, tables clean, busy but not slammed. Easy street parking." required></textarea>
+        <p class="bucket-hint">Worth the price? How were the sides? Was it clean? Long wait?</p>
+        <textarea name="value" required></textarea>
       </div>
 
       <label class="fl">Photo <span class="opt">(a photo of the burger from your visit)</span></label>
@@ -381,7 +373,7 @@
         <div class="fh-row"><span class="fh-glyph" style="color:#5BD94B">⭐⭐⭐</span><b>Legendary</b> — Exceptional. A benchmark. Rare by design.</div>
         <div class="fh-row"><span class="fh-glyph" style="color:#FFC72C">⭐⭐</span><b>Worth A Trip</b> — Notably good. Worth a specific visit.</div>
         <div class="fh-row"><span class="fh-glyph" style="color:#E8843C">⭐</span><b>Solid</b> — Competently done. Order it if you're there.</div>
-        <div class="fh-row"><span class="fh-glyph" style="color:#9A7B4F">ㄨ</span><b>Skip It</b> — Not worth the time or money. Published without hesitation.</div>
+        <div class="fh-row"><span class="fh-glyph" style="color:#9A7B4F">ㄨ</span><b>Skip It</b> — Not worth the time or money.</div>
       </div>
       <div class="ratings" id="ratings">
         <div class="rating-opt" data-val="skip" data-glyph="ㄨ"><div class="glyph">ㄨ</div><div class="name">Skip It</div></div>
