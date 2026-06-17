@@ -49,8 +49,8 @@
   .best-item:hover { border-color:#FF9D2E; }
   .best-glyph { font-size:13px; flex-shrink:0; }
   .best-info { flex:1; min-width:0; }
-  .best-name { font-size:13px; color:#F5F4F2; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .best-loc { font-size:11px; color:#948D80; }
+  .best-name { display:block; font-size:13px; color:#F5F4F2; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .best-loc { display:block; font-size:11px; color:#948D80; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .best-tier { font-size:12px; color:#3A9D5C; flex-shrink:0; }
   .review { display:none; }
   .review.show { display:block; }
@@ -81,9 +81,9 @@
 
   .cb-pin { width:22px; height:22px; border-radius:50%; border:3px solid #1a1815; box-shadow:0 0 0 1px rgba(0,0,0,0.6), 0 0 10px rgba(0,0,0,0.4); }
   .pin-legendary { background:#5BD94B; } .pin-trip { background:#FFC72C; } .pin-solid { background:#E8843C; } .pin-skip { background:#9A7B4F; }
-  .leaflet-popup-content-wrapper { background:#211e1a; color:#F5F4F2; border:1px solid #FF9D2E; border-radius:0; font-family:'IBM Plex Mono',monospace; }
+  .leaflet-popup-content-wrapper { background:#211e1a; color:#F5F4F2; border:1px solid #38332b; border-radius:0; font-family:'IBM Plex Mono',monospace; }
   .leaflet-popup-content { margin:10px 14px; }
-  .leaflet-popup-tip { background:#FF9D2E; }
+  .leaflet-popup-tip { background:#211e1a; }
   .pop-name { font-family:'Bebas Neue',sans-serif; font-size:18px; letter-spacing:1px; color:#FF9D2E; }
   .pop-rating { font-size:12px; color:#F5F4F2; margin-top:2px; }
   .pop-cta { font-size:11px; color:#C3BDB2; margin-top:4px; text-decoration:underline; }
@@ -309,6 +309,12 @@
     .card-grid { grid-template-columns:1fr; }
     .bar-lab { min-width:120px; font-size:12px; }
     .drawer { width:100%; max-width:100%; }
+    .row { flex-direction:column; gap:0; }
+    .rate-row { flex-direction:column; gap:8px; }
+    .ratings { flex-wrap:wrap; }
+    .posted { padding:30px 20px; }
+    .posted-title { font-size:34px; }
+    .rv-name { font-size:28px; }
   }
 
 
@@ -326,6 +332,10 @@
   .footer-copy { font-size:11px; color:#948D80; }
   .footer-sep { color:#38332b; }
 
+
+  @media (min-width:761px) and (max-width:1100px){
+    .card-grid { grid-template-columns:repeat(2,1fr); }
+  }
 </style>
 </head>
 <body>
