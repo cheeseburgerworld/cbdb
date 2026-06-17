@@ -51,10 +51,10 @@
   .rv-meta { display:flex; gap:12px; margin-top:14px; align-items:center; flex-wrap:wrap; }
   .rv-rating { font-size:15px; color:#FF9D2E; }
   .rv-rating .lab { font-family:'Bebas Neue',sans-serif; font-size:15px; color:#F5F4F2; letter-spacing:1px; margin-left:5px; }
-  .rv-tier { font-size:14px; color:#4ADE52; font-weight:600; }
+  .rv-tier { font-size:14px; color:#F5F4F2; font-weight:600; }
   .rv-style { font-size:10px; letter-spacing:1px; text-transform:uppercase; color:#C3BDB2; border:1px solid #38332b; padding:3px 8px; }
   .rv-bucket { padding:16px 26px; border-bottom:1px solid #2a2620; }
-  .rv-bucket-label { font-family:'Bebas Neue',sans-serif; font-size:15px; letter-spacing:1.5px; color:#4ADE52; margin-bottom:7px; }
+  .rv-bucket-label { font-family:'Bebas Neue',sans-serif; font-size:15px; letter-spacing:1.5px; color:#F5F4F2; margin-bottom:7px; }
   .rv-bucket-text { font-size:13px; color:#E4DFD6; line-height:1.6; }
   .rv-price { font-size:13px; color:#F5F4F2; margin-bottom:7px; }
   .rv-price b { color:#FF9D2E; }
@@ -68,7 +68,7 @@
   .leaflet-popup-content { margin:10px 14px; }
   .leaflet-popup-tip { background:#FF9D2E; }
   .pop-name { font-family:'Bebas Neue',sans-serif; font-size:18px; letter-spacing:1px; color:#FF9D2E; }
-  .pop-rating { font-size:12px; color:#4ADE52; margin-top:2px; }
+  .pop-rating { font-size:12px; color:#F5F4F2; margin-top:2px; }
   .pop-cta { font-size:11px; color:#C3BDB2; margin-top:4px; text-decoration:underline; }
 
   /* ── SUBMIT VIEW ── */
@@ -82,9 +82,10 @@
   .gate-title { font-family:'Bebas Neue',sans-serif; font-size:28px; letter-spacing:1px; color:#FF9D2E; }
   .gate-text { font-size:13px; color:#C3BDB2; max-width:380px; line-height:1.65; }
   .gate-text b { color:#F5F4F2; }
-  .signin-btn { background:#4ADE52; color:#15130f; border:none; font-family:'IBM Plex Mono',monospace; font-weight:600;
-    font-size:14px; padding:13px 22px; cursor:pointer; letter-spacing:0.5px; }
-  .signin-btn:hover { background:#5ee866; }
+  .signin-btn { background:#3B9AF8; color:#fff; border:none; font-family:'IBM Plex Mono',monospace; font-weight:600;
+    font-size:14px; padding:13px 22px; cursor:pointer; letter-spacing:0.5px; display:inline-flex; align-items:center; gap:9px; }
+  .signin-btn:hover { background:#5aabfa; }
+  .signin-btn svg { width:18px; height:18px; flex-shrink:0; }
   .gate-fine { font-size:11px; color:#948D80; }
 
   form { display:none; }
@@ -228,7 +229,7 @@
   .card-name { font-family:'Bebas Neue',sans-serif; font-size:24px; letter-spacing:0.5px; color:#F5F4F2; line-height:1.05; }
   .card-loc { font-size:12px; color:#C3BDB2; margin:3px 0 10px; }
   .card-meta { display:flex; gap:10px; align-items:center; margin-bottom:11px; }
-  .card-tier { font-size:13px; color:#4ADE52; font-weight:600; }
+  .card-tier { font-size:13px; color:#F5F4F2; font-weight:600; }
   .card-style { font-size:10px; letter-spacing:1px; text-transform:uppercase; color:#C3BDB2; border:1px solid #38332b; padding:2px 7px; }
   .card-snippet { font-size:13px; color:#E4DFD6; line-height:1.55; flex:1; }
   .card-by { font-size:11px; color:#948D80; margin-top:12px; }
@@ -359,7 +360,7 @@
     <div class="gate" id="gate">
       <div class="gate-title">Sign in to contribute</div>
       <div class="gate-text">Your review lives on your Bluesky profile. We just index it — you still own it. <b>No new password, no separate account.</b></div>
-      <button class="signin-btn" onclick="signIn()">Sign in with Bluesky</button>
+      <button class="signin-btn" onclick="signIn()"><svg viewBox="0 0 568 501" xmlns="http://www.w3.org/2000/svg" fill="#fff"><path d="M123.121 33.664C188.241 82.553 258.281 181.68 284 234.873c25.719-53.193 95.759-152.32 160.879-201.21C491.866-1.611 568-28.906 568 57.947c0 17.346-9.945 145.713-15.778 166.555-20.275 72.453-94.155 90.933-159.875 79.748C507.222 323.8 536.444 388.56 473.333 453.32c-119.86 122.992-172.272-30.859-185.702-70.281-2.462-7.227-3.614-10.608-3.631-7.733-.017-2.875-1.169.506-3.631 7.733-13.43 39.422-65.842 193.273-185.702 70.281-63.111-64.76-33.89-129.52 80.986-149.071-65.72 11.185-139.6-7.295-159.875-79.748C9.945 203.66 0 75.293 0 57.947 0-28.906 76.135-1.611 123.121 33.664Z"/></svg>Sign in with Bluesky</button>
     </div>
 
     <!-- The form -->
