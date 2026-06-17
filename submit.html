@@ -386,7 +386,7 @@
       <div class="crosspost">
         <div class="cp-head">
           <label class="switch"><input type="checkbox" id="xpost" checked onchange="renderPreview()"><span class="slider"></span></label>
-          <div><div class="cp-label">Cross-post to Bluesky</div><div class="cp-sub">Posts the photo + summary to your profile, with a link back to the database</div></div>
+          <div><div class="cp-label">Cross-post to Bluesky</div><div class="cp-sub">Posts the photo + summary to your profile, tagged #CBDB</div></div>
         </div>
         <div class="preview" id="preview">
           <div class="preview-tag"><span>Preview · your Bluesky post</span><span class="cc" id="cc">0 / 300</span></div>
@@ -502,24 +502,22 @@ function renderPreview(){
     const glyph=state.ratingGlyph||'[rating]';
     const tier=get('tier')||'[$]';
     let summary=get('burger')||'[Review summary]';
-    // Build the fixed header, then fit the summary into the 300-grapheme budget.
-    // Links don't count against Bluesky's 300, so the cheeseburger.world link is "free" reach.
+    // Header + #CBDB hashtag are fixed; fit the summary into what's left of 300.
+    // (#CBDB is a hashtag, not a URL, so unlike a link it DOES count toward 300.)
     const header=restaurant+'\n'+loc+'\n'+glyph+'\n'+tier+'\n\n';
-    const link='cheeseburger.world';            // funnel back to the database
-    const tail='\n\n'+link;
-    // Link graphemes don't count toward the limit; only header + summary do.
-    const budget=300-graphemes(header);
+    const tail='\n\n#CBDB';
+    const budget=300-graphemes(header)-graphemes(tail);
     if(graphemes(summary)>budget){
       // trim by graphemes
       let out='';let count=0;
       for(const g of (seg?seg.segment(summary):summary)){const ch=seg?g.segment:g; if(count>=budget-1)break; out+=ch; count++;}
       summary=out.trimEnd()+'…';
     }
-    const count=graphemes(header)+graphemes(summary);   // link excluded, per Bluesky rules
+    const count=graphemes(header)+graphemes(summary)+graphemes(tail);
     const cc=document.getElementById('cc');
     cc.textContent=count+' / 300';
     cc.classList.toggle('over',count>300);
-    document.getElementById('bskyText').innerHTML=(header+summary).replace(/\n/g,'<br>')+'<br><br><span class="hash">'+link+'</span>';
+    document.getElementById('bskyText').innerHTML=(header+summary).replace(/\n/g,'<br>')+'<br><br><span class="hash">#CBDB</span>';
     const img=document.getElementById('bskyImg');
     const alt=get('alt');
     const altRow=document.getElementById('bskyAltRow');
@@ -555,9 +553,18 @@ async function postReview(){
       const tier=get('tier'), glyph=state.ratingGlyph||'';
       let summary=get('burger');
       const header=restaurant+'\n'+loc+'\n'+glyph+'\n'+tier+'\n\n';
-      const budget=300-graphemes(header);
+      const tail='\n\n#CBDB';
+      const budget=300-graphemes(header)-graphemes(tail);
       if(graphemes(summary)>budget) summary=[...summary].slice(0,budget-1).join('')+'…';
-      const text=header+summary+'\n\ncheeseburger.world';
+      const text=header+summary+tail;
+
+      // tag #CBDB as a real hashtag facet so it powers a custom feed (not just plain text)
+      const tagIndexStart=new TextEncoder().encode(header+summary+'\n\n').length;
+      const tagIndexEnd=new TextEncoder().encode(text).length;
+      const facets=[{
+        index:{ byteStart:tagIndexStart+1, byteEnd:tagIndexEnd }, // +1 to skip the '#'
+        features:[{ $type:'app.bsky.richtext.facet#tag', tag:'CBDB' }]
+      }];
 
       let embed;
       const photoInput=f.elements['photo'];
@@ -571,8 +578,8 @@ async function postReview(){
       }
 
       const rt = embed
-        ? await agent.post({ text, embed, createdAt:new Date().toISOString() })
-        : await agent.post({ text, createdAt:new Date().toISOString() });
+        ? await agent.post({ text, facets, embed, createdAt:new Date().toISOString() })
+        : await agent.post({ text, facets, createdAt:new Date().toISOString() });
       bskyUri = rt.uri;
 
       // ---- 2. Index to Supabase so it shows on the map/database immediately ----
