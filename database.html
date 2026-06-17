@@ -434,7 +434,12 @@ function filterDb(f, btn){
     btn.classList.add('active');
     renderCards();
   }
-  function goReview(i){ location.href='map.html?r='+i; }
+  function goReview(i){
+    const r=reviews[i];
+    const url=bskyWebUrl(r.bskyUri, r.by);
+    if(url){ window.open(url, '_blank', 'noopener'); }
+    else { location.href='map.html?r='+i; } // fallback if no bsky link yet
+  }
 
   let dbFilter='all';
   function cardImage(r){
