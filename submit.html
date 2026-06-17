@@ -101,6 +101,7 @@
   textarea { resize:vertical; min-height:92px; line-height:1.6; }
   input::placeholder, textarea::placeholder { color:#948D80; }
   input:focus, textarea:focus, select:focus { outline:none; border-color:#FF9D2E; }
+  .missing { border-color:#FF5A4E !important; box-shadow:0 0 0 1px #FF5A4E; }
   input[type=file] { width:100%; background:#211e1a; border:1px solid #38332b; color:#C3BDB2; font-family:'IBM Plex Mono',monospace; font-size:13px; padding:10px 13px; margin-bottom:16px; }
   input[type=file]::file-selector-button { background:#38332b; color:#F5F4F2; border:none; font-family:'IBM Plex Mono',monospace; font-size:12px; padding:6px 12px; margin-right:12px; cursor:pointer; }
   .row { display:flex; gap:14px; } .row > div { flex:1; }
@@ -671,8 +672,20 @@ async function postReview(){
     });
   });
   document.getElementById('reviewForm').addEventListener('input',renderPreview);
+  function flagMissing(el){
+    el.classList.add('missing');
+    el.focus();
+    el.scrollIntoView({behavior:'smooth', block:'center'});
+    el.addEventListener('change', ()=>el.classList.remove('missing'), { once:true });
+  }
   document.getElementById('reviewForm').addEventListener('submit',e=>{
     e.preventDefault();
+    const f=e.target;
+    // explicit checks (native required can't fire because we preventDefault)
+    for(const name of ['restaurant','location','style','tier','burger','value']){
+      const el=f.elements[name];
+      if(el && !el.value.trim()){ flagMissing(el); return; }
+    }
     if(!state.rating){alert('Pick a rating.');return;}
     if(!state.agreedAt){document.getElementById('guidelinesModal').classList.add('show');return;}
     postReview();
