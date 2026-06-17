@@ -305,6 +305,8 @@
   .footer-copy { font-size:11px; color:#948D80; }
   .footer-sep { color:#38332b; }
 
+  .db-empty { grid-column:1/-1; text-align:center; padding:60px 20px; color:#948D80; font-size:14px; }
+  .db-empty a { color:#FF9D2E; text-decoration:none; }
 </style>
 </head>
 <body>
@@ -357,52 +359,10 @@
 </div>
 
 
+<script src="cbdb-config.js"></script>
+<script type="module" src="auth.js"></script>
+<script src="auth-bridge.js"></script>
 <script>
-  const RATING = {
-    legendary:{glyph:'⭐⭐⭐',label:'Legendary',cls:'pin-legendary',color:'#5BD94B'},
-    trip:{glyph:'⭐⭐',label:'Worth A Trip',cls:'pin-trip',color:'#FFC72C'},
-    solid:{glyph:'⭐',label:'Solid',cls:'pin-solid',color:'#E8843C'},
-    skip:{glyph:'ㄨ',label:'Skip It',cls:'pin-skip',color:'#9A7B4F'}
-  };
-
-  const reviews = [
-    {name:"Sure Shot Burger",loc:"Portland, OR",lat:45.5385,lng:-122.6488,rating:"trip",tier:"$$",style:"Smash",price:"$11.00",
-      burger:"Smashed thin, lacy crispy edges, two patties. American cheese fully melted. Soft potato bun, no structural issues.",
-      value:"Food cart at Oakshire — order, grab a beer, wait. Strong for the price, no frills markup. Cart pod seating, quick turnaround, clean setup. Bring cash backup.",
-      verdict:"Cart burger that out-punches plenty of sit-down spots.",by:"ash.cheeseburger.world"},
-    {name:"Tulip Shop Tavern",loc:"Portland, OR",lat:45.5727,lng:-122.6760,rating:"trip",tier:"$$",style:"Smash",price:"$15.00",
-      burger:"8oz feel from a smash, cooked through but juicy. House sauce tangy, sharp cheddar, house pickles.",
-      value:"Burger Week flagged. Fair for a tavern burger this dialed-in. Fries solid, not an afterthought. Full bar, dim and easy, tables clean, decent wait on weekends.",
-      verdict:"The neighborhood-tavern burger done exactly right.",by:"ash.cheeseburger.world"},
-    {name:"Shake Shack",loc:"Portland, OR",lat:45.5212,lng:-122.6792,rating:"trip",tier:"$$",style:"Classic",price:"$8.49",
-      burger:"ShackBurger — single, griddled, good char. Potato bun, soft, holds. Standard but consistent.",
-      value:"Chain pricing crept up but still fair for what lands. Counter order, screen pager, busy downtown room. Clean, fast, predictable.",
-      verdict:"The reliable one — never the best in town, never a mistake.",by:"ratbrigade.bsky.social"},
-    {name:"Amaterra Winery",loc:"Portland, OR",lat:45.5083,lng:-122.7361,rating:"trip",tier:"$$$",style:"Smash",price:"$22.00",
-      burger:"Smash done upscale — quality beef, crisp edge, brioche, aioli. Restrained, not overbuilt.",
-      value:"You're paying for the view as much as the burger, but it holds up to the price. Winery dining room, hillside view, full service, spotless. Reservation territory.",
-      verdict:"A smash burger with a view you don't expect to be this good.",by:"alleyhector.bsky.social"},
-    {name:"Lo's Burgers",loc:"Portland, OR",lat:45.5530,lng:-122.6620,rating:"trip",tier:"$$",style:"Smash",price:"$12.50",
-      burger:"Food cart smash, crispy lace edges, double stacked. Cheese melted right, simple dressing.",
-      value:"Cart pricing, sit-down quality. Strong value play. Limited seating, order at window, clean, friendly, quick.",
-      verdict:"Proof the best smash in town can come out of a window.",by:"ash.cheeseburger.world"},
-    {name:"Creepy's",loc:"Portland, OR",lat:45.5198,lng:-122.6555,rating:"solid",tier:"$$",style:"Classic",price:"$13.00",
-      burger:"Classic build, solid patty, no glaring flaws. Bun-to-meat fine. Nothing reinvented.",
-      value:"Fair, not a standout. Dim bar, late hours, loud. Functional, a little grimy in a way that fits the room.",
-      verdict:"A perfectly good bar burger you won't drive across town for.",by:"ash.cheeseburger.world"},
-    {name:"Laurelhurst Market",loc:"Portland, OR",lat:45.5230,lng:-122.6248,rating:"solid",tier:"$$$",style:"Bistro",price:"$19.00",
-      burger:"Steakhouse-grade beef, cooked to spec, good char. Bistro bun. Quality there but priced high.",
-      value:"Butcher-shop steakhouse — you pay for the sourcing. Good, not a value pick. Polished room, attentive service, clean.",
-      verdict:"A serious kitchen's burger — pay for the beef, not the thrill.",by:"ash.cheeseburger.world"},
-    {name:"Haymaker Bar",loc:"Portland, OR",lat:45.5290,lng:-122.6680,rating:"skip",tier:"$$",style:"Smash",price:"$14.00",
-      burger:"Smash that came out flat — underseasoned, thin crust, cheese half-melted. Bun stale-edged.",
-      value:"Sit-down price for a below-bar result. Not worth the spend. Fine room, fine service, none of it saved the plate.",
-      verdict:"Skip the burger here — order something else.",by:"ash.cheeseburger.world"},
-    {name:"The Old Gold",loc:"Portland, OR",lat:45.5640,lng:-122.6880,rating:"skip",tier:"$$",style:"Bistro",price:"$16.00",
-      burger:"Overbuilt, soggy bun by the third bite, patty lost under toppings. Beef wasn't the problem — assembly was.",
-      value:"Bistro price, didn't earn it. Good neighborhood bar, fine service. The burger was the weak link.",
-      verdict:"Great bar, skip the burger.",by:"ash.cheeseburger.world"}
-  ];
 
 
   // ── Shared session (demo: in-memory; real build = ATProto OAuth) ──
@@ -439,15 +399,19 @@
     document.getElementById('drawer').classList.remove('show');
   }
   // Restore signed-in nav state across pages (demo uses window; real build reads session)
-  function paintSignedIn(){
-    if(!state.signedIn) return;
-    document.getElementById('navId').innerHTML='<span class="dot"></span>Online · @'+state.handle;
-  }
+  function paintSignedIn(){ /* handled by auth-bridge.js */ }
   paintSignedIn();
 
 function renderCards(){
     const grid=document.getElementById('cardGrid');
     const list = dbFilter==='all' ? reviews : reviews.filter(r=>r.rating===dbFilter);
+    if(!list.length){
+      grid.innerHTML = '<div class="db-empty">'+
+        (reviews.length ? 'No '+dbFilter+' reviews yet.' :
+          'No reviews yet. <a href="submit.html">Post the first one →</a>')+
+        '</div>';
+      return;
+    }
     grid.innerHTML = list.map((r,i)=>{
       const rt=RATING[r.rating];
       const snippet = r.burger.length>110 ? r.burger.slice(0,107)+'…' : r.burger;
@@ -468,16 +432,17 @@ function filterDb(f, btn){
     dbFilter=f;
     document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
     btn.classList.add('active');
-    function goReview(i){ location.href='map.html?r='+i; }
-  renderCards();
+    renderCards();
   }
+  function goReview(i){ location.href='map.html?r='+i; }
 
   let dbFilter='all';
   function cardImage(r){
+    if(r.photoUrl) return "#2a2620 url('"+r.photoUrl+"') center/cover";
     let h=0; for(let i=0;i<r.name.length;i++) h=(h*31+r.name.charCodeAt(i))%360;
     return 'linear-gradient(135deg, hsl('+h+',45%,22%), hsl('+((h+40)%360)+',40%,14%))';
   }
-  renderCards();
+  (async()=>{ await loadReviews(); renderCards(); })();
 </script>
 
 <!-- FOOTER -->
