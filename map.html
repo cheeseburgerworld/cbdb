@@ -465,6 +465,7 @@ function showReview(r){
   function buildMarkers(){
     markers.length=0;
     reviews.forEach(r=>{
+      if(r.lat==null || r.lng==null) return; // no coords yet → no pin (still shows in database/list)
       const rt=RATING[r.rating];
       const icon=L.divIcon({className:'',html:'<div class="cb-pin '+rt.cls+'"></div>',iconSize:[22,22],iconAnchor:[11,11]});
       const m=L.marker([r.lat,r.lng],{icon}).addTo(map);
@@ -475,7 +476,7 @@ function showReview(r){
   }
 
   function fitAll(){
-    if(!markers.length) return;
+    if(!markers.length){ map.setView([45.535,-122.66],12); return; }
     const grp=L.featureGroup(markers.map(x=>x.marker));
     map.fitBounds(grp.getBounds().pad(0.25));
   }
@@ -543,7 +544,11 @@ function showReview(r){
       return;
     }
     const qp=new URLSearchParams(location.search);
-    if(qp.has('r')){ const idx=+qp.get('r'); const r=reviews[idx]; if(r){ map.setView([r.lat,r.lng],15); showReview(r); } }
+    if(qp.has('r')){
+      const idx=+qp.get('r'); const r=reviews[idx];
+      if(r && r.lat!=null && r.lng!=null){ map.setView([r.lat,r.lng],15); showReview(r); }
+      else { fitAll(); if(r) showReview(r); }   // review exists but no coords: show it, don't move map
+    }
     else { fitAll(); }
   })();
 
