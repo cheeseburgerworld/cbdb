@@ -342,44 +342,44 @@
     <form id="reviewForm">
       <div class="id-strip" id="idStrip"></div>
 
-      <label class="fl">Restaurant</label>
-      <input type="text" name="restaurant" placeholder="Tulip Shop Tavern" required>
-      <label class="fl">Location</label>
-      <input type="text" name="location" placeholder="Portland, OR" required>
-      <label class="fl">Style</label>
-      <select name="style" required><option value="">Select…</option><option>Classic</option><option>Smash</option><option>Bistro</option><option>Fast Food</option><option>Veggie</option></select>
-      <label class="fl">Price tier</label>
+      <label class="fl" for="f_restaurant">Restaurant</label>
+      <input type="text" id="f_restaurant" name="restaurant" placeholder="Tulip Shop Tavern" required>
+      <label class="fl" for="f_location">Location</label>
+      <input type="text" id="f_location" name="location" placeholder="Portland, OR" required>
+      <label class="fl" for="f_style">Style</label>
+      <select id="f_style" name="style" required><option value="">Select…</option><option>Classic</option><option>Smash</option><option>Bistro</option><option>Fast Food</option><option>Veggie</option></select>
+      <label class="fl" for="f_tier">Price tier</label>
       <div class="tier-help">$ under $11 · $$ $12–21 · $$$ $22+</div>
-      <select name="tier" required><option value="">Select…</option><option value="$">$ — under $11</option><option value="$$">$$ — $12–21</option><option value="$$$">$$$ — $22+</option></select>
+      <select id="f_tier" name="tier" required><option value="">Select…</option><option value="$">$ — under $11</option><option value="$$">$$ — $12–21</option><option value="$$$">$$$ — $22+</option></select>
 
       <div class="bucket">
         <div class="bucket-head"><span class="bucket-num">1</span><span class="bucket-label">The Burger</span></div>
         <p class="bucket-hint">Patty, bun, toppings, how it was cooked. One paragraph on the thing itself.</p>
-        <textarea name="burger" required></textarea>
+        <textarea id="f_burger" name="burger" aria-label="The Burger — patty, bun, toppings, how it was cooked" required></textarea>
       </div>
       <div class="bucket">
         <div class="bucket-head"><span class="bucket-num">2</span><span class="bucket-label">Value &amp; Experience</span></div>
         <p class="bucket-hint">Worth the price? How were the sides? Was it clean? Long wait?</p>
-        <textarea name="value" required></textarea>
+        <textarea id="f_value" name="value" aria-label="Value and Experience — worth the price, sides, cleanliness, wait" required></textarea>
       </div>
 
-      <label class="fl">Photo <span class="opt">(a photo of the burger from your visit)</span></label>
-      <input type="file" name="photo" accept="image/*" onchange="onPhoto(event)">
-      <label class="fl">Photo description <span class="opt">(alt text — describe it for screen readers)</span></label>
-      <input type="text" name="alt" placeholder="A double smash burger with melted cheese on a toasted bun, fries alongside.">
+      <label class="fl" for="f_photo">Photo <span class="opt">(a photo of the burger from your visit)</span></label>
+      <input type="file" id="f_photo" name="photo" accept="image/*" onchange="onPhoto(event)">
+      <label class="fl" for="f_alt">Photo description <span class="opt">(alt text — describe it for screen readers)</span></label>
+      <input type="text" id="f_alt" name="alt" placeholder="A double smash burger with melted cheese on a toasted bun, fries alongside.">
 
-      <label class="fl">Rating</label>
+      <span class="fl" id="ratingLabel">Rating</span>
             <div class="field-help">
         <div class="fh-row"><span class="fh-glyph" style="color:#5BD94B">⭐⭐⭐</span><b>Legendary</b> — Exceptional. A benchmark. Rare by design.</div>
         <div class="fh-row"><span class="fh-glyph" style="color:#FFC72C">⭐⭐</span><b>Worth A Trip</b> — Notably good. Worth a specific visit.</div>
         <div class="fh-row"><span class="fh-glyph" style="color:#E8843C">⭐</span><b>Solid</b> — Competently done. Order it if you're there.</div>
         <div class="fh-row"><span class="fh-glyph" style="color:#9A7B4F">ㄨ</span><b>Skip It</b> — Not worth the time or money.</div>
       </div>
-      <div class="ratings" id="ratings">
-        <div class="rating-opt" data-val="skip" data-glyph="ㄨ"><div class="glyph">ㄨ</div><div class="name">Skip It</div></div>
-        <div class="rating-opt" data-val="solid" data-glyph="⭐"><div class="glyph">⭐</div><div class="name">Solid</div></div>
-        <div class="rating-opt" data-val="trip" data-glyph="⭐⭐"><div class="glyph">⭐⭐</div><div class="name">Worth A Trip</div></div>
-        <div class="rating-opt" data-val="legendary" data-glyph="⭐⭐⭐"><div class="glyph">⭐⭐⭐</div><div class="name">Legendary</div></div>
+      <div class="ratings" id="ratings" role="radiogroup" aria-labelledby="ratingLabel">
+        <div class="rating-opt" role="radio" tabindex="0" aria-checked="false" data-val="skip" data-glyph="ㄨ"><div class="glyph">ㄨ</div><div class="name">Skip It</div></div>
+        <div class="rating-opt" role="radio" tabindex="0" aria-checked="false" data-val="solid" data-glyph="⭐"><div class="glyph">⭐</div><div class="name">Solid</div></div>
+        <div class="rating-opt" role="radio" tabindex="0" aria-checked="false" data-val="trip" data-glyph="⭐⭐"><div class="glyph">⭐⭐</div><div class="name">Worth A Trip</div></div>
+        <div class="rating-opt" role="radio" tabindex="0" aria-checked="false" data-val="legendary" data-glyph="⭐⭐⭐"><div class="glyph">⭐⭐⭐</div><div class="name">Legendary</div></div>
       </div>
       <input type="hidden" name="rating" id="ratingInput" required>
 
@@ -617,7 +617,7 @@ async function postReview(){
       t.textContent='Review posted to your Bluesky profile. ⚡';
       t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3400);
       f.reset();
-      document.querySelectorAll('.rating-opt').forEach(o=>o.classList.remove('sel'));
+      document.querySelectorAll('.rating-opt').forEach(o=>{o.classList.remove('sel');o.setAttribute('aria-checked','false');});
       state.rating=null; state.ratingGlyph=null; state.photoURL=null; renderPreview();
     }catch(e){
       alert('Something went wrong posting your review: '+(e.message||e));
@@ -626,12 +626,16 @@ async function postReview(){
       if(btn){ btn.disabled=false; btn.textContent='Post Review'; }
     }
   }
+  function selectRating(opt){
+    document.querySelectorAll('.rating-opt').forEach(o=>{ o.classList.remove('sel'); o.setAttribute('aria-checked','false'); });
+    opt.classList.add('sel'); opt.setAttribute('aria-checked','true');
+    state.rating=opt.dataset.val; state.ratingGlyph=opt.dataset.glyph;
+    document.getElementById('ratingInput').value=opt.dataset.val; renderPreview();
+  }
   document.querySelectorAll('.rating-opt').forEach(opt=>{
-    opt.addEventListener('click',()=>{
-      document.querySelectorAll('.rating-opt').forEach(o=>o.classList.remove('sel'));
-      opt.classList.add('sel');
-      state.rating=opt.dataset.val; state.ratingGlyph=opt.dataset.glyph;
-      document.getElementById('ratingInput').value=opt.dataset.val; renderPreview();
+    opt.addEventListener('click',()=>selectRating(opt));
+    opt.addEventListener('keydown',e=>{
+      if(e.key===' '||e.key==='Enter'){ e.preventDefault(); selectRating(opt); }
     });
   });
   document.getElementById('reviewForm').addEventListener('input',renderPreview);
