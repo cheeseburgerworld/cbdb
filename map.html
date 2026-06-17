@@ -57,7 +57,7 @@
   .review { position:relative; }
   .rv-close { position:absolute; top:12px; right:12px; z-index:5; width:30px; height:30px; border-radius:50%; background:rgba(22,20,15,0.85); border:1px solid #38332b; color:#F5F4F2; font-size:18px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; }
   .rv-close:hover { border-color:#FF9D2E; color:#FF9D2E; }
-  .rv-photo { width:100%; height:200px; background:#2a2620; background-size:cover; background-position:center; border-bottom:1px solid #38332b; }
+  .rv-photo { width:100%; height:240px; background:#16140f; background-size:contain; background-repeat:no-repeat; background-position:center; border-bottom:1px solid #38332b; }
   .rv-head { padding:22px 26px 16px; border-bottom:1px solid #38332b; }
   .rv-name { font-family:'Bebas Neue',sans-serif; font-size:34px; letter-spacing:1px; color:#FF9D2E; line-height:1; }
   .rv-loc { font-size:12px; color:#C3BDB2; margin-top:5px; }
@@ -74,6 +74,8 @@
   .rv-verdict { padding:16px 26px; font-size:13px; color:#F5F4F2; font-style:italic; border-bottom:1px solid #2a2620; line-height:1.6; }
   .rv-by { padding:14px 26px; font-size:11px; color:#948D80; letter-spacing:0.5px; }
   .rv-by b { color:#C3BDB2; }
+  .rv-date { color:#948D80; }
+  .rv-date:before { content:' · '; }
   .rv-bsky { display:block; margin:4px 26px 22px; padding:10px 14px; background:#3B9AF8; color:#fff; text-decoration:none; font-size:13px; text-align:center; font-weight:600; }
   .rv-bsky:hover { background:#5aabfa; }
 
@@ -373,7 +375,7 @@
         <div class="rv-bucket"><div class="rv-bucket-label">The Burger</div><div class="rv-bucket-text" id="rBurger"></div></div>
         <div class="rv-bucket"><div class="rv-bucket-label">Value &amp; Experience</div><div class="rv-bucket-text" id="rValue"></div></div>
         <div class="rv-verdict" id="rVerdict"></div>
-        <div class="rv-by">Reviewed by <b id="rBy"></b></div>
+        <div class="rv-by">Reviewed by <b id="rBy"></b><span id="rDate" class="rv-date"></span></div>
         <a class="rv-bsky" id="rBsky" href="#" target="_blank" rel="noopener" style="display:none;">View &amp; discuss on Bluesky →</a>
       </div>
     </div>
@@ -455,6 +457,8 @@ function showReview(r){
     rName.textContent=r.name; rLoc.textContent=r.loc; rGlyph.textContent=rt.glyph; rLabel.textContent=rt.label;
     rTier.textContent=r.tier; rStyle.textContent=r.style; rBurger.textContent=r.burger;
     rValue.textContent=r.value; rVerdict.textContent=r.verdict?'“'+r.verdict+'”':''; rBy.textContent=r.by;
+    const rd=document.getElementById('rDate');
+    if(rd) rd.textContent=(typeof shortDate==='function')?shortDate(r.createdAt):'';
     // View on Bluesky link
     const bsky=document.getElementById('rBsky');
     const url=(typeof bskyWebUrl==='function')?bskyWebUrl(r.bskyUri, r.by):'';
