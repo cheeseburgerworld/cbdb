@@ -24,14 +24,20 @@ let oauthClient = null;
 let agent = null;
 
 async function initAuth() {
+  // Paint instantly from the persisted cache BEFORE the async OAuth round-trip,
+  // so a signed-in user never flashes as signed-out when navigating pages.
+  restoreCache();
+  if (state.signedIn) {
+    window.dispatchEvent(new CustomEvent('cbdb-auth', { detail: { ...state } }));
+  }
+
   oauthClient = await BrowserOAuthClient.load({
     clientId: CLIENT_ID,
     handleResolver: HANDLE_RESOLVER,
   });
 
   // init() finishes a redirect (if we're on the callback) OR restores
-  // an existing session on a normal page load — this is what makes
-  // login persist across every page.
+  // an existing session on a normal page load.
   const result = await oauthClient.init();
   const session = result?.session;
 
@@ -47,29 +53,30 @@ async function initAuth() {
         const d = await pub.json();
         state.handle = d.handle;
         state.displayName = d.displayName || d.handle;
-      } else {
+      } else if (!state.handle) {
         state.handle = session.did; state.displayName = session.did;
       }
     } catch {
-      state.handle = session.did;
-      state.displayName = session.did;
+      if (!state.handle) { state.handle = session.did; state.displayName = session.did; }
     }
     state.signedIn = true;
     cacheSession();
   } else {
-    restoreCache(); // paint nav instantly from cache while init settles
+    // No live session: clear the optimistic cache so we don't show a stale "Online".
+    state.signedIn = false; state.handle = null; state.displayName = null; state.did = null;
+    try { localStorage.removeItem('cbdb_auth'); } catch {}
   }
 
-  // let pages update their nav/UI now that we know the auth state
+  // let pages update their nav/UI now that we know the real auth state
   window.dispatchEvent(new CustomEvent('cbdb-auth', { detail: { ...state } }));
   return state;
 }
 
 // lightweight cache so the nav shows "Online" immediately on next page,
-// before the async init round-trips
+// before the async init round-trips. localStorage persists across tabs and reloads.
 function cacheSession() {
   try {
-    sessionStorage.setItem('cbdb_auth', JSON.stringify({
+    localStorage.setItem('cbdb_auth', JSON.stringify({
       signedIn: state.signedIn, handle: state.handle,
       displayName: state.displayName, did: state.did
     }));
@@ -77,7 +84,7 @@ function cacheSession() {
 }
 function restoreCache() {
   try {
-    const c = JSON.parse(sessionStorage.getItem('cbdb_auth') || 'null');
+    const c = JSON.parse(localStorage.getItem('cbdb_auth') || 'null');
     if (c && c.signedIn) Object.assign(state, c);
   } catch {}
 }
@@ -92,7 +99,7 @@ async function signIn(handle) {
 
 async function signOut() {
   try { if (oauthClient && state.did) await oauthClient.revoke(state.did); } catch {}
-  try { sessionStorage.removeItem('cbdb_auth'); } catch {}
+  try { localStorage.removeItem('cbdb_auth'); } catch {}
   state.signedIn = false; state.handle = null; state.displayName = null; state.did = null;
   window.dispatchEvent(new CustomEvent('cbdb-auth', { detail: { ...state } }));
 }
