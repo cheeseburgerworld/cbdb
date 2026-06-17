@@ -51,7 +51,7 @@
   .best-info { flex:1; min-width:0; }
   .best-name { display:block; font-size:13px; color:#F5F4F2; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .best-loc { display:block; font-size:11px; color:#948D80; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .best-tier { font-size:12px; color:#3A9D5C; flex-shrink:0; }
+  .best-tier { font-size:12px; color:#F5F4F2; flex-shrink:0; }
   .review { display:none; }
   .review.show { display:block; }
   .review { position:relative; }
@@ -64,7 +64,7 @@
   .rv-meta { display:flex; gap:12px; margin-top:14px; align-items:center; flex-wrap:wrap; }
   .rv-rating { font-size:15px; display:inline-flex; align-items:center; gap:6px; padding:4px 11px; border-radius:4px; }
   .rv-rating .lab { font-family:'Bebas Neue',sans-serif; font-size:15px; letter-spacing:1px; }
-  .rv-tier { font-size:14px; color:#3A9D5C; font-weight:600; }
+  .rv-tier { font-size:14px; color:#F5F4F2; font-weight:600; }
   .rv-style { font-size:10px; letter-spacing:1px; text-transform:uppercase; color:#C3BDB2; border:1px solid #38332b; padding:3px 8px; }
   .rv-bucket { padding:16px 26px; border-bottom:1px solid #2a2620; }
   .rv-bucket-label { font-family:'Bebas Neue',sans-serif; font-size:15px; letter-spacing:1.5px; color:#F5F4F2; margin-bottom:7px; }
@@ -99,9 +99,9 @@
   .gate-title { font-family:'Bebas Neue',sans-serif; font-size:28px; letter-spacing:1px; color:#FF9D2E; }
   .gate-text { font-size:13px; color:#C3BDB2; max-width:380px; line-height:1.65; }
   .gate-text b { color:#F5F4F2; }
-  .signin-btn { background:#4ADE52; color:#15130f; border:none; font-family:'IBM Plex Mono',monospace; font-weight:600;
+  .signin-btn { background:#3B9AF8; color:#fff; border:none; font-family:'IBM Plex Mono',monospace; font-weight:600;
     font-size:14px; padding:13px 22px; cursor:pointer; letter-spacing:0.5px; }
-  .signin-btn:hover { background:#5ee866; }
+  .signin-btn:hover { background:#5aabfa; }
   .gate-fine { font-size:11px; color:#948D80; }
 
   form { display:none; }
@@ -208,11 +208,11 @@
   .vs-them { background:#211e1a; color:#948D80; }
   .vs-us { background:#1d2417; color:#E4DFD6; }
   /* ── MAP LEGEND ── */
-  .map-filter { position:absolute; top:14px; left:14px; z-index:40; background:rgba(33,30,26,0.96); border:1px solid #38332b; padding:9px 12px; display:flex; align-items:center; gap:9px; }
+  .map-filter { position:absolute; top:14px; left:14px; z-index:1100; background:rgba(33,30,26,0.96); border:1px solid #38332b; padding:9px 12px; display:flex; align-items:center; gap:9px; }
   .mf-label { font-size:10px; letter-spacing:1px; text-transform:uppercase; color:#948D80; }
   #citySelect { background:#16140f; border:1px solid #38332b; color:#F5F4F2; font-family:'IBM Plex Mono',monospace; font-size:13px; padding:6px 9px; cursor:pointer; }
   #citySelect:focus { outline:none; border-color:#FF9D2E; }
-  .legend { position:absolute; bottom:18px; left:18px; z-index:40; background:rgba(33,30,26,0.94); border:1px solid #38332b; padding:11px 13px; }
+  .legend { position:absolute; bottom:18px; left:18px; z-index:1100; background:rgba(33,30,26,0.94); border:1px solid #38332b; padding:11px 13px; pointer-events:none; }
   .legend-title { font-size:9px; letter-spacing:1.5px; text-transform:uppercase; color:#948D80; margin-bottom:8px; }
   .legend-row { display:flex; align-items:center; gap:8px; font-size:11px; color:#C3BDB2; margin-bottom:5px; }
   .legend-row:last-child { margin-bottom:0; }
@@ -235,7 +235,7 @@
   .card-name { font-family:'Bebas Neue',sans-serif; font-size:24px; letter-spacing:0.5px; color:#F5F4F2; line-height:1.05; }
   .card-loc { font-size:12px; color:#C3BDB2; margin:3px 0 10px; }
   .card-meta { display:flex; gap:10px; align-items:center; margin-bottom:11px; }
-  .card-tier { font-size:13px; color:#3A9D5C; font-weight:600; }
+  .card-tier { font-size:13px; color:#F5F4F2; font-weight:600; }
   .card-style { font-size:10px; letter-spacing:1px; text-transform:uppercase; color:#C3BDB2; border:1px solid #38332b; padding:2px 7px; }
   .card-snippet { font-size:13px; color:#E4DFD6; line-height:1.55; flex:1; }
   .card-by { font-size:11px; color:#948D80; margin-top:12px; }
