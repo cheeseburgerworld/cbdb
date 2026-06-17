@@ -1,0 +1,13 @@
+# CB⚡DB — Netlify configuration
+
+# Serve the OAuth client metadata as JSON (not a download)
+[[headers]]
+  for = "/oauth/client-metadata.json"
+  [headers.values]
+    Content-Type = "application/json"
+
+# Pretty URL for the OAuth redirect target
+[[redirects]]
+  from = "/oauth/callback"
+  to = "/oauth/callback.html"
+  status = 200
