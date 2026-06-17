@@ -502,22 +502,22 @@ function renderPreview(){
     const glyph=state.ratingGlyph||'[rating]';
     const tier=get('tier')||'[$]';
     let summary=get('burger')||'[Review summary]';
-    // Header + #CBDB hashtag are fixed; fit the summary into what's left of 300.
-    // (#CBDB is a hashtag, not a URL, so unlike a link it DOES count toward 300.)
+    const valueText=get('value')||'';
+    // Header + #CBDB hashtag are fixed; fit both paragraphs into what's left of 300.
     const header=restaurant+'\n'+loc+'\n'+glyph+'\n'+tier+'\n\n';
     const tail='\n\n#CBDB';
+    let body=summary+(valueText?'\n\n'+valueText:'');
     const budget=300-graphemes(header)-graphemes(tail);
-    if(graphemes(summary)>budget){
-      // trim by graphemes
+    if(graphemes(body)>budget){
       let out='';let count=0;
-      for(const g of (seg?seg.segment(summary):summary)){const ch=seg?g.segment:g; if(count>=budget-1)break; out+=ch; count++;}
-      summary=out.trimEnd()+'…';
+      for(const g of (seg?seg.segment(body):body)){const ch=seg?g.segment:g; if(count>=budget-1)break; out+=ch; count++;}
+      body=out.trimEnd()+'…';
     }
-    const count=graphemes(header)+graphemes(summary)+graphemes(tail);
+    const count=graphemes(header)+graphemes(body)+graphemes(tail);
     const cc=document.getElementById('cc');
     cc.textContent=count+' / 300';
     cc.classList.toggle('over',count>300);
-    document.getElementById('bskyText').innerHTML=(header+summary).replace(/\n/g,'<br>')+'<br><br><span class="hash">#CBDB</span>';
+    document.getElementById('bskyText').innerHTML=(header+body).replace(/\n/g,'<br>')+'<br><br><span class="hash">#CBDB</span>';
     const img=document.getElementById('bskyImg');
     const alt=get('alt');
     const altRow=document.getElementById('bskyAltRow');
@@ -551,18 +551,21 @@ async function postReview(){
       // ---- 1. Cross-post to Bluesky (also serves as the canonical record under the DID) ----
       const restaurant=get('restaurant'), loc=get('location');
       const tier=get('tier'), glyph=state.ratingGlyph||'';
-      let summary=get('burger');
+      const burgerText=get('burger'), valueText=get('value');
       const header=restaurant+'\n'+loc+'\n'+glyph+'\n'+tier+'\n\n';
       const tail='\n\n#CBDB';
-      const budget=300-graphemes(header)-graphemes(tail);
-      if(graphemes(summary)>budget) summary=[...summary].slice(0,budget-1).join('')+'…';
-      const text=header+summary+tail;
+      // Fit both paragraphs into the 300-grapheme budget; trim the second first, then the first.
+      const fixed=graphemes(header)+graphemes(tail);
+      let body=burgerText+(valueText?'\n\n'+valueText:'');
+      const budget=300-fixed;
+      if(graphemes(body)>budget) body=[...body].slice(0,budget-1).join('')+'…';
+      const text=header+body+tail;
 
       // tag #CBDB as a real hashtag facet so it powers a custom feed (not just plain text)
-      const tagIndexStart=new TextEncoder().encode(header+summary+'\n\n').length;
-      const tagIndexEnd=new TextEncoder().encode(text).length;
+      const tagStart=new TextEncoder().encode(header+body+'\n\n').length;
+      const tagEnd=new TextEncoder().encode(text).length;
       const facets=[{
-        index:{ byteStart:tagIndexStart+1, byteEnd:tagIndexEnd }, // +1 to skip the '#'
+        index:{ byteStart:tagStart+1, byteEnd:tagEnd }, // +1 to skip the '#'
         features:[{ $type:'app.bsky.richtext.facet#tag', tag:'CBDB' }]
       }];
 
@@ -572,9 +575,11 @@ async function postReview(){
         const file=photoInput.files[0];
         const bytes=new Uint8Array(await file.arrayBuffer());
         const up=await agent.uploadBlob(bytes, { encoding: file.type });
+        // Native image embed — renders inline on Bluesky, no link-card wrapper.
         embed={ $type:'app.bsky.embed.images', images:[{ image:up.data.blob, alt:get('alt')||restaurant }] };
-        // Bluesky CDN url for the index (best-effort; real url resolves after post)
-        photoUrl = 'https://cdn.bsky.app/img/feed_thumbnail/plain/'+state.did+'/'+up.data.blob.ref.toString()+'@jpeg';
+        // Correct CDN url for our own database display, built from the blob CID.
+        const cid = (up.data.blob.ref && (up.data.blob.ref.$link || up.data.blob.ref.toString())) || '';
+        photoUrl = cid ? 'https://cdn.bsky.app/img/feed_fullsize/plain/'+state.did+'/'+cid+'@jpeg' : '';
       }
 
       const rt = embed
@@ -582,13 +587,23 @@ async function postReview(){
         : await agent.post({ text, facets, createdAt:new Date().toISOString() });
       bskyUri = rt.uri;
 
-      // ---- 2. Index to Supabase so it shows on the map/database immediately ----
+      // ---- 2. Geocode the location so it lands on the map ----
+      let lat=null, lng=null;
+      try{
+        const gq='https://nominatim.openstreetmap.org/search?format=json&limit=1&q='+encodeURIComponent(loc);
+        const gres=await fetch(gq, { headers:{ 'Accept':'application/json' } });
+        const gjson=await gres.json();
+        if(gjson && gjson[0]){ lat=parseFloat(gjson[0].lat); lng=parseFloat(gjson[0].lon); }
+      }catch(geoErr){ console.warn('Geocode failed (review still saves, no map pin):', geoErr); }
+
+      // ---- 3. Index to Supabase so it shows on the map/database immediately ----
       // (Insert allowed by RLS for the signed-in author — see schema policy.)
       const row={
         author_did: state.did,
         bsky_uri: bskyUri,
         bsky_post_uri: bskyUri,
         restaurant, location: loc,
+        lat, lng,
         style: get('style'),
         price_tier: tier,
         rating: state.rating,
