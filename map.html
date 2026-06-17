@@ -62,8 +62,8 @@
   .rv-name { font-family:'Bebas Neue',sans-serif; font-size:34px; letter-spacing:1px; color:#FF9D2E; line-height:1; }
   .rv-loc { font-size:12px; color:#C3BDB2; margin-top:5px; }
   .rv-meta { display:flex; gap:12px; margin-top:14px; align-items:center; flex-wrap:wrap; }
-  .rv-rating { font-size:15px; color:#FF9D2E; }
-  .rv-rating .lab { font-family:'Bebas Neue',sans-serif; font-size:15px; color:#F5F4F2; letter-spacing:1px; margin-left:5px; }
+  .rv-rating { font-size:15px; display:inline-flex; align-items:center; gap:6px; padding:4px 11px; border-radius:4px; }
+  .rv-rating .lab { font-family:'Bebas Neue',sans-serif; font-size:15px; letter-spacing:1px; }
   .rv-tier { font-size:14px; color:#4ADE52; font-weight:600; }
   .rv-style { font-size:10px; letter-spacing:1px; text-transform:uppercase; color:#C3BDB2; border:1px solid #38332b; padding:3px 8px; }
   .rv-bucket { padding:16px 26px; border-bottom:1px solid #2a2620; }
@@ -455,6 +455,10 @@ function showReview(r){
     document.getElementById('review').classList.add('show');
     const rt=RATING[r.rating];
     rName.textContent=r.name; rLoc.textContent=r.loc; rGlyph.textContent=rt.glyph; rLabel.textContent=rt.label;
+    // colored rating chip — background = rating color, dark text for contrast
+    const chip=document.querySelector('.rv-rating');
+    if(chip){ chip.style.background=rt.color; chip.style.color='#15130f'; }
+    const lab=document.getElementById('rLabel'); if(lab) lab.style.color='#15130f';
     rTier.textContent=r.tier; rStyle.textContent=r.style; rBurger.textContent=r.burger;
     rValue.textContent=r.value; rVerdict.textContent=r.verdict?'“'+r.verdict+'”':''; rBy.textContent=r.by;
     const rd=document.getElementById('rDate');
