@@ -420,17 +420,18 @@ function renderCards(){
       const snippet = r.burger.length>110 ? r.burger.slice(0,107)+'…' : r.burger;
       const idx=reviews.indexOf(r);
       const date=(typeof shortDate==='function')?shortDate(r.createdAt):'';
+      // Card click → full view on the map. Handle click → Bluesky discussion.
       return '<div class="card">'+
-        '<div class="card-img" style="background:'+cardImage(r)+'" onclick="goReview('+idx+')">'+
+        '<div class="card-img" style="background:'+cardImage(r,rt)+'" onclick="goMap('+idx+')">'+
           '<div class="card-rating" style="color:'+rt.color+';border-color:'+rt.color+'">'+rt.glyph+' '+rt.label+'</div>'+
         '</div>'+
         '<div class="card-body">'+
-          '<div class="card-name" onclick="goReview('+idx+')">'+r.name+'</div>'+
+          '<div class="card-name" onclick="goMap('+idx+')">'+r.name+'</div>'+
           '<div class="card-loc">'+r.loc+'</div>'+
           '<div class="card-meta"><span class="card-tier">'+r.tier+'</span><span class="card-style">'+r.style+'</span></div>'+
-          '<div class="card-snippet" onclick="goReview('+idx+')">'+snippet+'</div>'+
+          '<div class="card-snippet" onclick="goMap('+idx+')">'+snippet+'</div>'+
           '<div class="card-foot">'+
-            '<span class="card-by" onclick="goReview('+idx+')">'+(r.by?'@'+r.by:'')+'</span>'+
+            '<span class="card-by" onclick="event.stopPropagation();goReview('+idx+')" title="View on Bluesky">'+(r.by?'@'+r.by:'')+'</span>'+
             (date?'<span class="card-date">'+date+'</span>':'')+
           '</div>'+
         '</div></div>';
@@ -442,18 +443,21 @@ function filterDb(f, btn){
     btn.classList.add('active');
     renderCards();
   }
+  // Handle click → Bluesky discussion
   function goReview(i){
     const r=reviews[i];
     const url=bskyWebUrl(r.bskyUri, r.by);
     if(url){ window.open(url, '_blank', 'noopener'); }
-    else { location.href='map.html?r='+i; } // fallback if no bsky link yet
   }
+  // Card click → full view on the map
+  function goMap(i){ location.href='map.html?r='+i; }
 
   let dbFilter='all';
-  function cardImage(r){
-    if(r.photoUrl) return "#2a2620 url('"+r.photoUrl+"') center/cover";
-    let h=0; for(let i=0;i<r.name.length;i++) h=(h*31+r.name.charCodeAt(i))%360;
-    return 'linear-gradient(135deg, hsl('+h+',45%,22%), hsl('+((h+40)%360)+',40%,14%))';
+  function cardImage(r, rt){
+    if(r.photoUrl) return "#16140f url('"+r.photoUrl+"') center/cover";
+    // No photo: rating color as the background so it's instantly readable.
+    const c = rt ? rt.color : '#9A7B4F';
+    return 'linear-gradient(135deg, '+c+'55, '+c+'22)';
   }
   (async()=>{ await loadReviews(); renderCards(); })();
 </script>
