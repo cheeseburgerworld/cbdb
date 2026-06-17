@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>CB⚡DB — Signing in…</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+<style>
+  body { background:#1a1815; color:#F5F4F2; font-family:'IBM Plex Mono',monospace;
+         display:flex; align-items:center; justify-content:center; height:100vh; margin:0; }
+  .msg { text-align:center; }
+  .logo { font-family:'Bebas Neue',sans-serif; font-size:34px; letter-spacing:2px; margin-bottom:14px; }
+  .bolt { color:#4ADE52; }
+  .status { font-size:13px; color:#C3BDB2; }
+</style>
+</head>
+<body>
+  <div class="msg">
+    <div class="logo">CB<span class="bolt">⚡</span>DB</div>
+    <div class="status" id="status">Completing sign in…</div>
+  </div>
+  <script type="module">
+    // Loading auth.js runs initAuth(), which finishes the OAuth redirect
+    // (exchanges the code, stores the session), then we send the user back.
+    import './../auth.js';
+    // give init a moment, then return to wherever they started (or the map)
+    const back = sessionStorage.getItem('cbdb_return') || '/map.html';
+    window.addEventListener('cbdb-auth', () => {
+      sessionStorage.removeItem('cbdb_return');
+      window.location.replace(back);
+    });
+    // fallback if the event doesn't fire
+    setTimeout(() => { window.location.replace(back); }, 4000);
+  </script>
+</body>
+</html>
