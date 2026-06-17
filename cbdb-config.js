@@ -34,8 +34,19 @@ function mapRow(r){
     value: r.value_experience,
     verdict: r.verdict || '',
     photoUrl: r.photo_url || '',
+    bskyUri: r.bsky_post_uri || r.bsky_uri || '',
     by: (r.contributors && r.contributors.handle) || r.author_handle || ''
   };
+}
+
+/* Convert an at:// URI to a clickable bsky.app post URL.
+   at://did:plc:xxx/app.bsky.feed.post/rkey  →  https://bsky.app/profile/<handle-or-did>/post/<rkey> */
+function bskyWebUrl(uri, handle){
+  if(!uri || !uri.startsWith('at://')) return '';
+  const parts = uri.split('/');
+  const rkey = parts[parts.length-1];
+  const who = handle || parts[2]; // handle if we have it, else the DID
+  return 'https://bsky.app/profile/'+who+'/post/'+rkey;
 }
 
 /* Fetch reviews from Supabase. Returns true if any rows loaded. */
