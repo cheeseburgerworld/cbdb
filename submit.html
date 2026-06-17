@@ -575,8 +575,18 @@ async function postReview(){
         const file=photoInput.files[0];
         const bytes=new Uint8Array(await file.arrayBuffer());
         const up=await agent.uploadBlob(bytes, { encoding: file.type });
-        // Native image embed — renders inline on Bluesky, no link-card wrapper.
-        embed={ $type:'app.bsky.embed.images', images:[{ image:up.data.blob, alt:get('alt')||restaurant }] };
+        // Read the image's true pixel dimensions so Bluesky frames it correctly.
+        // Without aspectRatio, Bluesky pads the image with grey bars to fill a default box.
+        const dims = await new Promise(resolve=>{
+          const im=new Image();
+          im.onload=()=>resolve({ width:im.naturalWidth, height:im.naturalHeight });
+          im.onerror=()=>resolve(null);
+          im.src=URL.createObjectURL(file);
+        });
+        // Native image embed — sized to the image's real aspect ratio, no grey letterbox.
+        const imageRecord={ image:up.data.blob, alt:get('alt')||restaurant };
+        if(dims && dims.width && dims.height){ imageRecord.aspectRatio={ width:dims.width, height:dims.height }; }
+        embed={ $type:'app.bsky.embed.images', images:[imageRecord] };
         // Correct CDN url for our own database display, built from the blob CID.
         const cid = (up.data.blob.ref && (up.data.blob.ref.$link || up.data.blob.ref.toString())) || '';
         photoUrl = cid ? 'https://cdn.bsky.app/img/feed_fullsize/plain/'+state.did+'/'+cid+'@jpeg' : '';
@@ -587,13 +597,20 @@ async function postReview(){
         : await agent.post({ text, facets, createdAt:new Date().toISOString() });
       bskyUri = rt.uri;
 
-      // ---- 2. Geocode the location so it lands on the map ----
+      // ---- 2. Geocode to place the pin on the actual restaurant ----
+      //   First try "<restaurant>, <city>" for pinpoint accuracy.
+      //   If that finds nothing (e.g. an obscure cart), fall back to the city center.
       let lat=null, lng=null;
+      async function geo(q){
+        const r=await fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&q='+encodeURIComponent(q),
+                            { headers:{ 'Accept':'application/json' } });
+        const j=await r.json();
+        return (j && j[0]) ? { lat:parseFloat(j[0].lat), lng:parseFloat(j[0].lon) } : null;
+      }
       try{
-        const gq='https://nominatim.openstreetmap.org/search?format=json&limit=1&q='+encodeURIComponent(loc);
-        const gres=await fetch(gq, { headers:{ 'Accept':'application/json' } });
-        const gjson=await gres.json();
-        if(gjson && gjson[0]){ lat=parseFloat(gjson[0].lat); lng=parseFloat(gjson[0].lon); }
+        let hit = await geo(restaurant+', '+loc);   // precise: the restaurant
+        if(!hit) hit = await geo(loc);              // fallback: the city
+        if(hit){ lat=hit.lat; lng=hit.lng; }
       }catch(geoErr){ console.warn('Geocode failed (review still saves, no map pin):', geoErr); }
 
       // ---- 3. Index to Supabase so it shows on the map/database immediately ----
