@@ -209,7 +209,7 @@
   .card { background:#211e1a; border:1px solid #38332b; overflow:hidden; cursor:pointer; transition:transform .12s, border-color .12s; display:flex; flex-direction:column; }
   .card:hover { transform:translateY(-3px); border-color:#FF9D2E; }
   .card-img { width:100%; aspect-ratio:4/3; background:#2a2620; background-size:cover; background-position:center; position:relative; }
-  .card-rating { position:absolute; top:10px; left:10px; font-size:11px; font-weight:600; letter-spacing:0.5px; padding:4px 9px; background:rgba(22,20,15,0.92); border:1px solid; }
+  .card-rating { position:absolute; top:10px; left:10px; font-size:11px; font-weight:600; letter-spacing:0.5px; padding:4px 9px; border-radius:4px; }
   .card-body { padding:15px 16px 17px; flex:1; display:flex; flex-direction:column; }
   .card-name { font-family:'Bebas Neue',sans-serif; font-size:24px; letter-spacing:0.5px; color:#F5F4F2; line-height:1.05; cursor:pointer; }
   .card-name:hover { color:#FF9D2E; }
@@ -423,7 +423,7 @@ function renderCards(){
       // Card click → full view on the map. Handle click → Bluesky discussion.
       return '<div class="card">'+
         '<div class="card-img" style="background:'+cardImage(r,rt)+'" onclick="goMap('+idx+')">'+
-          '<div class="card-rating" style="color:'+rt.color+';border-color:'+rt.color+'">'+rt.glyph+' '+rt.label+'</div>'+
+          '<div class="card-rating" style="background:'+rt.color+';color:#15130f">'+rt.glyph+' '+rt.label+'</div>'+
         '</div>'+
         '<div class="card-body">'+
           '<div class="card-name" onclick="goMap('+idx+')">'+r.name+'</div>'+
