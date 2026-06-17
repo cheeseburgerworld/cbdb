@@ -441,7 +441,6 @@ function renderStats(){
     const lb=Object.entries(byHandle).sort((a,b)=>b[1]-a[1]);
     document.getElementById('leaderboard').innerHTML = lb.length ? lb.map(([h,n],i)=>
       '<div class="lb-row'+(i===0?' top':'')+'"><span class="lb-rank">'+(i+1)+'</span>'+
-      '<span class="lb-av">'+h.charAt(0).toUpperCase()+'</span>'+
       '<span class="lb-handle">'+h+'</span>'+
       '<span class="lb-count">'+n+'<span>burgers</span></span></div>').join('')
       : '<div style="color:#948D80;font-size:13px;padding:14px 0;">No contributors yet.</div>';
