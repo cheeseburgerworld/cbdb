@@ -35,8 +35,17 @@ function mapRow(r){
     verdict: r.verdict || '',
     photoUrl: r.photo_url || '',
     bskyUri: r.bsky_post_uri || r.bsky_uri || '',
+    createdAt: r.created_at || '',
     by: (r.contributors && r.contributors.handle) || r.author_handle || ''
   };
+}
+
+/* "Jun 2026" style short date for cards/map */
+function shortDate(iso){
+  if(!iso) return '';
+  const d=new Date(iso);
+  if(isNaN(d)) return '';
+  return d.toLocaleDateString('en-US',{ month:'short', year:'numeric' });
 }
 
 /* Convert an at:// URI to a clickable bsky.app post URL.
