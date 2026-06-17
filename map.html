@@ -400,6 +400,8 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="cbdb-config.js"></script>
+<script type="module" src="auth.js"></script>
+<script src="auth-bridge.js"></script>
 <script>
 
 
@@ -437,10 +439,7 @@
     document.getElementById('drawer').classList.remove('show');
   }
   // Restore signed-in nav state across pages (demo uses window; real build reads session)
-  function paintSignedIn(){
-    if(!state.signedIn) return;
-    document.getElementById('navId').innerHTML='<span class="dot"></span>Online · @'+state.handle;
-  }
+  function paintSignedIn(){ /* handled by auth-bridge.js */ }
   paintSignedIn();
 
 
@@ -536,6 +535,13 @@ function showReview(r){
     buildMarkers();
     renderBest();
     buildCityDropdown();
+    if(!reviews.length){
+      // empty database: center on Portland, show a prompt in the panel
+      map.setView([45.535,-122.66],12);
+      const bl=document.getElementById('bestList');
+      if(bl) bl.innerHTML='<div style="color:#948D80;font-size:13px;padding:8px 0;">No reviews yet. <a href="submit.html" style="color:#FF9D2E;">Post the first one →</a></div>';
+      return;
+    }
     const qp=new URLSearchParams(location.search);
     if(qp.has('r')){ const idx=+qp.get('r'); const r=reviews[idx]; if(r){ map.setView([r.lat,r.lng],15); showReview(r); } }
     else { fitAll(); }
