@@ -58,7 +58,7 @@ color:#F5F4F2; background:none; border:1px solid transparent; padding:8px 14px; 
 .rv-by { padding:14px 26px; font-size:11px; color:#948D80; letter-spacing:0.5px; }
 .rv-by b { color:#C3BDB2; }
 .cb-pin { width:22px; height:22px; border-radius:50%; border:3px solid #1a1815; box-shadow:0 0 0 1px rgba(0,0,0,0.6), 0 0 10px rgba(0,0,0,0.4); }
-.pin-legendary { background:#5BD94B; } .pin-trip { background:#FFC72C; } .pin-solid { background:#E8843C; } .pin-skip { background:#9A7B4F; }
+.pin-legendary { background:#5BD94B; } .pin-trip { background:#FFC72C; } .pin-solid { background:#E8843C; } .pin-skip { background:#6B4A2F; }
 .leaflet-popup-content-wrapper { background:#211e1a; color:#F5F4F2; border:1px solid #FF9D2E; border-radius:0; font-family:'IBM Plex Mono',monospace; }
 .leaflet-popup-content { margin:10px 14px; }
 .leaflet-popup-tip { background:#FF9D2E; }
@@ -216,10 +216,10 @@ input[type=file]::file-selector-button { background:#38332b; color:#F5F4F2; bord
 .bar-fill { height:100%; width:0; transition:width .5s; }
 .bar-n { font-family:'Bebas Neue',sans-serif; font-size:18px; color:#F5F4F2; min-width:32px; text-align:right; }
 .city-row { display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:1px solid #2a2620; }
-.city-name { font-size:14px; color:#F5F4F2; min-width:140px; }
+.city-name { font-size:14px; color:#F5F4F2; flex:0 0 150px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .city-track { flex:1; height:8px; background:#16140f; }
 .city-fill { height:100%; background:#FF9D2E; }
-.city-n { font-size:13px; color:#C3BDB2; min-width:28px; text-align:right; }
+.city-n { font-size:13px; color:#C3BDB2; flex:0 0 28px; text-align:right; }
 .lb-sub { font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:1px; text-transform:uppercase; color:#948D80; }
 .lb-row { display:flex; align-items:center; gap:14px; padding:13px 14px; border-bottom:1px solid #2a2620; }
 .lb-row.top { background:#1d2417; border-left:3px solid #4ADE52; }
@@ -237,12 +237,13 @@ input[type=file]::file-selector-button { background:#38332b; color:#F5F4F2; bord
 .drawer-head { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:22px; }
 .drawer-id { display:flex; gap:13px; align-items:center; }
 .avatar.lg { width:50px; height:50px; font-size:24px; }
+.rank-badge { width:34px; height:34px; border-radius:6px; background:#16140f; border:1px solid #38332b; display:flex; align-items:center; justify-content:center; font-size:18px; line-height:1; flex-shrink:0; }
 .p-name { font-family:'Bebas Neue',sans-serif; font-size:24px; letter-spacing:0.5px; color:#F5F4F2; }
 .p-handle { font-size:12px; color:#948D80; }
 .drawer-x { background:none; border:none; color:#C3BDB2; font-size:26px; cursor:pointer; line-height:1; }
 .p-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:18px; }
 .p-stat { background:#16140f; border:1px solid #38332b; padding:14px 8px; text-align:center; }
-.p-num { font-family:'Bebas Neue',sans-serif; font-size:30px; color:#FF9D2E; line-height:1; }
+.p-num { font-family:'Bebas Neue',sans-serif; font-size:30px; color:#F5F4F2; line-height:1; }
 .p-lab { font-size:10px; letter-spacing:1px; text-transform:uppercase; color:#C3BDB2; margin-top:6px; }
 .p-next { background:#1d2417; border:1px solid #38332b; padding:12px 14px; font-size:12px; color:#C3BDB2; line-height:1.5; margin-bottom:20px; }
 .p-next b { color:#4ADE52; }
@@ -324,14 +325,14 @@ a.tab { text-decoration:none; display:inline-block; }
 <div class="bar-row"><span class="bar-lab" style="color:#5BD94B">⭐⭐⭐ Legendary</span><div class="bar-track"><div class="bar-fill" id="barLegendary" style="background:#5BD94B"></div></div><span class="bar-n" id="nLegendary">—</span></div>
 <div class="bar-row"><span class="bar-lab" style="color:#FFC72C">⭐⭐ Worth A Trip</span><div class="bar-track"><div class="bar-fill" id="barTrip" style="background:#FFC72C"></div></div><span class="bar-n" id="nTrip">—</span></div>
 <div class="bar-row"><span class="bar-lab" style="color:#E8843C">⭐ Solid</span><div class="bar-track"><div class="bar-fill" id="barSolid" style="background:#E8843C"></div></div><span class="bar-n" id="nSolid">—</span></div>
-<div class="bar-row"><span class="bar-lab" style="color:#9A7B4F">ㄨ Skip It</span><div class="bar-track"><div class="bar-fill" id="barSkip" style="background:#9A7B4F"></div></div><span class="bar-n" id="nSkip">—</span></div>
+<div class="bar-row"><span class="bar-lab" style="color:#B08862">ㄨ Skip It</span><div class="bar-track"><div class="bar-fill" id="barSkip" style="background:#6B4A2F"></div></div><span class="bar-n" id="nSkip">—</span></div>
 </div>
 <div class="doc-section">
 <div class="doc-head">By city</div>
 <div id="cityList"></div>
 </div>
 <div class="doc-section">
-<div class="doc-head">Leaderboard <span class="lb-sub">Top contributors</span></div>
+<div class="doc-head">Leaderboard</div>
 <div class="lb" id="leaderboard"></div>
 </div>
 </div>
@@ -341,7 +342,7 @@ a.tab { text-decoration:none; display:inline-block; }
 <div class="drawer" id="drawer">
 <div class="drawer-head">
 <div class="drawer-id">
-<div class="avatar lg" id="pAv">A</div>
+<div class="rank-badge" id="pBadge" style="display:none;">⚡</div>
 <div><div class="p-name" id="pName">—</div><div class="p-handle" id="pHandle">—</div></div>
 </div>
 <button class="drawer-x" onclick="closeProfile()">×</button>
@@ -362,18 +363,31 @@ a.tab { text-decoration:none; display:inline-block; }
 // ── Shared session (demo: in-memory; real build = ATProto OAuth) ──
 const state = (window.__cbdb_state = window.__cbdb_state || {signedIn:false,handle:null,displayName:null});
 // ── Profile drawer (shared) ──
-const RANKS=[{min:0,name:'New Here'},{min:1,name:'Reviewer'},{min:10,name:'Contributor'},{min:25,name:'Burger Master'}];
+// Ranks climb by approved-review count. Each earned tier carries an emoji badge —
+// building the burger as you climb: 🥬 → 🧀 → 🍔 → ⚡ (the CB⚡DB bolt at the top).
+const RANKS=[
+{min:0,name:'Guest'},
+{min:1,name:'Reviewer',badge:'🥬'},
+{min:10,name:'Regular',badge:'🧀'},
+{min:25,name:'Contributor',badge:'🍔'},
+{min:50,name:'Burger Master',badge:'⚡'}
+];
 function rankFor(n){ let r=RANKS[0]; for(const x of RANKS) if(n>=x.min) r=x; return r; }
 function nextRank(n){ for(const x of RANKS) if(n<x.min) return x; return null; }
 function openProfile(){
 if(!state.signedIn){ window.location.href='submit.html'; return; }
 const mine=reviews.filter(r=>r.by===state.handle);
 const cities=new Set(mine.map(r=>r.loc)).size;
-document.getElementById('pAv').textContent=state.displayName.charAt(0).toUpperCase();
+const rk=rankFor(mine.length);
+const badgeEl=document.getElementById('pBadge');
+if(badgeEl){
+if(rk.badge){ badgeEl.style.display='flex'; badgeEl.textContent=rk.badge; badgeEl.title=rk.name; }
+else { badgeEl.style.display='none'; }
+}
 document.getElementById('pName').textContent=state.displayName;
 document.getElementById('pHandle').textContent='@'+state.handle;
 document.getElementById('pCount').textContent=mine.length;
-document.getElementById('pRank').textContent=rankFor(mine.length).name;
+document.getElementById('pRank').textContent=rk.name;
 document.getElementById('pCities').textContent=cities;
 const nx=nextRank(mine.length);
 document.getElementById('pNext').innerHTML = nx
