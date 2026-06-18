@@ -415,7 +415,7 @@
         method:'POST',
         headers:{ apikey:CBDB_SUPABASE_ANON, Authorization:'Bearer '+CBDB_SUPABASE_ANON,
                   'Content-Type':'application/json', Prefer:'resolution=merge-duplicates' },
-        body: JSON.stringify({ did:state.did, handle:state.handle, display_name:state.displayName, agreed_at:state.agreedAt })
+        body: JSON.stringify({ did:state.did, handle:state.handle, display_name:state.displayName, avatar:state.avatar||null, agreed_at:state.agreedAt })
       }).catch(e=>console.warn('Could not persist agreement:', e));
     }
     document.getElementById('guidelinesModal').classList.remove('show');
@@ -519,7 +519,7 @@
         method:'POST',
         headers:{ apikey:CBDB_SUPABASE_ANON, Authorization:'Bearer '+CBDB_SUPABASE_ANON,
                   'Content-Type':'application/json', Prefer:'resolution=merge-duplicates' },
-        body: JSON.stringify({ did:state.did, handle:state.handle, display_name:state.displayName })
+        body: JSON.stringify({ did:state.did, handle:state.handle, display_name:state.displayName, avatar:state.avatar||null })
       });
       const res=await fetch(CBDB_SUPABASE_URL+'/rest/v1/reviews', {
         method:'POST',
