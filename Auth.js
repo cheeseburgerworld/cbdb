@@ -17,7 +17,7 @@ const HANDLE_RESOLVER = 'https://bsky.social';
 // Shared session state the rest of the site reads.
 // (window.__cbdb_state is the same object the pages already use.)
 const state = (window.__cbdb_state = window.__cbdb_state || {
-  signedIn: false, handle: null, displayName: null, did: null
+  signedIn: false, handle: null, displayName: null, did: null, avatar: null
 });
 
 let oauthClient = null;
@@ -44,7 +44,7 @@ async function initAuth() {
   if (session) {
     agent = new Agent(session);
     state.did = session.did;
-    // resolve handle + display name via the PUBLIC appview (no auth needed → no 401)
+    // resolve handle + display name + avatar via the PUBLIC appview (no auth needed → no 401)
     try {
       const pub = await fetch(
         'https://public.api.bsky.app/xrpc/app.bsky.actor.getProfile?actor=' + encodeURIComponent(session.did)
@@ -53,6 +53,7 @@ async function initAuth() {
         const d = await pub.json();
         state.handle = d.handle;
         state.displayName = d.displayName || d.handle;
+        state.avatar = d.avatar || null;
       } else if (!state.handle) {
         state.handle = session.did; state.displayName = session.did;
       }
@@ -63,7 +64,7 @@ async function initAuth() {
     cacheSession();
   } else {
     // No live session: clear the optimistic cache so we don't show a stale "Online".
-    state.signedIn = false; state.handle = null; state.displayName = null; state.did = null;
+    state.signedIn = false; state.handle = null; state.displayName = null; state.did = null; state.avatar = null;
     try { localStorage.removeItem('cbdb_auth'); } catch {}
   }
 
@@ -78,7 +79,7 @@ function cacheSession() {
   try {
     localStorage.setItem('cbdb_auth', JSON.stringify({
       signedIn: state.signedIn, handle: state.handle,
-      displayName: state.displayName, did: state.did
+      displayName: state.displayName, did: state.did, avatar: state.avatar
     }));
   } catch {}
 }
@@ -100,7 +101,7 @@ async function signIn(handle) {
 async function signOut() {
   try { if (oauthClient && state.did) await oauthClient.revoke(state.did); } catch {}
   try { localStorage.removeItem('cbdb_auth'); } catch {}
-  state.signedIn = false; state.handle = null; state.displayName = null; state.did = null;
+  state.signedIn = false; state.handle = null; state.displayName = null; state.did = null; state.avatar = null;
   window.dispatchEvent(new CustomEvent('cbdb-auth', { detail: { ...state } }));
 }
 
