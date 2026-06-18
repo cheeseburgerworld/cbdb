@@ -15,7 +15,7 @@ const RATING = {
   legendary:{glyph:'⭐⭐⭐',label:'Legendary',cls:'pin-legendary',color:'#5BD94B'},
   trip:{glyph:'⭐⭐',label:'Worth A Trip',cls:'pin-trip',color:'#FFC72C'},
   solid:{glyph:'⭐',label:'Solid',cls:'pin-solid',color:'#E8843C'},
-  skip:{glyph:'ㄨ',label:'Skip It',cls:'pin-skip',color:'#9A7B4F'}
+  skip:{glyph:'ㄨ',label:'Skip It',cls:'pin-skip',color:'#6B4A2F'}
 };
 
 // Live reviews — empty until loadReviews() pulls from Supabase.
@@ -36,8 +36,24 @@ function mapRow(r){
     photoUrl: r.photo_url || '',
     bskyUri: r.bsky_post_uri || r.bsky_uri || '',
     createdAt: r.created_at || '',
+    // DID is canonical identity (handles change); keep both so the profile
+    // can match a contributor's reviews by DID first, handle as fallback.
+    did: r.author_did || (r.contributors && r.contributors.did) || '',
     by: (r.contributors && r.contributors.handle) || r.author_handle || ''
   };
+}
+
+/* Return the signed-in contributor's own reviews.
+   Matches on DID (canonical) first, then falls back to handle.
+   `st` is the shared session state (window.__cbdb_state). */
+function myReviews(st){
+  if(!st) return [];
+  const did = st.did || '';
+  const handle = (st.handle || '').replace(/^@/, '');
+  return reviews.filter(r => {
+    if(did && r.did) return r.did === did;
+    return r.by && r.by.replace(/^@/, '') === handle;
+  });
 }
 
 /* "Jun 2026" style short date for cards/map */
@@ -62,7 +78,7 @@ function bskyWebUrl(uri, handle){
 async function loadReviews(){
   try{
     const url = CBDB_SUPABASE_URL +
-      '/rest/v1/reviews?select=*,contributors(handle)&order=created_at.desc';
+      '/rest/v1/reviews?select=*,contributors(handle,did)&order=created_at.desc';
     const res = await fetch(url, {
       headers: { apikey: CBDB_SUPABASE_ANON, Authorization: 'Bearer ' + CBDB_SUPABASE_ANON }
     });
