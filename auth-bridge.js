@@ -7,6 +7,20 @@
 (function(){
   const state = (window.__cbdb_state = window.__cbdb_state || {});
 
+  // Build an avatar element: real Bluesky photo if we have it, else the initial letter.
+  // `cls` is the base class ('avatar' for the id-strip, 'bsky-av' for the preview card).
+  function avatarHTML(cls){
+    const initial = (state.displayName||state.handle||'?').charAt(0).toUpperCase();
+    if(state.avatar){
+      return '<div class="'+cls+'" style="overflow:hidden;padding:0;">'+
+        '<img src="'+state.avatar+'" alt="" '+
+        'style="width:100%;height:100%;object-fit:cover;display:block;" '+
+        'onerror="this.parentNode.textContent=\''+initial+'\'">'+
+        '</div>';
+    }
+    return '<div class="'+cls+'">'+initial+'</div>';
+  }
+
   // Paint the nav status pill from current auth state.
   function paintNav(){
     const nav = document.getElementById('navId');
@@ -29,9 +43,16 @@
       const initial = (state.displayName||state.handle||'?').charAt(0).toUpperCase();
       const strip = document.getElementById('idStrip');
       if(strip) strip.innerHTML =
-        '<div class="avatar">'+initial+'</div>'+
+        avatarHTML('avatar')+
         '<div><div class="handle">@'+state.handle+'</div><div class="role">Contributor</div></div>';
-      const bAv=document.getElementById('bAv'); if(bAv) bAv.textContent=initial;
+      // Bluesky preview card avatar: real photo if present, else initial.
+      const bAv=document.getElementById('bAv');
+      if(bAv){
+        if(state.avatar){
+          bAv.style.overflow='hidden'; bAv.style.padding='0';
+          bAv.innerHTML='<img src="'+state.avatar+'" alt="" style="width:100%;height:100%;object-fit:cover;display:block;" onerror="this.parentNode.textContent=\''+initial+'\'">';
+        } else { bAv.textContent=initial; }
+      }
       const bName=document.getElementById('bName'); if(bName) bName.textContent=state.displayName||state.handle;
       const bHandle=document.getElementById('bHandle'); if(bHandle) bHandle.textContent='@'+state.handle;
       if(typeof renderPreview==='function') renderPreview();
@@ -59,10 +80,15 @@
       alert('Sign-in failed: ' + (e.message||e));
     }
   };
-
   // Replace the old simulated signIn() global so existing onclick="signIn()" works.
   window.signIn = window.cbdbSignInPrompt;
 
-  // Sign out (optional; wire to a button if desired)
-  window.cbdbSignOut = function(){ window.cbdbAuth.signOut(); };
+  // Sign out — closes the profile drawer (if open) and repaints the nav.
+  window.cbdbSignOut = function(){
+    const drawer = document.getElementById('drawer');
+    const dbg = document.getElementById('drawerBg');
+    if(drawer) drawer.classList.remove('show');
+    if(dbg) dbg.classList.remove('show');
+    window.cbdbAuth.signOut();
+  };
 })();
