@@ -254,6 +254,9 @@ input[type=file]::file-selector-button { background:#38332b; color:#F5F4F2; bord
 .ph-rating { font-size:12px; flex-shrink:0; }
 .ph-loc { font-size:11px; color:#948D80; margin-top:2px; }
 .p-empty { font-size:13px; color:#948D80; padding:20px 0; text-align:center; line-height:1.6; }
+  .p-signout { margin-top:26px; padding-top:18px; border-top:1px solid #2a2620; text-align:center; }
+  .signout-link { background:none; border:1px solid #38332b; color:#948D80; font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:0.5px; padding:9px 18px; cursor:pointer; transition:border-color .12s, color .12s; }
+  .signout-link:hover { border-color:#FF5A4E; color:#FF5A4E; }
 @media (max-width:760px) {
 .nav { gap:12px; }
 .nav-left { gap:14px; min-width:0; flex:1; }
@@ -359,6 +362,7 @@ a.tab { text-decoration:none; display:inline-block; }
 <div class="p-next" id="pNext"></div>
 <div class="p-hist-label">Your reviews</div>
 <div class="p-history" id="pHistory"></div>
+  <div class="p-signout"><button class="signout-link" onclick="cbdbSignOut()">Sign out</button></div>
 </div>
 <script>
 const RATING = {
