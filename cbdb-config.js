@@ -11,11 +11,13 @@ const CBDB_SUPABASE_URL  = 'https://nakdvfxbopakdzaxhnwk.supabase.co';
 const CBDB_SUPABASE_ANON = 'sb_publishable_Lz84QCjGGjaHR7O60rYmAw_uUm0AnDT';
 
 // ---- Rating metadata (shared across pages) ----
+// `color` = chip/pin background. `text` = readable label color ON that background:
+// the three light tiers take dark ink; Skip It's dark brown takes white.
 const RATING = {
-  legendary:{glyph:'⭐⭐⭐',label:'Legendary',cls:'pin-legendary',color:'#5BD94B'},
-  trip:{glyph:'⭐⭐',label:'Worth A Trip',cls:'pin-trip',color:'#FFC72C'},
-  solid:{glyph:'⭐',label:'Solid',cls:'pin-solid',color:'#E8843C'},
-  skip:{glyph:'ㄨ',label:'Skip It',cls:'pin-skip',color:'#6B4A2F'}
+  legendary:{glyph:'⭐⭐⭐',label:'Legendary',cls:'pin-legendary',color:'#5BD94B',text:'#15130f'},
+  trip:{glyph:'⭐⭐',label:'Worth A Trip',cls:'pin-trip',color:'#FFC72C',text:'#15130f'},
+  solid:{glyph:'⭐',label:'Solid',cls:'pin-solid',color:'#E8843C',text:'#15130f'},
+  skip:{glyph:'ㄨ',label:'Skip It',cls:'pin-skip',color:'#6B4A2F',text:'#F5F4F2'}
 };
 
 // Live reviews — empty until loadReviews() pulls from Supabase.
@@ -39,7 +41,9 @@ function mapRow(r){
     // DID is canonical identity (handles change); keep both so the profile
     // can match a contributor's reviews by DID first, handle as fallback.
     did: r.author_did || (r.contributors && r.contributors.did) || '',
-    by: (r.contributors && r.contributors.handle) || r.author_handle || ''
+    by: (r.contributors && r.contributors.handle) || r.author_handle || '',
+    // contributor avatar, if the contributors table stores one (nullable)
+    byAvatar: (r.contributors && r.contributors.avatar) || ''
   };
 }
 
@@ -78,7 +82,7 @@ function bskyWebUrl(uri, handle){
 async function loadReviews(){
   try{
     const url = CBDB_SUPABASE_URL +
-      '/rest/v1/reviews?select=*,contributors(handle,did)&order=created_at.desc';
+      '/rest/v1/reviews?select=*,contributors(handle,did,avatar)&order=created_at.desc';
     const res = await fetch(url, {
       headers: { apikey: CBDB_SUPABASE_ANON, Authorization: 'Bearer ' + CBDB_SUPABASE_ANON }
     });
