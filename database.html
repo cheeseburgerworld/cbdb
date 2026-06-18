@@ -262,6 +262,8 @@
   .p-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:18px; }
   .p-stat { background:#16140f; border:1px solid #38332b; padding:14px 8px; text-align:center; }
   .p-num { font-family:'Bebas Neue',sans-serif; font-size:30px; color:#F5F4F2; line-height:1; }
+  .p-stat.rank-link { cursor:pointer; transition:border-color .12s; }
+  .p-stat.rank-link:hover { border-color:#FF9D2E; }
   .p-lab { font-size:10px; letter-spacing:1px; text-transform:uppercase; color:#C3BDB2; margin-top:6px; }
   .p-next { background:#1d2417; border:1px solid #38332b; padding:12px 14px; font-size:12px; color:#C3BDB2; line-height:1.5; margin-bottom:20px; }
   .p-next b { color:#4ADE52; }
@@ -366,7 +368,7 @@
   </div>
   <div class="p-stats">
     <div class="p-stat"><div class="p-num" id="pCount">0</div><div class="p-lab">Reviews</div></div>
-    <div class="p-stat"><div class="p-num" id="pRank">—</div><div class="p-lab">Rank</div></div>
+    <div class="p-stat rank-link" onclick="location.href='ranks.html'" title="How ranks work"><div class="p-num" id="pRank">—</div><div class="p-lab">Rank</div></div>
     <div class="p-stat"><div class="p-num" id="pCities">0</div><div class="p-lab">Cities</div></div>
   </div>
   <div class="p-next" id="pNext"></div>
@@ -447,7 +449,7 @@ function renderCards(){
       // Card click → full view on the map. Handle click → Bluesky discussion.
       return '<div class="card">'+
         '<div class="card-img" style="background:'+cardImage(r,rt)+'" onclick="goMap('+idx+')">'+
-          '<div class="card-rating" style="background:'+rt.color+';color:#15130f">'+rt.glyph+' '+rt.label+'</div>'+
+          '<div class="card-rating" style="background:'+rt.color+';color:'+(rt.text||'#15130f')+'">'+rt.glyph+' '+rt.label+'</div>'+
         '</div>'+
         '<div class="card-body">'+
           '<div class="card-name" onclick="goMap('+idx+')">'+r.name+'</div>'+
