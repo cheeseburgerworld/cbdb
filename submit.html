@@ -302,7 +302,7 @@
   function nextRank(n){ for(const x of RANKS) if(n<x.min) return x; return null; }
   function openProfile(){
     if(!state.signedIn){ window.location.href='submit.html'; return; }
-    const mine=reviews.filter(r=>r.by===state.handle);
+    const mine=(typeof myReviews==="function")?myReviews(state):reviews.filter(r=>r.by===state.handle);
     const cities=new Set(mine.map(r=>r.loc)).size;
     const rk=rankFor(mine.length);
     const badgeEl=document.getElementById('pBadge');
