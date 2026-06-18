@@ -244,6 +244,8 @@ input[type=file]::file-selector-button { background:#38332b; color:#F5F4F2; bord
 .p-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:18px; }
 .p-stat { background:#16140f; border:1px solid #38332b; padding:14px 8px; text-align:center; }
 .p-num { font-family:'Bebas Neue',sans-serif; font-size:30px; color:#F5F4F2; line-height:1; }
+  .p-stat.rank-link { cursor:pointer; transition:border-color .12s; }
+  .p-stat.rank-link:hover { border-color:#FF9D2E; }
 .p-lab { font-size:10px; letter-spacing:1px; text-transform:uppercase; color:#C3BDB2; margin-top:6px; }
 .p-next { background:#1d2417; border:1px solid #38332b; padding:12px 14px; font-size:12px; color:#C3BDB2; line-height:1.5; margin-bottom:20px; }
 .p-next b { color:#4ADE52; }
@@ -352,7 +354,7 @@ a.tab { text-decoration:none; display:inline-block; }
 </div>
 <div class="p-stats">
 <div class="p-stat"><div class="p-num" id="pCount">0</div><div class="p-lab">Reviews</div></div>
-<div class="p-stat"><div class="p-num" id="pRank">—</div><div class="p-lab">Rank</div></div>
+<div class="p-stat rank-link" onclick="location.href='ranks.html'" title="How ranks work"><div class="p-num" id="pRank">—</div><div class="p-lab">Rank</div></div>
 <div class="p-stat"><div class="p-num" id="pCities">0</div><div class="p-lab">Cities</div></div>
 </div>
 <div class="p-next" id="pNext"></div>
@@ -416,7 +418,11 @@ function renderStats(){
 const total=reviews.length;
 const cities=new Set(reviews.map(r=>r.loc)).size;
 const byHandle={};
-reviews.forEach(r=>{ byHandle[r.by]=(byHandle[r.by]||0)+1; });
+reviews.forEach(r=>{
+  if(!byHandle[r.by]) byHandle[r.by]={n:0, avatar:r.byAvatar||''};
+  byHandle[r.by].n++;
+  if(!byHandle[r.by].avatar && r.byAvatar) byHandle[r.by].avatar=r.byAvatar;
+});
 const contribs=Object.keys(byHandle).length;
 document.getElementById('sTotal').textContent=total;
 document.getElementById('sCities').textContent=cities;
@@ -435,11 +441,17 @@ const cityMax=Math.max(...Object.values(byCity),1);
 document.getElementById('cityList').innerHTML=Object.entries(byCity).sort((a,b)=>b[1]-a[1]).map(([c,n])=>
 '<div class="city-row"><span class="city-name">'+c+'</span><div class="city-track"><div class="city-fill" style="width:'+(n/cityMax*100)+'%"></div></div><span class="city-n">'+n+'</span></div>').join('');
 // leaderboard
-const lb=Object.entries(byHandle).sort((a,b)=>b[1]-a[1]);
-document.getElementById('leaderboard').innerHTML = lb.length ? lb.map(([h,n],i)=>
-'<div class="lb-row'+(i===0?' top':'')+'"><span class="lb-rank">'+(i+1)+'</span>'+
-'<span class="lb-handle">'+h+'</span>'+
-'<span class="lb-count">'+n+'<span>burgers</span></span></div>').join('')
+const lb=Object.entries(byHandle).sort((a,b)=>b[1].n-a[1].n);
+document.getElementById('leaderboard').innerHTML = lb.length ? lb.map(([h,info],i)=>{
+  const initial=(h||'?').charAt(0).toUpperCase();
+  const av = info.avatar
+    ? '<div class="lb-av" style="overflow:hidden;padding:0;"><img src="'+info.avatar+'" alt="" style="width:100%;height:100%;object-fit:cover;display:block;" onerror="this.parentNode.textContent=\''+initial+'\'"></div>'
+    : '<div class="lb-av">'+initial+'</div>';
+  return '<div class="lb-row'+(i===0?' top':'')+'"><span class="lb-rank">'+(i+1)+'</span>'+
+    av+
+    '<span class="lb-handle">'+h+'</span>'+
+    '<span class="lb-count">'+info.n+'<span>burgers</span></span></div>';
+}).join('')
 : '<div style="color:#948D80;font-size:13px;padding:14px 0;">No contributors yet.</div>';
 }
 (async()=>{ await loadReviews(); renderStats(); })();
