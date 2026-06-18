@@ -7,477 +7,491 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
 <style>
-/* ── CONTRAST TOKENS (Anthropic-style dark, all solid hex) ──
-ground #1a1815 · surface #211e1a · raised #2a2620 · border #38332b
-text #F5F4F2 (AAA) · text-2 #C3BDB2 (AA) · text-3 #948D80 (meta only)
-amber #FF9D2E · green #4ADE52 · bsky #3B9AF8 — accents, not body text */
-* { box-sizing:border-box; margin:0; padding:0; }
-html, body { height:100%; }
-body { background:#1a1815; color:#F5F4F2; font-family:'IBM Plex Mono',monospace; line-height:1.6; -webkit-font-smoothing:antialiased; }
-/* Top nav */
-.nav { position:sticky; top:0; z-index:50; display:flex; align-items:center; justify-content:space-between;
-background:#211e1a; border-bottom:2px solid #FF9D2E; padding:12px 20px; }
-.nav-left { display:flex; align-items:center; gap:22px; }
-.logo { font-family:'Bebas Neue',sans-serif; font-size:30px; letter-spacing:2px; color:#F5F4F2; line-height:1; }
-.logo .bolt { color:#4ADE52; }
-.tabs { display:flex; gap:4px; }
-.tab { font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:0.5px; text-transform:uppercase;
-color:#F5F4F2; background:none; border:1px solid transparent; padding:8px 14px; cursor:pointer; }
-.tab:hover { color:#F5F4F2; }
-.tab.active { color:#15130f; background:#FF9D2E; font-weight:600; }
-.nav-id { font-size:12px; color:#C3BDB2; display:flex; align-items:center; gap:8px; cursor:pointer; }
-.nav-id .dot { width:8px; height:8px; border-radius:50%; background:#4ADE52; flex-shrink:0; }
-.nav-id .dot.out { background:#948D80; }
-/* ── DATABASE CARD VIEW ── */
-.db-wrap { max-width:1100px; margin:0 auto; padding:34px 20px 90px; }
-.db-bar { margin-bottom:24px; }
-.eyebrow { font-size:12px; letter-spacing:2px; text-transform:uppercase; color:#4ADE52; margin-bottom:12px; display:flex; align-items:center; gap:9px; }
-.live-dot { width:7px; height:7px; border-radius:50%; background:#4ADE52; flex-shrink:0; animation:pulse 2s ease-in-out infinite; }
-@keyframes pulse { 0%,100% { box-shadow:0 0 0 0 rgba(74,222,82,.5); } 50% { box-shadow:0 0 0 6px rgba(74,222,82,0); } }
-.db-title { font-family:'Bebas Neue',sans-serif; font-size:42px; letter-spacing:1.5px; color:#FF9D2E; line-height:1; margin-bottom:18px; }
-.db-filters { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
-.filter-label { font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:#948D80; margin-right:2px; }
-.chip { font-family:'IBM Plex Mono',monospace; font-size:12px; color:#C3BDB2; background:#211e1a; border:1px solid #38332b; padding:7px 12px; cursor:pointer; transition:border-color .12s, color .12s; }
-.chip:hover { border-color:#FF9D2E; color:#F5F4F2; }
-.chip.active { background:#FF9D2E; color:#15130f; border-color:#FF9D2E; font-weight:600; }
-.filter-sep { width:1px; height:22px; background:#38332b; flex-shrink:0; }
-.filter-block { margin-top:10px; }
-.result-count { font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:#948D80; margin:22px 0 16px; }
-.card-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(320px, 1fr)); gap:18px; }
-.card { background:#211e1a; border:1px solid #38332b; overflow:hidden; transition:transform .12s, border-color .12s; display:flex; flex-direction:column; }
-.card:hover { transform:translateY(-3px); border-color:#FF9D2E; }
-.card-img { width:100%; aspect-ratio:4/3; background:#16140f; background-size:cover; background-position:center; position:relative; display:flex; align-items:center; justify-content:center; font-size:46px; }
-.card-rating { position:absolute; top:10px; left:10px; font-size:13px; padding:4px 9px; background:rgba(22,20,15,0.92); border:1px solid; font-family:'Bebas Neue',sans-serif; letter-spacing:1px; }
-.card-body { padding:15px 16px 17px; flex:1; display:flex; flex-direction:column; }
-.card-name { font-family:'Bebas Neue',sans-serif; font-size:24px; letter-spacing:0.5px; color:#F5F4F2; line-height:1.05; }
-.card-loc { font-size:12px; color:#C3BDB2; margin:3px 0 10px; }
-.card-meta { display:flex; gap:10px; align-items:center; margin-bottom:11px; }
-.card-tier { font-size:13px; color:#4ADE52; font-weight:600; }
-.card-style { font-size:10px; letter-spacing:1px; text-transform:uppercase; color:#C3BDB2; border:1px solid #38332b; padding:2px 7px; }
-.card-snippet { font-size:13px; color:#E4DFD6; line-height:1.55; flex:1; }
-.card-foot { display:flex; justify-content:space-between; align-items:center; gap:8px; margin-top:13px; padding-top:11px; border-top:1px solid #2a2620; font-size:11px; }
-.card-handle { color:#4ADE52; text-decoration:none; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; min-width:0; }
-.card-handle:hover { text-decoration:underline; }
-.card-price { color:#948D80; border:1px solid #38332b; padding:2px 7px; font-size:10px; letter-spacing:1px; flex-shrink:0; }
-.card-date { color:#948D80; flex-shrink:0; }
-/* States */
-.state { grid-column:1 / -1; padding:70px 20px; text-align:center; }
-.state-icon { font-size:42px; margin-bottom:16px; line-height:1; }
-.state-title { font-family:'Bebas Neue',sans-serif; font-size:24px; letter-spacing:1.5px; color:#FF9D2E; margin-bottom:8px; }
-.state-body { font-size:13px; line-height:1.8; color:#948D80; }
-.state-body a { color:#FF9D2E; text-decoration:none; }
-.state-body a:hover { text-decoration:underline; }
-.spinner { grid-column:1 / -1; display:flex; flex-direction:column; align-items:center; gap:16px; padding:70px 20px; font-size:12px; letter-spacing:1.5px; color:#948D80; }
-.spinner-ring { width:32px; height:32px; border:2px solid #38332b; border-top-color:#FF9D2E; border-radius:50%; animation:spin .8s linear infinite; }
-@keyframes spin { to { transform:rotate(360deg); } }
-/* ── PROFILE DRAWER (shared) ── */
-.drawer-bg { display:none; position:fixed; inset:0; background:rgba(8,6,3,0.7); z-index:90; }
-.drawer-bg.show { display:block; }
-.drawer { position:fixed; top:0; right:-420px; width:400px; max-width:90vw; height:100%; background:#211e1a; border-left:2px solid #FF9D2E; z-index:95; transition:right .25s; overflow-y:auto; padding:24px 30px; }
-.drawer.show { right:0; }
-.drawer-head { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:22px; }
-.drawer-id { display:flex; gap:13px; align-items:center; }
-.rank-badge { width:34px; height:34px; border-radius:6px; background:#16140f; border:1px solid #38332b; display:flex; align-items:center; justify-content:center; font-size:18px; line-height:1; flex-shrink:0; }
-.p-name { font-family:'Bebas Neue',sans-serif; font-size:24px; letter-spacing:0.5px; color:#F5F4F2; }
-.p-handle { font-size:12px; color:#948D80; }
-.drawer-x { background:none; border:none; color:#C3BDB2; font-size:26px; cursor:pointer; line-height:1; }
-.p-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:18px; }
-.p-stat { background:#16140f; border:1px solid #38332b; padding:14px 8px; text-align:center; }
-.p-num { font-family:'Bebas Neue',sans-serif; font-size:30px; color:#F5F4F2; line-height:1; }
-.p-lab { font-size:10px; letter-spacing:1px; text-transform:uppercase; color:#C3BDB2; margin-top:6px; }
-.p-next { background:#1d2417; border:1px solid #38332b; padding:12px 14px; font-size:12px; color:#C3BDB2; line-height:1.5; margin-bottom:20px; }
-.p-next b { color:#4ADE52; }
-.p-hist-label { font-size:11px; letter-spacing:1px; text-transform:uppercase; color:#948D80; margin-bottom:10px; }
-.p-history .ph-item { padding:11px 0; border-bottom:1px solid #2a2620; }
-.ph-top { display:flex; justify-content:space-between; align-items:baseline; gap:10px; }
-.ph-name { font-size:14px; color:#F5F4F2; }
-.ph-rating { font-size:12px; flex-shrink:0; }
-.ph-loc { font-size:11px; color:#948D80; margin-top:2px; }
-.p-empty { font-size:13px; color:#948D80; padding:20px 0; text-align:center; line-height:1.6; }
-/* ── FOOTER ── */
-.site-footer { border-top:1px solid #38332b; background:#211e1a; margin-top:40px; padding:22px 20px; }
-.footer-inner { max-width:1100px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; }
-.footer-links { display:flex; align-items:center; gap:20px; flex-wrap:wrap; }
-.footer-links a { font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:0.5px; color:#C3BDB2; text-decoration:none; }
-.footer-links a:hover { color:#FF9D2E; }
-.footer-links a.active { color:#FF9D2E; }
-.footer-copy { font-size:11px; color:#948D80; }
-a.logo { text-decoration:none; }
-a.tab { text-decoration:none; display:inline-block; }
-@media (max-width:760px) {
-.nav { gap:12px; }
-.nav-left { gap:14px; min-width:0; flex:1; }
-.tabs { overflow-x:auto; -webkit-overflow-scrolling:touch; gap:2px; scrollbar-width:none; }
-.tabs::-webkit-scrollbar { display:none; }
-.tab { flex:0 0 auto; white-space:nowrap; padding:8px 11px; }
-.nav-id { flex-shrink:0; font-size:11px; }
-.footer-inner { flex-direction:column; align-items:flex-start; gap:14px; }
-.card-grid { grid-template-columns:1fr; }
-.drawer { width:100%; max-width:100%; }
-}
-@media (min-width:761px) and (max-width:1100px){
-.card-grid { grid-template-columns:repeat(2,1fr); }
-}
+  /* ── CONTRAST TOKENS (Anthropic-style dark, all solid hex) ──
+     ground #1a1815 · surface #211e1a · raised #2a2620 · border #38332b
+     text #F5F4F2 (AAA) · text-2 #C3BDB2 (AA) · text-3 #948D80 (meta only)
+     amber #FF9D2E · green #4ADE52 · bsky #3B9AF8 — accents, not body text */
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html, body { height:100%; }
+  body { background:#1a1815; color:#F5F4F2; font-family:'IBM Plex Mono',monospace; line-height:1.6; -webkit-font-smoothing:antialiased; }
+
+  /* Top nav */
+  .nav { position:sticky; top:0; z-index:50; display:flex; align-items:center; justify-content:space-between;
+    background:#211e1a; border-bottom:2px solid #FF9D2E; padding:12px 20px; }
+  .nav-left { display:flex; align-items:center; gap:22px; }
+  .logo { font-family:'Bebas Neue',sans-serif; font-size:30px; letter-spacing:2px; color:#F5F4F2; line-height:1; }
+  .logo .bolt { color:#4ADE52; }
+  .tabs { display:flex; gap:4px; }
+  .tab { font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:0.5px; text-transform:uppercase;
+    color:#F5F4F2; background:none; border:1px solid transparent; padding:8px 14px; cursor:pointer; }
+  .tab:hover { color:#F5F4F2; }
+  .tab.active { color:#15130f; background:#FF9D2E; font-weight:600; }
+  .nav-id { font-size:12px; color:#C3BDB2; display:flex; align-items:center; gap:8px; cursor:pointer; }
+  .nav-id .dot { width:8px; height:8px; border-radius:50%; background:#4ADE52; flex-shrink:0; }
+  .nav-id .dot.out { background:#948D80; }
+
+  .view { display:none; }
+  .view.active { display:block; }
+
+  /* ── MAP VIEW ── */
+  #mapView { height:calc(100vh - 55px); }
+  .map-layout { display:flex; height:100%; position:relative; }
+  #map { flex:1; background:#1a1815; }
+  .panel { width:380px; flex-shrink:0; background:#211e1a; border-left:1px solid #38332b; overflow-y:auto; }
+  .panel-empty { padding:48px 26px; text-align:center; }
+  .panel-empty .big { font-family:'Bebas Neue',sans-serif; font-size:26px; color:#C3BDB2; letter-spacing:1px; margin-bottom:8px; }
+  .panel-empty .sub { font-size:13px; color:#948D80; }
+  .review { display:none; }
+  .review.show { display:block; }
+  .rv-head { padding:22px 26px 16px; border-bottom:1px solid #38332b; }
+  .rv-name { font-family:'Bebas Neue',sans-serif; font-size:34px; letter-spacing:1px; color:#FF9D2E; line-height:1; }
+  .rv-loc { font-size:12px; color:#C3BDB2; margin-top:5px; }
+  .rv-meta { display:flex; gap:12px; margin-top:14px; align-items:center; flex-wrap:wrap; }
+  .rv-rating { font-size:15px; color:#FF9D2E; }
+  .rv-rating .lab { font-family:'Bebas Neue',sans-serif; font-size:15px; color:#F5F4F2; letter-spacing:1px; margin-left:5px; }
+  .rv-tier { font-size:14px; color:#F5F4F2; font-weight:600; }
+  .rv-style { font-size:10px; letter-spacing:1px; text-transform:uppercase; color:#C3BDB2; border:1px solid #38332b; padding:3px 8px; }
+  .rv-bucket { padding:16px 26px; border-bottom:1px solid #2a2620; }
+  .rv-bucket-label { font-family:'Bebas Neue',sans-serif; font-size:15px; letter-spacing:1.5px; color:#F5F4F2; margin-bottom:7px; }
+  .rv-bucket-text { font-size:13px; color:#E4DFD6; line-height:1.6; }
+  .rv-price { font-size:13px; color:#F5F4F2; margin-bottom:7px; }
+  .rv-price b { color:#FF9D2E; }
+  .rv-verdict { padding:16px 26px; font-size:13px; color:#F5F4F2; font-style:italic; border-bottom:1px solid #2a2620; line-height:1.6; }
+  .rv-by { padding:14px 26px; font-size:11px; color:#948D80; letter-spacing:0.5px; }
+  .rv-by b { color:#C3BDB2; }
+
+  .cb-pin { width:22px; height:22px; border-radius:50%; border:3px solid #1a1815; box-shadow:0 0 0 1px rgba(0,0,0,0.6), 0 0 10px rgba(0,0,0,0.4); }
+  .pin-legendary { background:#5BD94B; } .pin-trip { background:#FFC72C; } .pin-solid { background:#E8843C; } .pin-skip { background:#6B4A2F; }
+  .leaflet-popup-content-wrapper { background:#211e1a; color:#F5F4F2; border:1px solid #FF9D2E; border-radius:0; font-family:'IBM Plex Mono',monospace; }
+  .leaflet-popup-content { margin:10px 14px; }
+  .leaflet-popup-tip { background:#FF9D2E; }
+  .pop-name { font-family:'Bebas Neue',sans-serif; font-size:18px; letter-spacing:1px; color:#FF9D2E; }
+  .pop-rating { font-size:12px; color:#F5F4F2; margin-top:2px; }
+  .pop-cta { font-size:11px; color:#C3BDB2; margin-top:4px; text-decoration:underline; }
+
+  /* ── SUBMIT VIEW ── */
+  .submit-wrap { max-width:680px; margin:0 auto; padding:34px 20px 90px; }
+  h1 { font-family:'Bebas Neue',sans-serif; font-size:42px; letter-spacing:1.5px; color:#FF9D2E; line-height:1; margin-bottom:8px; }
+  .intro { font-size:13px; color:#C3BDB2; margin-bottom:30px; }
+
+  /* Signed-out gate — crisp, never dimmed */
+  .gate { display:flex; flex-direction:column; align-items:center; text-align:center; gap:18px;
+    border:1px solid #38332b; background:#211e1a; padding:48px 30px; }
+  .gate-title { font-family:'Bebas Neue',sans-serif; font-size:28px; letter-spacing:1px; color:#FF9D2E; }
+  .gate-text { font-size:13px; color:#C3BDB2; max-width:380px; line-height:1.65; }
+  .gate-text b { color:#F5F4F2; }
+  .signin-btn { background:#3B9AF8; color:#fff; border:none; font-family:'IBM Plex Mono',monospace; font-weight:600;
+    font-size:14px; padding:13px 22px; cursor:pointer; letter-spacing:0.5px; }
+  .signin-btn:hover { background:#5aabfa; }
+  .gate-fine { font-size:11px; color:#948D80; }
+
+  form { display:none; }
+  form.show { display:block; }
+  .id-strip { display:flex; align-items:center; gap:12px; background:#211e1a; border:1px solid #38332b; padding:12px 16px; margin-bottom:28px; }
+  .avatar { width:38px; height:38px; border-radius:50%; background:#2a2620; border:1px solid #FF9D2E; display:flex; align-items:center; justify-content:center; font-family:'Bebas Neue',sans-serif; font-size:20px; color:#FF9D2E; flex-shrink:0; }
+  .id-strip .handle { font-size:13px; color:#F5F4F2; }
+  .id-strip .role { font-size:10px; letter-spacing:1px; text-transform:uppercase; color:#4ADE52; margin-top:3px; }
+
+  label.fl { display:block; font-size:11px; letter-spacing:1px; text-transform:uppercase; color:#C3BDB2; margin-bottom:7px; }
+  label.fl .opt { color:#948D80; text-transform:none; letter-spacing:0; }
+  input[type=text], textarea, select { width:100%; background:#211e1a; border:1px solid #38332b; color:#F5F4F2;
+    font-family:'IBM Plex Mono',monospace; font-size:14px; padding:11px 13px; margin-bottom:16px; }
+  textarea { resize:vertical; min-height:92px; line-height:1.6; }
+  input::placeholder, textarea::placeholder { color:#948D80; }
+  input:focus, textarea:focus, select:focus { outline:none; border-color:#FF9D2E; }
+  input[type=file] { width:100%; background:#211e1a; border:1px solid #38332b; color:#C3BDB2; font-family:'IBM Plex Mono',monospace; font-size:13px; padding:10px 13px; margin-bottom:16px; }
+  input[type=file]::file-selector-button { background:#38332b; color:#F5F4F2; border:none; font-family:'IBM Plex Mono',monospace; font-size:12px; padding:6px 12px; margin-right:12px; cursor:pointer; }
+  .row { display:flex; gap:14px; } .row > div { flex:1; }
+  .bucket { margin-bottom:24px; }
+  .bucket-head { display:flex; align-items:baseline; gap:10px; margin-bottom:6px; }
+  .bucket-num { font-family:'Bebas Neue',sans-serif; font-size:22px; color:#4ADE52; line-height:1; }
+  .bucket-label { font-family:'Bebas Neue',sans-serif; font-size:22px; letter-spacing:1px; color:#F5F4F2; line-height:1; }
+  .bucket-hint { font-size:12px; color:#948D80; margin:0 0 10px 32px; }
+  .ratings { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-bottom:16px; }
+  .rating-opt { border:1px solid #38332b; background:#211e1a; padding:12px; cursor:pointer; text-align:center; transition:border-color .12s, background .12s; }
+  .rating-opt:hover { border-color:#FF9D2E; }
+  .rating-opt.sel { border-color:#4ADE52; background:#1d2417; }
+  .rating-opt .glyph { font-size:16px; color:#FF9D2E; }
+  .rating-opt .name { font-family:'Bebas Neue',sans-serif; font-size:16px; letter-spacing:1px; color:#F5F4F2; margin-top:4px; }
+
+  /* Cross-post + live preview */
+  .crosspost { border:1px solid #38332b; background:#211e1a; padding:16px; margin:4px 0 18px; }
+  .cp-head { display:flex; align-items:center; gap:12px; }
+  .switch { position:relative; width:42px; height:24px; flex-shrink:0; }
+  .switch input { opacity:0; width:0; height:0; }
+  .slider { position:absolute; inset:0; background:#38332b; cursor:pointer; transition:.2s; border-radius:24px; }
+  .slider:before { content:''; position:absolute; height:18px; width:18px; left:3px; top:3px; background:#F5F4F2; transition:.2s; border-radius:50%; }
+  .switch input:checked + .slider { background:#3B9AF8; }
+  .switch input:checked + .slider:before { transform:translateX(18px); }
+  .cp-label { font-size:13px; color:#F5F4F2; }
+  .cp-sub { font-size:11px; color:#948D80; margin-top:2px; }
+  .preview { display:none; margin-top:16px; border-top:1px solid #38332b; padding-top:16px; }
+  .preview.show { display:block; }
+  .preview-tag { display:flex; justify-content:space-between; align-items:center; font-size:10px; letter-spacing:1px; text-transform:uppercase; color:#3B9AF8; margin-bottom:10px; }
+  .cc { color:#948D80; } .cc.over { color:#FF5A4E; font-weight:600; }
+  /* The post card — solid dark, full-strength text, no haze */
+  .bsky-card { background:#16140f; border:1px solid #38332b; border-radius:8px; padding:14px 16px; }
+  .bsky-top { display:flex; align-items:center; gap:9px; margin-bottom:10px; }
+  .bsky-av { width:34px; height:34px; border-radius:50%; background:#2a2620; border:1px solid #3B9AF8; display:flex; align-items:center; justify-content:center; font-family:'Bebas Neue',sans-serif; font-size:17px; color:#3B9AF8; }
+  .bsky-name { font-size:13px; font-weight:600; color:#F5F4F2; }
+  .bsky-handle { font-size:12px; color:#948D80; }
+  .bsky-text { font-size:14px; color:#F5F4F2; white-space:pre-line; line-height:1.5; }
+  .bsky-text .hash { color:#3B9AF8; }
+  .bsky-img { margin-top:11px; border-radius:8px; height:150px; background:#2a2620; border:1px solid #38332b; display:flex; align-items:center; justify-content:center; color:#948D80; font-size:11px; background-size:cover; background-position:center; overflow:hidden; }
+  .bsky-altrow { display:flex; align-items:center; gap:7px; font-size:10px; color:#948D80; margin-top:8px; }
+  .alt-badge { background:#2a2620; border:1px solid #38332b; padding:2px 6px; letter-spacing:0.5px; color:#C3BDB2; }
+  .alt-badge.warn { color:#FF9D2E; border-color:#FF9D2E; }
+
+  .submit-btn { width:100%; background:#FF9D2E; color:#15130f; border:none; font-family:'Bebas Neue',sans-serif; font-size:26px; letter-spacing:2px; padding:14px; cursor:pointer; margin-top:8px; }
+  .submit-btn:hover { background:#ffad4e; }
+
+  .modal-bg { display:none; position:fixed; inset:0; background:rgba(8,6,3,0.9); z-index:100; align-items:center; justify-content:center; padding:20px; }
+  .modal-bg.show { display:flex; }
+  .modal { background:#211e1a; border:2px solid #FF9D2E; max-width:520px; width:100%; max-height:86vh; overflow-y:auto; padding:28px; }
+  .modal h2 { font-family:'Bebas Neue',sans-serif; font-size:30px; letter-spacing:1px; color:#FF9D2E; margin-bottom:16px; }
+  .guideline { display:flex; gap:12px; margin-bottom:14px; }
+  .guideline .mark { color:#4ADE52; font-weight:600; flex-shrink:0; }
+  .guideline .body { font-size:13px; color:#C3BDB2; }
+  .guideline .body strong { color:#F5F4F2; }
+  .coc { font-size:12px; color:#948D80; border-top:1px solid #38332b; padding-top:14px; margin-top:18px; line-height:1.65; }
+  .agree-btn { width:100%; background:#4ADE52; color:#15130f; border:none; font-family:'Bebas Neue',sans-serif; font-size:22px; letter-spacing:1.5px; padding:12px; cursor:pointer; margin-top:18px; }
+  .agree-btn:hover { background:#5ee866; }
+  .toast { display:none; position:fixed; bottom:24px; left:50%; transform:translateX(-50%); background:#1d2417; border:1px solid #4ADE52; color:#4ADE52; padding:12px 22px; font-size:13px; z-index:200; }
+  .toast.show { display:block; }
+
+  /* ── DOC VIEWS (Format / About) ── */
+  .doc-wrap { max-width:720px; margin:0 auto; padding:40px 20px 90px; }
+  .eyebrow { font-size:12px; letter-spacing:2px; text-transform:uppercase; color:#4ADE52; margin-bottom:12px; }
+  .doc-lead { font-size:15px; color:#C3BDB2; line-height:1.7; margin-bottom:8px; max-width:620px; }
+  .doc-section { margin-top:42px; padding-top:28px; border-top:1px solid #38332b; }
+  .doc-head { font-family:'Bebas Neue',sans-serif; font-size:24px; letter-spacing:1.5px; color:#FF9D2E; margin-bottom:16px; }
+  .doc-text { font-size:14px; color:#E4DFD6; line-height:1.75; margin-bottom:16px; }
+  .doc-text b { color:#F5F4F2; } .doc-text i { color:#4ADE52; font-style:normal; }
+  .doc-pull { font-family:'Bebas Neue',sans-serif; font-size:26px; letter-spacing:1px; color:#F5F4F2; margin:6px 0 22px; line-height:1.2; }
+  .doc-fine { font-size:12px; color:#948D80; margin-top:14px; line-height:1.6; }
+  .mono-tag { color:#3B9AF8; font-weight:600; }
+  .rate-row { display:flex; gap:16px; padding:14px 0; border-bottom:1px solid #2a2620; }
+  .rate-glyph { font-size:18px; min-width:60px; }
+  .rate-name { font-family:'Bebas Neue',sans-serif; font-size:18px; letter-spacing:1px; margin-bottom:4px; }
+  .rate-desc { font-size:13px; color:#C3BDB2; line-height:1.6; }
+  .template { background:#16140f; border:1px solid #38332b; border-radius:6px; padding:18px; font-family:'IBM Plex Mono',monospace; font-size:13px; color:#E4DFD6; line-height:1.7; white-space:pre-wrap; }
+  .template .hash { color:#3B9AF8; font-weight:600; }
+  .spec { width:100%; border-collapse:collapse; margin-top:6px; }
+  .spec td { padding:9px 10px; border-bottom:1px solid #2a2620; font-size:13px; vertical-align:top; }
+  .spec .n { color:#4ADE52; width:34px; font-weight:600; }
+  .spec .k { color:#F5F4F2; width:130px; }
+  .spec .v { color:#C3BDB2; }
+  .principle { display:flex; gap:16px; padding:14px 0; border-bottom:1px solid #2a2620; font-size:14px; color:#E4DFD6; line-height:1.65; }
+  .principle b { color:#F5F4F2; }
+  .pn { font-family:'Bebas Neue',sans-serif; font-size:22px; color:#FF9D2E; min-width:36px; }
+  .vs { display:grid; grid-template-columns:1fr 1fr; gap:1px; background:#38332b; margin-bottom:1px; }
+  .vs-them, .vs-us { padding:14px 16px; font-size:13px; line-height:1.55; }
+  .vs-them { background:#211e1a; color:#948D80; }
+  .vs-us { background:#1d2417; color:#E4DFD6; }
+  /* ── MAP LEGEND ── */
+  .legend { position:absolute; bottom:18px; left:18px; z-index:40; background:rgba(33,30,26,0.94); border:1px solid #38332b; padding:11px 13px; }
+  .legend-title { font-size:9px; letter-spacing:1.5px; text-transform:uppercase; color:#948D80; margin-bottom:8px; }
+  .legend-row { display:flex; align-items:center; gap:8px; font-size:11px; color:#C3BDB2; margin-bottom:5px; }
+  .legend-row:last-child { margin-bottom:0; }
+  .legend-dot { width:12px; height:12px; border-radius:50%; flex-shrink:0; }
+
+  /* ── DATABASE CARD VIEW ── */
+  .db-wrap { max-width:1100px; margin:0 auto; padding:34px 20px 90px; }
+  .db-bar { margin-bottom:24px; }
+  .db-title { font-family:'Bebas Neue',sans-serif; font-size:42px; letter-spacing:1.5px; color:#FF9D2E; line-height:1; margin-bottom:18px; }
+  .db-filters { display:flex; gap:8px; flex-wrap:wrap; }
+  .chip { font-family:'IBM Plex Mono',monospace; font-size:12px; color:#C3BDB2; background:#211e1a; border:1px solid #38332b; padding:7px 12px; cursor:pointer; }
+  .chip:hover { border-color:#FF9D2E; color:#F5F4F2; }
+  .chip.active { background:#FF9D2E; color:#15130f; border-color:#FF9D2E; font-weight:600; }
+  .card-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(320px, 1fr)); gap:18px; }
+  .card { background:#211e1a; border:1px solid #38332b; overflow:hidden; cursor:pointer; transition:transform .12s, border-color .12s; display:flex; flex-direction:column; }
+  .card:hover { transform:translateY(-3px); border-color:#F5F4F2; }
+  .card-img { width:100%; aspect-ratio:4/3; background:#2a2620; background-size:cover; background-position:center; position:relative; }
+  .card-rating { position:absolute; top:10px; left:10px; font-size:11px; font-weight:600; letter-spacing:0.5px; padding:4px 9px; border-radius:4px; }
+  .card-body { padding:15px 16px 17px; flex:1; display:flex; flex-direction:column; }
+  .card-name { font-family:'Bebas Neue',sans-serif; font-size:24px; letter-spacing:0.5px; color:#F5F4F2; line-height:1.05; cursor:pointer; }
+  .card-name:hover { color:#FF9D2E; }
+  .card-loc { font-size:12px; color:#C3BDB2; margin:3px 0 10px; }
+  .card-meta { display:flex; gap:10px; align-items:center; margin-bottom:11px; }
+  .card-tier { font-size:13px; color:#F5F4F2; font-weight:600; }
+  .card-style { font-size:10px; letter-spacing:1px; text-transform:uppercase; color:#C3BDB2; border:1px solid #38332b; padding:2px 7px; }
+  .card-snippet { font-size:13px; color:#E4DFD6; line-height:1.55; flex:1; cursor:pointer; }
+  .card-foot { display:flex; justify-content:space-between; align-items:baseline; margin-top:12px; gap:10px; }
+  .card-by { font-size:11px; color:#3B9AF8; cursor:pointer; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .card-by:hover { text-decoration:underline; }
+  .card-date { font-size:11px; color:#948D80; flex-shrink:0; }
+
+  /* ── STATS ── */
+  .stat-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-top:8px; }
+  .stat-cell { background:#211e1a; border:1px solid #38332b; padding:22px 16px; text-align:center; }
+  .stat-num { font-family:'Bebas Neue',sans-serif; font-size:48px; color:#FF9D2E; line-height:1; }
+  .stat-lab { font-size:11px; letter-spacing:1px; text-transform:uppercase; color:#C3BDB2; margin-top:8px; }
+  .bar-row { display:flex; align-items:center; gap:12px; margin-bottom:12px; }
+  .bar-lab { font-size:13px; min-width:150px; }
+  .bar-track { flex:1; height:14px; background:#16140f; border:1px solid #38332b; overflow:hidden; }
+  .bar-fill { height:100%; width:0; transition:width .5s; }
+  .bar-n { font-family:'Bebas Neue',sans-serif; font-size:18px; color:#F5F4F2; min-width:32px; text-align:right; }
+  .city-row { display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:1px solid #2a2620; }
+  .city-name { font-size:14px; color:#F5F4F2; min-width:140px; }
+  .city-track { flex:1; height:8px; background:#16140f; }
+  .city-fill { height:100%; background:#FF9D2E; }
+  .city-n { font-size:13px; color:#C3BDB2; min-width:28px; text-align:right; }
+  .lb-sub { font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:1px; text-transform:uppercase; color:#948D80; }
+  .lb-row { display:flex; align-items:center; gap:14px; padding:13px 14px; border-bottom:1px solid #2a2620; }
+  .lb-row.top { background:#1d2417; border-left:3px solid #4ADE52; }
+  .lb-rank { font-family:'Bebas Neue',sans-serif; font-size:24px; color:#FF9D2E; min-width:36px; }
+  .lb-row.top .lb-rank { color:#4ADE52; }
+  .lb-av { width:34px; height:34px; border-radius:50%; background:#2a2620; border:1px solid #FF9D2E; display:flex; align-items:center; justify-content:center; font-family:'Bebas Neue',sans-serif; font-size:16px; color:#FF9D2E; }
+  .lb-handle { flex:1; font-size:13px; color:#F5F4F2; }
+  .lb-count { font-family:'Bebas Neue',sans-serif; font-size:22px; color:#F5F4F2; }
+  .lb-count span { font-family:'IBM Plex Mono',monospace; font-size:11px; color:#948D80; margin-left:5px; }
+
+  /* ── PROFILE DRAWER ── */
+  .drawer-bg { display:none; position:fixed; inset:0; background:rgba(8,6,3,0.7); z-index:90; }
+  .drawer-bg.show { display:block; }
+  .drawer { position:fixed; top:0; right:-420px; width:400px; max-width:90vw; height:100%; background:#211e1a; border-left:2px solid #FF9D2E; z-index:95; transition:right .25s; overflow-y:auto; padding:24px 30px; }
+  .drawer.show { right:0; }
+  .drawer-head { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:22px; }
+  .drawer-id { display:flex; gap:13px; align-items:center; }
+  .rank-badge { width:34px; height:34px; border-radius:6px; background:#16140f; border:1px solid #38332b; display:flex; align-items:center; justify-content:center; font-size:18px; line-height:1; flex-shrink:0; }
+  .p-name { font-family:'Bebas Neue',sans-serif; font-size:24px; letter-spacing:0.5px; color:#F5F4F2; }
+  .p-handle { font-size:12px; color:#948D80; }
+  .drawer-x { background:none; border:none; color:#C3BDB2; font-size:26px; cursor:pointer; line-height:1; }
+  .p-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:18px; }
+  .p-stat { background:#16140f; border:1px solid #38332b; padding:14px 8px; text-align:center; }
+  .p-num { font-family:'Bebas Neue',sans-serif; font-size:30px; color:#F5F4F2; line-height:1; }
+  .p-lab { font-size:10px; letter-spacing:1px; text-transform:uppercase; color:#C3BDB2; margin-top:6px; }
+  .p-next { background:#1d2417; border:1px solid #38332b; padding:12px 14px; font-size:12px; color:#C3BDB2; line-height:1.5; margin-bottom:20px; }
+  .p-next b { color:#4ADE52; }
+  .p-hist-label { font-size:11px; letter-spacing:1px; text-transform:uppercase; color:#948D80; margin-bottom:10px; }
+  .p-history .ph-item { padding:11px 0; border-bottom:1px solid #2a2620; }
+  .ph-top { display:flex; justify-content:space-between; align-items:baseline; gap:10px; }
+  .ph-name { font-size:14px; color:#F5F4F2; }
+  .ph-rating { font-size:12px; flex-shrink:0; }
+  .ph-loc { font-size:11px; color:#948D80; margin-top:2px; }
+  .p-empty { font-size:13px; color:#948D80; padding:20px 0; text-align:center; line-height:1.6; }
+
+  @media (max-width:760px) {
+    .nav { gap:12px; }
+    .nav-left { gap:14px; min-width:0; flex:1; }
+    .tabs { overflow-x:auto; -webkit-overflow-scrolling:touch; gap:2px; scrollbar-width:none; }
+    .tabs::-webkit-scrollbar { display:none; }
+    .tab { flex:0 0 auto; white-space:nowrap; padding:8px 11px; }
+    .nav-id { flex-shrink:0; font-size:11px; }
+    .footer-inner { flex-direction:column; align-items:flex-start; gap:14px; }
+    .map-layout { flex-direction:column; }
+    .panel { width:100%; border-left:none; border-top:1px solid #38332b; max-height:46%; }
+    #map { min-height:54%; }
+    #mapView { height:calc(100vh - 130px); }
+    .vs { grid-template-columns:1fr; }
+    .legend { bottom:auto; top:10px; left:10px; }
+    .stat-grid { grid-template-columns:repeat(2,1fr); }
+    .card-grid { grid-template-columns:1fr; }
+    .bar-lab { min-width:120px; font-size:12px; }
+    .drawer { width:100%; max-width:100%; }
+    .row { flex-direction:column; gap:0; }
+    .rate-row { flex-direction:column; gap:8px; }
+    .ratings { flex-wrap:wrap; }
+    .posted { padding:30px 20px; }
+    .posted-title { font-size:34px; }
+    .rv-name { font-size:28px; }
+  }
+
+
+  a.logo { text-decoration:none; }
+  a.tab { text-decoration:none; display:inline-block; }
+
+
+  /* ── FOOTER ── */
+  .site-footer { border-top:1px solid #38332b; background:#211e1a; margin-top:40px; padding:22px 20px; }
+  .footer-inner { max-width:1100px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+  .footer-links { display:flex; align-items:center; gap:20px; flex-wrap:wrap; }
+  .footer-links a { font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:0.5px; color:#C3BDB2; text-decoration:none; }
+  .footer-links a:hover { color:#FF9D2E; }
+  .footer-links a.active { color:#FF9D2E; }
+  .footer-copy { font-size:11px; color:#948D80; }
+  .footer-sep { color:#38332b; }
+
+  .db-empty { grid-column:1/-1; text-align:center; padding:60px 20px; color:#948D80; font-size:14px; }
+  .db-empty a { color:#FF9D2E; text-decoration:none; }
+
+  @media (min-width:761px) and (max-width:1100px){
+    .card-grid { grid-template-columns:repeat(2,1fr); }
+  }
 </style>
 </head>
 <body>
 <div class="nav">
-<div class="nav-left">
-<a class="logo" href="index.html">CB<span class="bolt">⚡</span>DB</a>
-<div class="tabs">
-<a class="tab active" href="database.html">Database</a>
-<a class="tab" href="map.html">Map</a>
-<a class="tab" href="submit.html">Post a Review</a>
+  <div class="nav-left">
+    <a class="logo" href="index.html">CB<span class="bolt">⚡</span>DB</a>
+    <div class="tabs">
+      <a class="tab active" href="database.html">Database</a>
+      <a class="tab" href="map.html">Map</a>
+      <a class="tab" href="submit.html">Post a Review</a>
+    </div>
+  </div>
+  <div class="nav-id" id="navId" onclick="openProfile()"><span class="dot out"></span>Not signed in</div>
 </div>
-</div>
-<div class="nav-id" id="navId" onclick="openProfile()"><span class="dot out"></span>Not signed in</div>
+<div id="dbView">
+  <div class="db-wrap">
+    <div class="db-bar">
+      <h1 class="db-title">The Database</h1>
+      <div class="db-filters" id="dbFilters">
+        <button class="chip active" data-filter="all" onclick="filterDb('all',this)">All</button>
+        <button class="chip" data-filter="legendary" onclick="filterDb('legendary',this)">⭐⭐⭐ Legendary</button>
+        <button class="chip" data-filter="trip" onclick="filterDb('trip',this)">⭐⭐ Worth A Trip</button>
+        <button class="chip" data-filter="solid" onclick="filterDb('solid',this)">⭐ Solid</button>
+        <button class="chip" data-filter="skip" onclick="filterDb('skip',this)">ㄨ Skip It</button>
+      </div>
+    </div>
+    <div class="card-grid" id="cardGrid"></div>
+  </div>
 </div>
 
-<div class="db-wrap">
-<div class="db-bar">
-<div class="eyebrow"><span class="live-dot"></span>Live index · #CBDB on Bluesky</div>
-<div class="db-title">The Database</div>
-<div class="db-filters">
-<span class="filter-label">Rating</span>
-<button class="chip active" id="fAll" onclick="setFilter('all',this)">All</button>
-<button class="chip" onclick="setFilter('3',this)">Legendary</button>
-<button class="chip" onclick="setFilter('2',this)">Worth A Trip</button>
-<button class="chip" onclick="setFilter('1',this)">Solid</button>
-<button class="chip" onclick="setFilter('0',this)">Skip It</button>
-<div class="filter-sep"></div>
-<button class="chip" id="yearBtn" onclick="toggleYear(this)">Last Year</button>
-</div>
-<div class="db-filters filter-block">
-<span class="filter-label">City</span>
-<div id="cityFilters" style="display:flex; gap:8px; flex-wrap:wrap;">
-<button class="chip active" onclick="setCity('all',this)">All Cities</button>
-</div>
-</div>
-</div>
-<div class="result-count" id="count"></div>
-<div class="card-grid" id="grid">
-<div class="spinner"><div class="spinner-ring"></div>Loading…</div>
-</div>
-</div>
 
 <!-- PROFILE DRAWER (shared) -->
 <div class="drawer-bg" id="drawerBg" onclick="closeProfile()"></div>
 <div class="drawer" id="drawer">
-<div class="drawer-head">
-<div class="drawer-id">
-<div class="rank-badge" id="pBadge" style="display:none;">⚡</div>
-<div><div class="p-name" id="pName">—</div><div class="p-handle" id="pHandle">—</div></div>
+  <div class="drawer-head">
+    <div class="drawer-id">
+      <div class="rank-badge" id="pBadge" style="display:none;">⚡</div>
+      <div><div class="p-name" id="pName">—</div><div class="p-handle" id="pHandle">—</div></div>
+    </div>
+    <button class="drawer-x" onclick="closeProfile()">×</button>
+  </div>
+  <div class="p-stats">
+    <div class="p-stat"><div class="p-num" id="pCount">0</div><div class="p-lab">Reviews</div></div>
+    <div class="p-stat"><div class="p-num" id="pRank">—</div><div class="p-lab">Rank</div></div>
+    <div class="p-stat"><div class="p-num" id="pCities">0</div><div class="p-lab">Cities</div></div>
+  </div>
+  <div class="p-next" id="pNext"></div>
+  <div class="p-hist-label">Your reviews</div>
+  <div class="p-history" id="pHistory"></div>
 </div>
-<button class="drawer-x" onclick="closeProfile()">×</button>
-</div>
-<div class="p-stats">
-<div class="p-stat"><div class="p-num" id="pCount">0</div><div class="p-lab">Reviews</div></div>
-<div class="p-stat"><div class="p-num" id="pRank">—</div><div class="p-lab">Rank</div></div>
-<div class="p-stat"><div class="p-num" id="pCities">0</div><div class="p-lab">Cities</div></div>
-</div>
-<div class="p-next" id="pNext"></div>
-<div class="p-hist-label">Your reviews</div>
-<div class="p-history" id="pHistory"></div>
-</div>
+
 
 <script src="cbdb-config.js"></script>
 <script type="module" src="auth.js"></script>
 <script src="auth-bridge.js"></script>
 <script>
-// ── Shared session (paint handled by auth-bridge.js across all pages) ──
-const state = (window.__cbdb_state = window.__cbdb_state || {signedIn:false,handle:null,displayName:null});
 
-// ── Profile drawer (shared) ──
-// Ranks climb by approved-review count. Each earned tier carries an emoji badge —
-// building the burger as you climb: 🥬 → 🧀 → 🍔 → ⚡ (the CB⚡DB bolt at the top).
-const RANKS=[
-{min:0,name:'Guest'},
-{min:1,name:'Reviewer',badge:'🥬'},
-{min:10,name:'Regular',badge:'🧀'},
-{min:25,name:'Contributor',badge:'🍔'},
-{min:50,name:'Burger Master',badge:'⚡'}
-];
-function rankFor(n){ let r=RANKS[0]; for(const x of RANKS) if(n>=x.min) r=x; return r; }
-function nextRank(n){ for(const x of RANKS) if(n<x.min) return x; return null; }
-function openProfile(){
-if(!state.signedIn){ window.location.href='submit.html'; return; }
-const mine=(typeof reviews!=='undefined'?reviews:[]).filter(r=>r.by===state.handle);
-const cities=new Set(mine.map(r=>r.loc)).size;
-const rk=rankFor(mine.length);
-const badgeEl=document.getElementById('pBadge');
-if(badgeEl){
-if(rk.badge){ badgeEl.style.display='flex'; badgeEl.textContent=rk.badge; badgeEl.title=rk.name; }
-else { badgeEl.style.display='none'; }
-}
-document.getElementById('pName').textContent=state.displayName;
-document.getElementById('pHandle').textContent='@'+state.handle;
-document.getElementById('pCount').textContent=mine.length;
-document.getElementById('pRank').textContent=rk.name;
-document.getElementById('pCities').textContent=cities;
-const nx=nextRank(mine.length);
-document.getElementById('pNext').innerHTML = nx
-? 'Next: <b>'+nx.name+'</b> at '+nx.min+' reviews. '+(nx.min-mine.length)+' to go.'
-: 'Top rank reached. <b>Burger Master.</b>';
-const hist=document.getElementById('pHistory');
-hist.innerHTML = mine.length ? mine.map(r=>{
-const rt=RATING[r.rating];
-return '<div class="ph-item"><div class="ph-top"><span class="ph-name">'+r.name+'</span><span class="ph-rating" style="color:'+rt.color+'">'+rt.glyph+'</span></div><div class="ph-loc">'+r.loc+' · '+r.tier+'</div></div>';
-}).join('') : '<div class="p-empty">No reviews yet.<br>Post your first one to start climbing the leaderboard.</div>';
-document.getElementById('drawerBg').classList.add('show');
-document.getElementById('drawer').classList.add('show');
-}
-function closeProfile(){
-document.getElementById('drawerBg').classList.remove('show');
-document.getElementById('drawer').classList.remove('show');
-}
 
-// ── Database feed (this page's own Bluesky index; kept separate from the
-//    drawer's cbdb-config `reviews`/`loadReviews` to avoid clobbering them) ──
-const APPROVED = new Set([
-'cheeseburger.world',
-'ash.cheeseburger.world',
-'ratbrigade.bsky.social',
-'alleyhector.bsky.social',
-'burgernotomato.bsky.social',
-'hacer.bsky.social',
-// add more approved handles here as the program grows
-]);
-const BSKY_API = 'https://public.api.bsky.app/xrpc';
-const FETCH_LIMIT = 100;
-// num -> rating key, for color + glyph (new palette; skip = patty brown #6B4A2F)
-const RATING_BY_NUM = { 3:'legendary', 2:'trip', 1:'solid', 0:'skip' };
-const LABEL = { 3:'⭐⭐⭐', 2:'⭐⭐', 1:'⭐', 0:'ㄨ' };
-const TIER_LABEL = { 3:'Legendary', 2:'Worth A Trip', 1:'Solid', 0:'Skip It' };
+  // ── Shared session (demo: in-memory; real build = ATProto OAuth) ──
+  const state = (window.__cbdb_state = window.__cbdb_state || {signedIn:false,handle:null,displayName:null});
 
-let ALL_REVIEWS = [];
-let activeFilter = 'all';
-let yearOnly = false;
-let activeCity = 'all';
+  // ── Profile drawer (shared) ──
+  // Ranks climb by approved-review count. Each earned tier carries an emoji badge —
+  // building the burger as you climb: 🥬 → 🧀 → 🍔 → ⚡ (the CB⚡DB bolt at the top).
+  const RANKS=[
+  {min:0,name:'Guest'},
+  {min:1,name:'Reviewer',badge:'🥬'},
+  {min:10,name:'Regular',badge:'🧀'},
+  {min:25,name:'Contributor',badge:'🍔'},
+  {min:50,name:'Burger Master',badge:'⚡'}
+  ];
+  function rankFor(n){ let r=RANKS[0]; for(const x of RANKS) if(n>=x.min) r=x; return r; }
+  function nextRank(n){ for(const x of RANKS) if(n<x.min) return x; return null; }
+  function openProfile(){
+    if(!state.signedIn){ window.location.href='submit.html'; return; }
+    const mine=reviews.filter(r=>r.by===state.handle);
+    const cities=new Set(mine.map(r=>r.loc)).size;
+    const rk=rankFor(mine.length);
+    const badgeEl=document.getElementById('pBadge');
+    if(badgeEl){ if(rk.badge){ badgeEl.style.display='flex'; badgeEl.textContent=rk.badge; badgeEl.title=rk.name; } else { badgeEl.style.display='none'; } }
+    document.getElementById('pName').textContent=state.displayName;
+    document.getElementById('pHandle').textContent='@'+state.handle;
+    document.getElementById('pCount').textContent=mine.length;
+    document.getElementById('pRank').textContent=rk.name;
+    document.getElementById('pCities').textContent=cities;
+    const nx=nextRank(mine.length);
+    document.getElementById('pNext').innerHTML = nx
+      ? 'Next: <b>'+nx.name+'</b> at '+nx.min+' reviews. '+(nx.min-mine.length)+' to go.'
+      : 'Top rank reached. <b>Burger Master.</b>';
+    const hist=document.getElementById('pHistory');
+    hist.innerHTML = mine.length ? mine.map(r=>{
+      const rt=RATING[r.rating];
+      return '<div class="ph-item"><div class="ph-top"><span class="ph-name">'+r.name+'</span><span class="ph-rating" style="color:'+rt.color+'">'+rt.glyph+'</span></div><div class="ph-loc">'+r.loc+' · '+r.tier+'</div></div>';
+    }).join('') : '<div class="p-empty">No reviews yet.<br>Post your first one to start climbing the leaderboard.</div>';
+    document.getElementById('drawerBg').classList.add('show');
+    document.getElementById('drawer').classList.add('show');
+  }
+  function closeProfile(){
+    document.getElementById('drawerBg').classList.remove('show');
+    document.getElementById('drawer').classList.remove('show');
+  }
+  // Restore signed-in nav state across pages (demo uses window; real build reads session)
+  function paintSignedIn(){ /* handled by auth-bridge.js */ }
+  paintSignedIn();
 
-async function loadDatabaseFeed() {
-ALL_REVIEWS = [];
-const errors = [];
-await Promise.all([...APPROVED].map(async handle => {
-try {
-const url = `${BSKY_API}/app.bsky.feed.getAuthorFeed?actor=${encodeURIComponent(handle)}&limit=${FETCH_LIMIT}&filter=posts_no_replies`;
-const res = await fetch(url);
-if (!res.ok) throw new Error(`HTTP ${res.status} for ${handle}`);
-const data = await res.json();
-for (const item of (data.feed || [])) {
-const post = item.post;
-if (!post) continue;
-const text = post.record?.text || '';
-if (!/#CBDB/i.test(text)) continue;
-const parsed = parsePost(text);
-if (!parsed) continue;
-ALL_REVIEWS.push({
-restaurant: parsed.restaurant,
-location: parsed.location,
-r: parsed.ratingNum,
-price: parsed.price,
-notes: parsed.reviewText,
-style: parsed.style,
-handle: post.author?.handle || handle,
-date: formatDate(post.record?.createdAt),
-imageUrl: extractImage(post),
-postUrl: buildPostUrl(post.author?.handle || handle, post.uri),
-_ts: post.record?.createdAt || '',
-});
-}
-} catch(err) {
-errors.push(err);
-console.warn(`Failed to fetch feed for ${handle}:`, err);
-}
-}));
-ALL_REVIEWS.sort((a, b) => b._ts.localeCompare(a._ts));
-buildCityFilters();
-if (ALL_REVIEWS.length === 0 && errors.length === APPROVED.size) {
-showError(errors[0]); return;
-}
-renderFiltered();
-}
+function renderCards(){
+    const grid=document.getElementById('cardGrid');
+    const list = dbFilter==='all' ? reviews : reviews.filter(r=>r.rating===dbFilter);
+    if(!list.length){
+      grid.innerHTML = '<div class="db-empty">'+
+        (reviews.length ? 'No '+dbFilter+' reviews yet.' :
+          'No reviews yet. <a href="submit.html">Post the first one →</a>')+
+        '</div>';
+      return;
+    }
+    grid.innerHTML = list.map((r,i)=>{
+      const rt=RATING[r.rating];
+      const snippet = r.burger;
+      const idx=reviews.indexOf(r);
+      const date=(typeof shortDate==='function')?shortDate(r.createdAt):'';
+      // Card click → full view on the map. Handle click → Bluesky discussion.
+      return '<div class="card">'+
+        '<div class="card-img" style="background:'+cardImage(r,rt)+'" onclick="goMap('+idx+')">'+
+          '<div class="card-rating" style="background:'+rt.color+';color:#15130f">'+rt.glyph+' '+rt.label+'</div>'+
+        '</div>'+
+        '<div class="card-body">'+
+          '<div class="card-name" onclick="goMap('+idx+')">'+r.name+'</div>'+
+          '<div class="card-loc">'+r.loc+'</div>'+
+          '<div class="card-meta"><span class="card-tier">'+r.tier+'</span><span class="card-style">'+r.style+'</span></div>'+
+          '<div class="card-snippet" onclick="goMap('+idx+')">'+snippet+'</div>'+
+          '<div class="card-foot">'+
+            '<span class="card-by" onclick="event.stopPropagation();goReview('+idx+')" title="View on Bluesky">'+(r.by?'@'+r.by:'')+'</span>'+
+            (date?'<span class="card-date">'+date+'</span>':'')+
+          '</div>'+
+        '</div></div>';
+    }).join('');
+  }
+function filterDb(f, btn){
+    dbFilter=f;
+    document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+    btn.classList.add('active');
+    renderCards();
+  }
+  // Handle click → Bluesky discussion
+  function goReview(i){
+    const r=reviews[i];
+    const url=bskyWebUrl(r.bskyUri, r.by);
+    if(url){ window.open(url, '_blank', 'noopener'); }
+  }
+  // Card click → full view on the map
+  function goMap(i){ location.href='map.html?r='+i; }
 
-function parsePost(text) {
-if (!text || !/#CBDB/i.test(text)) return null;
-const lines = text.replace(/\r/g, '').split('\n');
-if (lines.length < 6) return null;
-const restaurant = lines[0].trim();
-const location = lines[1].trim();
-const ratingLine = lines[2].trim();
-const priceLine = lines[3].trim();
-if (!restaurant || restaurant.startsWith('#')) return null;
-if (!location || !location.includes(',')) return null;
-const rating = parseRating(ratingLine);
-if (!rating) return null;
-const price = (priceLine.match(/^(\${1,3})/) || [])[1] || '';
-const afterMeta = lines.slice(4);
-const reviewLines = [];
-let inReview = false;
-for (const line of afterMeta) {
-const t = line.trim();
-if (/^#CBDB/i.test(t)) break;
-if (!inReview && t === '') continue;
-inReview = true;
-if (t === '') break;
-reviewLines.push(line);
-}
-const reviewText = reviewLines.join('\n').trim();
-if (!reviewText) return null;
-return { restaurant, location, ratingNum: rating.num, ratingLabel: rating.label, price, style:'', reviewText };
-}
-
-function parseRating(line) {
-const stars = (line.match(/⭐/g) || []).length;
-const skip = stars === 0 && /^[ㄨ✗Xx]/.test(line);
-if (skip) return { num: 0, label: 'ㄨ Skip It' };
-if (stars >= 1 && stars <= 3) {
-const labels = { 1:'⭐ Solid', 2:'⭐⭐ Worth A Trip', 3:'⭐⭐⭐ Legendary' };
-return { num: stars, label: labels[stars] };
-}
-return null;
-}
-
-function extractImage(post) {
-try {
-const embed = post.embed || post.record?.embed;
-if (!embed) return null;
-if (embed.images?.length) return embed.images[0].thumb || embed.images[0].fullsize || null;
-if (embed.media?.images?.length) return embed.media.images[0].thumb || null;
-} catch(e) {}
-return null;
-}
-
-function buildPostUrl(handle, uri) {
-if (!handle || !uri) return '#';
-const id = uri.split('/').pop();
-return `https://bsky.app/profile/${handle}/post/${id}`;
-}
-
-function formatDate(iso) {
-if (!iso) return '';
-const d = new Date(iso);
-return d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
-}
-
-function showError(err) {
-console.error(err);
-document.getElementById('count').textContent = '';
-document.getElementById('grid').innerHTML = `
-<div class="state">
-<div class="state-icon">⚠️</div>
-<div class="state-title">Could not load</div>
-<div class="state-body">
-Could not connect to Bluesky. Check your connection and try again.<br>
-<a href="https://bsky.app/hashtag/CBDB" target="_blank" rel="noopener">View #CBDB on Bluesky directly →</a>
-</div>
-</div>`;
-}
-
-function buildCityFilters() {
-const cities = [...new Set(ALL_REVIEWS.map(r => r.location))].sort();
-const container = document.getElementById('cityFilters');
-container.innerHTML = '<button class="chip active" onclick="setCity(\'all\',this)">All Cities</button>';
-cities.forEach(city => {
-const btn = document.createElement('button');
-btn.className = 'chip';
-btn.textContent = city;
-btn.onclick = () => setCity(city, btn);
-container.appendChild(btn);
-});
-}
-
-function setFilter(val, btn) {
-activeFilter = val;
-// reset only the rating row's active state (leave Last Year + city chips alone)
-btn.parentElement.querySelectorAll('.chip').forEach(b => { if(b.id!=='yearBtn') b.classList.remove('active'); });
-btn.classList.add('active');
-renderFiltered();
-}
-
-function toggleYear(btn) {
-yearOnly = !yearOnly;
-btn.classList.toggle('active', yearOnly);
-renderFiltered();
-}
-
-function setCity(val, btn) {
-activeCity = val;
-document.querySelectorAll('#cityFilters .chip').forEach(b => b.classList.remove('active'));
-btn.classList.add('active');
-renderFiltered();
-}
-
-function renderFiltered() {
-const oneYearAgo = new Date();
-oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
-const list = ALL_REVIEWS.filter(r => {
-const rOk = activeFilter === 'all' || String(r.r) === activeFilter;
-const cOk = activeCity === 'all' || r.location === activeCity;
-const yOk = !yearOnly || (r._ts && new Date(r._ts) >= oneYearAgo);
-return rOk && cOk && yOk;
-});
-render(list);
-}
-
-function render(list) {
-const grid = document.getElementById('grid');
-const count = document.getElementById('count');
-if (ALL_REVIEWS.length === 0) {
-count.textContent = '';
-grid.innerHTML = `
-<div class="state">
-<div class="state-icon">🍔</div>
-<div class="state-title">No reviews yet</div>
-<div class="state-body">
-Nothing here yet. The database grows one burger at a time.<br><br>
-<a href="submit.html">Post the first one →</a>
-</div>
-</div>`;
-return;
-}
-count.textContent = list.length + ' burger' + (list.length !== 1 ? 's' : '');
-if (!list.length) {
-grid.innerHTML = `<div class="state"><div class="state-body">No reviews match — try a different filter.</div></div>`;
-return;
-}
-grid.innerHTML = list.map(r => {
-const key = RATING_BY_NUM[r.r];
-const rt = (typeof RATING!=='undefined' && RATING[key]) ? RATING[key]
-: { color: r.r===0?'#6B4A2F':(r.r===1?'#E8843C':(r.r===2?'#FFC72C':'#5BD94B')) };
-return `
-<div class="card">
-<div class="card-img" style="${r.imageUrl?`background-image:url('${r.imageUrl}')`:''}">
-${r.imageUrl ? '' : '🍔'}
-<div class="card-rating" style="color:${rt.color}; border-color:${rt.color}">${LABEL[r.r]}</div>
-</div>
-<div class="card-body">
-<div class="card-name">${r.restaurant}</div>
-<div class="card-loc">${r.location}</div>
-<div class="card-snippet">${r.notes}</div>
-<div class="card-foot">
-<a class="card-handle" href="${r.postUrl}" target="_blank" rel="noopener">@${r.handle}</a>
-${r.price ? `<span class="card-price">${r.price}</span>` : ''}
-<span class="card-date">${r.date}</span>
-</div>
-</div>
-</div>`;
-}).join('');
-}
-
-loadDatabaseFeed();
+  let dbFilter='all';
+  function cardImage(r, rt){
+    if(r.photoUrl) return "#16140f url('"+r.photoUrl+"') center/cover";
+    // No photo: rating color as the background so it's instantly readable.
+    const c = rt ? rt.color : '#6B4A2F';
+    return 'linear-gradient(135deg, '+c+'55, '+c+'22)';
+  }
+  (async()=>{ await loadReviews(); renderCards(); })();
 </script>
 
 <!-- FOOTER -->
 <footer class="site-footer">
-<div class="footer-inner">
-<div class="footer-links">
-<a href="stats.html">Stats</a>
-<a href="about.html">About</a>
-<a href="https://github.com/cheeseburgerworld/cbdb" target="_blank" rel="noopener">GitHub</a>
-</div>
-<div class="footer-copy">© 2026 Cheeseburger World LLC</div>
-</div>
+  <div class="footer-inner">
+    <div class="footer-links">
+      <a href="stats.html">Stats</a>
+      <a href="about.html">About</a>
+      <a href="https://github.com/cheeseburgerworld/cbdb" target="_blank" rel="noopener">GitHub</a>
+    </div>
+    <div class="footer-copy">© 2026 Cheeseburger World LLC</div>
+  </div>
 </footer>
 </body>
 </html>
