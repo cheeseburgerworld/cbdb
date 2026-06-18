@@ -78,21 +78,33 @@ function bskyWebUrl(uri, handle){
   return 'https://bsky.app/profile/'+who+'/post/'+rkey;
 }
 
-/* Fetch reviews from Supabase. Returns true if any rows loaded. */
+/* Fetch reviews from Supabase. Returns true if any rows loaded.
+   Tries to pull the contributor avatar via the join; if that column
+   isn't in the schema yet (PostgREST 400), it retries WITHOUT avatar
+   so a schema mismatch can never blank the whole site. */
 async function loadReviews(){
+  const base = CBDB_SUPABASE_URL + '/rest/v1/reviews?';
+  const withAvatar = 'select=*,contributors(handle,did,avatar)&order=created_at.desc';
+  const noAvatar   = 'select=*,contributors(handle,did)&order=created_at.desc';
+  const headers = { apikey: CBDB_SUPABASE_ANON, Authorization: 'Bearer ' + CBDB_SUPABASE_ANON };
+  async function pull(query){
+    const res = await fetch(base + query, { headers });
+    if(!res.ok) return { ok:false, status:res.status, body: await res.text() };
+    return { ok:true, rows: await res.json() };
+  }
   try{
-    const url = CBDB_SUPABASE_URL +
-      '/rest/v1/reviews?select=*,contributors(handle,did,avatar)&order=created_at.desc';
-    const res = await fetch(url, {
-      headers: { apikey: CBDB_SUPABASE_ANON, Authorization: 'Bearer ' + CBDB_SUPABASE_ANON }
-    });
-    if(!res.ok){
-      console.error('CBDB: Supabase fetch failed —', res.status, await res.text());
+    let r = await pull(withAvatar);
+    // 400 usually means the avatar column isn't there yet — degrade gracefully.
+    if(!r.ok && r.status === 400){
+      console.warn('CBDB: avatar column not found, loading without it.');
+      r = await pull(noAvatar);
+    }
+    if(!r.ok){
+      console.error('CBDB: Supabase fetch failed —', r.status, r.body);
       reviews = [];
       return false;
     }
-    const rows = await res.json();
-    reviews = Array.isArray(rows) ? rows.map(mapRow) : [];
+    reviews = Array.isArray(r.rows) ? r.rows.map(mapRow) : [];
     return reviews.length > 0;
   }catch(e){
     console.error('CBDB: Supabase fetch error —', e.message);
