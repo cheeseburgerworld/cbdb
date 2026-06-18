@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ranks — CB⚡DB</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html, body { height:100%; }
+  body { background:#1a1815; color:#F5F4F2; font-family:'IBM Plex Mono',monospace; line-height:1.6; -webkit-font-smoothing:antialiased; }
+  .nav { position:sticky; top:0; z-index:50; display:flex; align-items:center; justify-content:space-between; background:#211e1a; border-bottom:2px solid #FF9D2E; padding:12px 20px; }
+  .nav-left { display:flex; align-items:center; gap:22px; }
+  .logo { font-family:'Bebas Neue',sans-serif; font-size:30px; letter-spacing:2px; color:#F5F4F2; line-height:1; }
+  .logo .bolt { color:#4ADE52; }
+  .tabs { display:flex; gap:4px; }
+  .tab { font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:0.5px; text-transform:uppercase; color:#F5F4F2; background:none; border:1px solid transparent; padding:8px 14px; cursor:pointer; }
+  .tab:hover { color:#F5F4F2; }
+  .tab.active { color:#15130f; background:#FF9D2E; font-weight:600; }
+  .nav-id { font-size:12px; color:#C3BDB2; display:flex; align-items:center; gap:8px; cursor:pointer; }
+  .nav-id .dot { width:8px; height:8px; border-radius:50%; background:#4ADE52; flex-shrink:0; }
+  .nav-id .dot.out { background:#948D80; }
+  a.logo { text-decoration:none; }
+  a.tab { text-decoration:none; display:inline-block; }
+
+  /* ── RANKS PAGE ── */
+  .rk-wrap { max-width:720px; margin:0 auto; padding:40px 20px 90px; }
+  .eyebrow { font-size:12px; letter-spacing:2px; text-transform:uppercase; color:#4ADE52; margin-bottom:12px; }
+  .rk-title { font-family:'Bebas Neue',sans-serif; font-size:48px; letter-spacing:1.5px; color:#FF9D2E; line-height:1; margin-bottom:14px; }
+  .rk-lead { font-size:15px; color:#C3BDB2; line-height:1.7; max-width:600px; margin-bottom:8px; }
+  .rk-lead b { color:#F5F4F2; }
+
+  /* "You are here" banner (only shown when signed in) */
+  .rk-you { display:none; margin:30px 0 0; background:#1d2417; border:1px solid #38332b; border-left:3px solid #4ADE52; padding:16px 18px; }
+  .rk-you.show { display:flex; align-items:center; gap:14px; }
+  .rk-you-badge { width:42px; height:42px; border-radius:8px; background:#16140f; border:1px solid #38332b; display:flex; align-items:center; justify-content:center; font-size:22px; line-height:1; flex-shrink:0; }
+  .rk-you-text { font-size:13px; color:#C3BDB2; line-height:1.5; }
+  .rk-you-text b { color:#F5F4F2; }
+  .rk-you-next { color:#4ADE52; }
+
+  .rk-ladder { margin-top:40px; display:flex; flex-direction:column; gap:1px; background:#38332b; border:1px solid #38332b; }
+  .rk-row { display:flex; align-items:center; gap:18px; background:#211e1a; padding:20px 22px; position:relative; }
+  .rk-row.here { background:#1d2417; }
+  .rk-badge { width:48px; height:48px; border-radius:8px; background:#16140f; border:1px solid #38332b; display:flex; align-items:center; justify-content:center; font-size:26px; line-height:1; flex-shrink:0; }
+  .rk-badge.none { font-family:'Bebas Neue',sans-serif; font-size:22px; color:#948D80; }
+  .rk-info { flex:1; min-width:0; }
+  .rk-name { font-family:'Bebas Neue',sans-serif; font-size:24px; letter-spacing:1px; color:#F5F4F2; line-height:1; }
+  .rk-row.here .rk-name { color:#4ADE52; }
+  .rk-desc { font-size:13px; color:#C3BDB2; line-height:1.55; margin-top:4px; }
+  .rk-thresh { font-family:'Bebas Neue',sans-serif; font-size:18px; letter-spacing:1px; color:#FF9D2E; flex-shrink:0; text-align:right; }
+  .rk-thresh span { display:block; font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:1px; text-transform:uppercase; color:#948D80; margin-top:2px; }
+  .rk-here-tag { position:absolute; top:10px; right:14px; font-size:9px; letter-spacing:1.5px; text-transform:uppercase; color:#4ADE52; }
+
+  .rk-section { margin-top:42px; padding-top:28px; border-top:1px solid #38332b; }
+  .rk-head { font-family:'Bebas Neue',sans-serif; font-size:24px; letter-spacing:1.5px; color:#FF9D2E; margin-bottom:16px; }
+  .rk-text { font-size:14px; color:#E4DFD6; line-height:1.75; margin-bottom:16px; }
+  .rk-text b { color:#F5F4F2; }
+  .rk-cta { display:inline-block; margin-top:6px; background:#FF9D2E; color:#15130f; font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:14px; letter-spacing:0.5px; text-decoration:none; padding:13px 24px; }
+  .rk-cta:hover { background:#ffad4e; }
+
+  /* shared drawer (so the profile works from this page too) */
+  .drawer-bg { display:none; position:fixed; inset:0; background:rgba(8,6,3,0.7); z-index:90; }
+  .drawer-bg.show { display:block; }
+  .drawer { position:fixed; top:0; right:-420px; width:400px; max-width:90vw; height:100%; background:#211e1a; border-left:2px solid #FF9D2E; z-index:95; transition:right .25s; overflow-y:auto; padding:24px 30px; }
+  .drawer.show { right:0; }
+  .drawer-head { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:22px; }
+  .drawer-id { display:flex; gap:13px; align-items:center; }
+  .rank-badge { width:34px; height:34px; border-radius:6px; background:#16140f; border:1px solid #38332b; display:flex; align-items:center; justify-content:center; font-size:18px; line-height:1; flex-shrink:0; }
+  .p-name { font-family:'Bebas Neue',sans-serif; font-size:24px; letter-spacing:0.5px; color:#F5F4F2; }
+  .p-handle { font-size:12px; color:#948D80; }
+  .drawer-x { background:none; border:none; color:#C3BDB2; font-size:26px; cursor:pointer; line-height:1; }
+  .p-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:18px; }
+  .p-stat { background:#16140f; border:1px solid #38332b; padding:14px 8px; text-align:center; }
+  .p-num { font-family:'Bebas Neue',sans-serif; font-size:30px; color:#F5F4F2; line-height:1; }
+  .p-stat.rank-link { cursor:pointer; transition:border-color .12s; }
+  .p-stat.rank-link:hover { border-color:#FF9D2E; }
+  .p-lab { font-size:10px; letter-spacing:1px; text-transform:uppercase; color:#C3BDB2; margin-top:6px; }
+  .p-next { background:#1d2417; border:1px solid #38332b; padding:12px 14px; font-size:12px; color:#C3BDB2; line-height:1.5; margin-bottom:20px; }
+  .p-next b { color:#4ADE52; }
+  .p-hist-label { font-size:11px; letter-spacing:1px; text-transform:uppercase; color:#948D80; margin-bottom:10px; }
+  .p-history .ph-item { padding:11px 0; border-bottom:1px solid #2a2620; }
+  .ph-top { display:flex; justify-content:space-between; align-items:baseline; gap:10px; }
+  .ph-name { font-size:14px; color:#F5F4F2; }
+  .ph-rating { font-size:12px; flex-shrink:0; }
+  .ph-loc { font-size:11px; color:#948D80; margin-top:2px; }
+  .p-empty { font-size:13px; color:#948D80; padding:20px 0; text-align:center; line-height:1.6; }
+  .p-signout { margin-top:26px; padding-top:18px; border-top:1px solid #2a2620; text-align:center; }
+  .signout-link { background:none; border:1px solid #38332b; color:#948D80; font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:0.5px; padding:9px 18px; cursor:pointer; transition:border-color .12s, color .12s; }
+  .signout-link:hover { border-color:#FF5A4E; color:#FF5A4E; }
+
+  .site-footer { border-top:1px solid #38332b; background:#211e1a; margin-top:40px; padding:22px 20px; }
+  .footer-inner { max-width:1100px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+  .footer-links { display:flex; align-items:center; gap:20px; flex-wrap:wrap; }
+  .footer-links a { font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:0.5px; color:#C3BDB2; text-decoration:none; }
+  .footer-links a:hover { color:#FF9D2E; }
+  .footer-copy { font-size:11px; color:#948D80; }
+
+  @media (max-width:760px) {
+    .nav { gap:12px; }
+    .nav-left { gap:14px; min-width:0; flex:1; }
+    .tabs { overflow-x:auto; -webkit-overflow-scrolling:touch; gap:2px; scrollbar-width:none; }
+    .tabs::-webkit-scrollbar { display:none; }
+    .tab { flex:0 0 auto; white-space:nowrap; padding:8px 11px; }
+    .nav-id { flex-shrink:0; font-size:11px; }
+    .footer-inner { flex-direction:column; align-items:flex-start; gap:14px; }
+    .drawer { width:100%; max-width:100%; }
+    .rk-row { gap:14px; padding:16px 16px; }
+    .rk-thresh { font-size:16px; }
+    .rk-title { font-size:38px; }
+  }
+</style>
+</head>
+<body>
+<div class="nav">
+  <div class="nav-left">
+    <a class="logo" href="index.html">CB<span class="bolt">⚡</span>DB</a>
+    <div class="tabs">
+      <a class="tab" href="database.html">Database</a>
+      <a class="tab" href="map.html">Map</a>
+      <a class="tab" href="submit.html">Post a Review</a>
+    </div>
+  </div>
+  <div class="nav-id" id="navId" onclick="openProfile()"><span class="dot out"></span>Not signed in</div>
+</div>
+
+<div class="rk-wrap">
+  <div class="eyebrow">◈ Recognition</div>
+  <h1 class="rk-title">Ranks</h1>
+  <p class="rk-lead">Ranks are a record of how much you've contributed to the database. Every review you post moves you up the ladder. <b>The rank is the recognition, but there may be a secret perk available when you hit the top rank.</b></p>
+
+  <!-- "You are here" — filled in by JS when signed in -->
+  <div class="rk-you" id="rkYou">
+    <div class="rk-you-badge" id="rkYouBadge">⚡</div>
+    <div class="rk-you-text" id="rkYouText"></div>
+  </div>
+
+  <div class="rk-ladder" id="rkLadder"></div>
+
+  <div class="rk-section">
+    <div class="rk-head">How it works</div>
+    <p class="rk-text">Sign in with Bluesky and post a review. The moment it's indexed, it counts toward your rank. Your reviews live on your own Bluesky profile under your DID — <b>your rank follows your contributions.</b> Delete a review on Bluesky and it stops counting - the count reflects what's actually live.</p>
+  </div>
+
+  <div class="rk-section">
+    <div class="rk-head">Start climbing</div>
+    <p class="rk-text">Every database is built one entry at a time. Post your first and you're on the board.</p>
+    <a class="rk-cta" href="submit.html">Post a Review →</a>
+  </div>
+</div>
+
+<!-- PROFILE DRAWER (shared) -->
+<div class="drawer-bg" id="drawerBg" onclick="closeProfile()"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-head">
+    <div class="drawer-id">
+      <div class="rank-badge" id="pBadge" style="display:none;">⚡</div>
+      <div><div class="p-name" id="pName">—</div><div class="p-handle" id="pHandle">—</div></div>
+    </div>
+    <button class="drawer-x" onclick="closeProfile()">×</button>
+  </div>
+  <div class="p-stats">
+    <div class="p-stat"><div class="p-num" id="pCount">0</div><div class="p-lab">Reviews</div></div>
+    <div class="p-stat rank-link" onclick="location.href='ranks.html'" title="How ranks work"><div class="p-num" id="pRank">—</div><div class="p-lab">Rank</div></div>
+    <div class="p-stat"><div class="p-num" id="pCities">0</div><div class="p-lab">Cities</div></div>
+  </div>
+  <div class="p-next" id="pNext"></div>
+  <div class="p-hist-label">Your reviews</div>
+  <div class="p-history" id="pHistory"></div>
+  <div class="p-signout"><button class="signout-link" onclick="cbdbSignOut()">Sign out</button></div>
+</div>
+
+<script src="cbdb-config.js"></script>
+<script type="module" src="auth.js"></script>
+<script src="auth-bridge.js"></script>
+<script>
+  const state = (window.__cbdb_state = window.__cbdb_state || {signedIn:false,handle:null,displayName:null});
+
+  // ── Rank ladder (shared definition) ──
+  const RANKS=[
+  {min:0,name:'Guest',desc:'Signed in, not yet posted. Browse and explore.'},
+  {min:1,name:'Reviewer',badge:'🥬',desc:'Your first review is live. You\u2019re on the board.'},
+  {min:10,name:'Regular',badge:'🧀',desc:'Ten reviews in. A familiar name in the database.'},
+  {min:25,name:'Contributor',badge:'🍔',desc:'Twenty-five reviews. A real pillar of the record.'},
+  {min:50,name:'Burger Master',badge:'⚡',desc:'Fifty reviews. The top of the ladder, earned the hard way.'}
+  ];
+  function rankFor(n){ let r=RANKS[0]; for(const x of RANKS) if(n>=x.min) r=x; return r; }
+  function nextRank(n){ for(const x of RANKS) if(n<x.min) return x; return null; }
+
+  // ── Build the ladder. If signed in, highlight the user's current tier. ──
+  function renderLadder(){
+    const mine=(typeof myReviews==="function")?myReviews(state):[];
+    const count = state.signedIn ? mine.length : null;
+    const current = count!=null ? rankFor(count) : null;
+    document.getElementById('rkLadder').innerHTML = RANKS.map(r=>{
+      const here = current && current.name===r.name;
+      const badge = r.badge
+        ? '<div class="rk-badge">'+r.badge+'</div>'
+        : '<div class="rk-badge none">—</div>';
+      const thresh = r.min===0 ? 'Start' : r.min+'<span>review'+(r.min>1?'s':'')+'</span>';
+      return '<div class="rk-row'+(here?' here':'')+'">'+
+        (here?'<span class="rk-here-tag">You are here</span>':'')+
+        badge+
+        '<div class="rk-info"><div class="rk-name">'+r.name+'</div><div class="rk-desc">'+r.desc+'</div></div>'+
+        '<div class="rk-thresh">'+thresh+'</div>'+
+      '</div>';
+    }).join('');
+
+    // "You are here" banner
+    const you=document.getElementById('rkYou');
+    if(state.signedIn && current){
+      const nx=nextRank(count);
+      document.getElementById('rkYouBadge').textContent = current.badge || '◦';
+      document.getElementById('rkYouText').innerHTML =
+        'You\u2019re <b>'+current.name+'</b> with <b>'+count+'</b> review'+(count===1?'':'s')+'. '+
+        (nx ? '<span class="rk-you-next">'+(nx.min-count)+' more to '+nx.name+'.</span>'
+            : '<span class="rk-you-next">Top of the ladder.</span>');
+      you.classList.add('show');
+    } else {
+      you.classList.remove('show');
+    }
+  }
+
+  // ── Profile drawer (shared) ──
+  function openProfile(){
+    if(!state.signedIn){ window.location.href='submit.html'; return; }
+    const mine=(typeof myReviews==="function")?myReviews(state):reviews.filter(r=>r.by===state.handle);
+    const cities=new Set(mine.map(r=>r.loc)).size;
+    const rk=rankFor(mine.length);
+    const badgeEl=document.getElementById('pBadge');
+    if(badgeEl){ if(rk.badge){ badgeEl.style.display='flex'; badgeEl.textContent=rk.badge; badgeEl.title=rk.name; } else { badgeEl.style.display='none'; } }
+    document.getElementById('pName').textContent=state.displayName;
+    document.getElementById('pHandle').textContent='@'+state.handle;
+    document.getElementById('pCount').textContent=mine.length;
+    document.getElementById('pRank').textContent=rk.name;
+    document.getElementById('pCities').textContent=cities;
+    const nx=nextRank(mine.length);
+    document.getElementById('pNext').innerHTML = nx
+      ? 'Next: <b>'+nx.name+'</b> at '+nx.min+' reviews. '+(nx.min-mine.length)+' to go.'
+      : 'Top rank reached. <b>Burger Master.</b>';
+    const hist=document.getElementById('pHistory');
+    hist.innerHTML = mine.length ? mine.map(r=>{
+      const rt=RATING[r.rating];
+      return '<div class="ph-item"><div class="ph-top"><span class="ph-name">'+r.name+'</span><span class="ph-rating" style="color:'+rt.color+'">'+rt.glyph+'</span></div><div class="ph-loc">'+r.loc+' · '+r.tier+'</div></div>';
+    }).join('') : '<div class="p-empty">No reviews yet.<br>Post your first one to start climbing the leaderboard.</div>';
+    document.getElementById('drawerBg').classList.add('show');
+    document.getElementById('drawer').classList.add('show');
+  }
+  function closeProfile(){
+    document.getElementById('drawerBg').classList.remove('show');
+    document.getElementById('drawer').classList.remove('show');
+  }
+
+  // Re-render the ladder whenever auth resolves (so "You are here" appears once known).
+  window.addEventListener('cbdb-auth', renderLadder);
+  (async()=>{ await loadReviews(); renderLadder(); })();
+</script>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-links">
+      <a href="stats.html">Stats</a>
+      <a href="about.html">About</a>
+      <a href="https://github.com/cheeseburgerworld/cbdb" target="_blank" rel="noopener">GitHub</a>
+    </div>
+    <div class="footer-copy">© 2026 Cheeseburger World LLC</div>
+  </div>
+</footer>
+</body>
+</html>
