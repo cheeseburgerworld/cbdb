@@ -34,6 +34,9 @@ function mapRow(r){
     style: r.style,
     burger: r.burger,
     value: r.value_experience,
+    // Admin-set per-city crown (nullable bool). Defaults false; the editor
+    // ticks this in Supabase for the one canonical Legendary per city.
+    legendaryCanonical: r.legendary_canonical === true,
     verdict: r.verdict || '',
     photoUrl: r.photo_url || '',
     bskyUri: r.bsky_post_uri || r.bsky_uri || '',
