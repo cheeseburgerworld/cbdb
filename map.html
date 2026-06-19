@@ -40,27 +40,25 @@ body { overflow-y:auto; }
 /* Lift the dark CartoDB tiles so streets, water, and labels are legible
 without abandoning the dark theme. */
 #map .leaflet-tile-pane { filter:brightness(1.45) contrast(1.12); }
-.panel { width:380px; flex-shrink:0; background:#211e1a; border-left:1px solid #38332b; overflow-y:auto; }
-.panel-toggle { display:none; }
-.panel-empty { padding:40px 26px; text-align:center; }
-.panel-empty .big { font-family:'Bebas Neue',sans-serif; font-size:26px; color:#F5F4F2; letter-spacing:1px; margin-bottom:8px; }
-.panel-empty .sub { font-size:13px; color:#948D80; }
-.best-list { margin-top:22px; text-align:left; }
-.best-item { display:flex; align-items:center; gap:11px; padding:11px 12px; border:1px solid #38332b; background:#16140f; margin-bottom:8px; cursor:pointer; transition:border-color .12s; }
-.best-item:hover { border-color:#FF9D2E; }
-.best-glyph { font-size:13px; flex-shrink:0; }
-.best-info { flex:1; min-width:0; }
-.best-name { display:block; font-size:13px; color:#F5F4F2; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.best-loc { display:block; font-size:11px; color:#948D80; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.best-tier { font-size:12px; color:#F5F4F2; flex-shrink:0; }
 .review { display:none; }
-.review-backdrop { display:none; }
-.review.show { display:block; }
-.review { position:relative; }
-.rv-header { position:sticky; top:0; z-index:25; display:flex; align-items:center; justify-content:space-between; gap:10px; padding:11px 14px 11px 18px; background:#1a1813; border-bottom:2px solid #FF9D2E; }
-.rv-header-name { font-family:'Bebas Neue',sans-serif; font-size:18px; letter-spacing:0.5px; color:#F5F4F2; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.rv-close { flex-shrink:0; width:30px; height:30px; border-radius:50%; background:#211e1a; border:1px solid #38332b; color:#F5F4F2; font-size:18px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; }
-.rv-close:hover { border-color:#FF9D2E; color:#FF9D2E; }
+.review-backdrop { display:none; position:fixed; inset:0; background:rgba(8,6,3,0.82); z-index:1250; }
+.review-backdrop.show { display:block; }
+.review.show {
+  display:block; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
+  width:calc(100% - 40px); max-width:440px; max-height:84vh; overflow-y:auto;
+  background:#211e1a; border:1px solid #FF9D2E; box-shadow:0 14px 44px rgba(0,0,0,0.6);
+  z-index:1300;
+}
+/* Soft fade at the bottom edge so it's obvious there's more to scroll. */
+.review.show::after {
+  content:''; position:sticky; bottom:0; left:0; display:block; height:34px; margin-top:-34px;
+  background:linear-gradient(to bottom, rgba(33,30,26,0), #211e1a); pointer-events:none;
+}
+/* with the modal open, suppress map chrome so it can't punch through the card */
+body.review-open .map-filter, body.review-open .leaflet-control-zoom, body.review-open .legend { display:none !important; }
+.rv-header { position:sticky; top:0; z-index:25; display:flex; align-items:center; justify-content:flex-end; padding:0 8px; height:34px; background:#FF9D2E; }
+.rv-close { flex-shrink:0; width:22px; height:22px; border-radius:50%; background:#15130f; border:none; color:#FF9D2E; font-size:15px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+.rv-close:hover { background:#000; color:#fff; }
 .rv-photo { width:100%; height:240px; background:#16140f; background-size:contain; background-repeat:no-repeat; background-position:center; border-bottom:1px solid #38332b; }
 .rv-head { padding:22px 26px 16px; border-bottom:1px solid #38332b; }
 .rv-name { font-family:'Bebas Neue',sans-serif; font-size:34px; letter-spacing:1px; color:#F5F4F2; line-height:1; }
@@ -320,36 +318,14 @@ input[type=file]::file-selector-button { background:#38332b; color:#F5F4F2; bord
 .nav-id { flex-shrink:0; font-size:11px; }
 .footer-inner { flex-direction:column; align-items:flex-start; gap:14px; }
 .map-layout { flex-direction:column; }
-/* Mobile: the map is the experience. The "best" panel collapses to a small
-   bottom strip with a toggle, so it never eats half the opening screen. */
-.panel { width:100%; border-left:none; border-top:1px solid #38332b; max-height:42%; transition:max-height .25s ease; }
-.panel.collapsed { max-height:46px; overflow:hidden; }
 #map { flex:1; min-height:0; }
 #mapView { height:calc(100vh - 130px); display:flex; flex-direction:column; }
-.panel-toggle { display:flex; align-items:center; justify-content:center; gap:8px; padding:14px; font-size:12px; letter-spacing:1px; text-transform:uppercase; color:#FF9D2E; cursor:pointer; border-bottom:1px solid #2a2620; background:#1a1813; }
-.panel-toggle .chev { transition:transform .2s; }
-.panel.collapsed .panel-toggle .chev { transform:rotate(180deg); }
 .vs { grid-template-columns:1fr; }
 /* City filter back to top-left; legend hidden on mobile (explained on the About page). */
 .map-filter { top:14px; left:14px; bottom:auto; right:auto; transform:none; }
 .legend { display:none; }
-/* A tapped review surfaces as a centered, dismissable card over the whole screen
-   instead of replacing the panel content inline. */
-.review.show {
-  position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
-  width:calc(100% - 32px); max-width:440px; max-height:82vh; overflow-y:auto;
-  background:#211e1a; border:1px solid #FF9D2E; box-shadow:0 12px 40px rgba(0,0,0,0.6);
-  z-index:1300;
-}
-/* Soft fade at the bottom edge so it's obvious there's more to scroll. */
-.review.show::after {
-  content:''; position:sticky; bottom:0; left:0; display:block; height:34px; margin-top:-34px;
-  background:linear-gradient(to bottom, rgba(33,30,26,0), #211e1a); pointer-events:none;
-}
-.review-backdrop { display:none; position:fixed; inset:0; background:rgba(8,6,3,0.82); z-index:1250; }
-.review-backdrop.show { display:block; }
-/* with the modal open on mobile, suppress map chrome so it can't punch through the card */
-body.review-open .map-filter, body.review-open .leaflet-control-zoom, body.review-open .legend { display:none !important; }
+/* Slightly tighter modal margins on phones. */
+.review.show { width:calc(100% - 28px); max-height:82vh; }
 .stat-grid { grid-template-columns:repeat(2,1fr); }
 .card-grid { grid-template-columns:1fr; }
 .bar-lab { min-width:120px; font-size:12px; }
@@ -403,16 +379,8 @@ a.tab { text-decoration:none; display:inline-block; }
 <div class="legend-row"><span class="legend-dot" style="background:#E8843C"></span>Solid</div>
 <div class="legend-row"><span class="legend-dot" style="background:#6B4A2F"></span>Skip It</div>
 </div>
-<div class="panel" id="panel">
-<div class="panel-toggle" onclick="togglePanel()"><span class="chev">▲</span> Top burgers</div>
-<div class="panel-empty" id="panelEmpty">
-<div class="big">Start with the best</div>
-<div class="sub">The highest-rated spots on the map. Click one — or pick any marker to read its review.</div>
-<div class="best-list" id="bestList"></div>
-</div>
 <div class="review" id="review">
 <div class="rv-header">
-  <span class="rv-header-name" id="rHeaderName"></span>
   <button class="rv-close" onclick="closeReview()" aria-label="Close">×</button>
 </div>
 <div class="rv-stack" id="rStack">
@@ -436,7 +404,6 @@ a.tab { text-decoration:none; display:inline-block; }
 <div class="rv-bucket"><div class="rv-bucket-label">The Take</div><div class="rv-bucket-text" id="rValue"></div></div>
 <div class="rv-by">Reviewed by <b id="rBy"></b><span id="rDate" class="rv-date"></span></div>
 <a class="rv-bsky" id="rBsky" href="#" target="_blank" rel="noopener" style="display:none;">View &amp; discuss on Bluesky →</a>
-</div>
 </div>
 </div>
 <div class="review-backdrop" id="reviewBackdrop" onclick="closeReview()"></div>
@@ -544,10 +511,9 @@ function showReview(r){
   // Open on the tapped review if it's in the group, else the newest.
   const idx = stackReviews.findIndex(x=>x===r);
   stackIndex = idx>=0 ? idx : 0;
-  document.getElementById('panelEmpty').style.display='none';
   document.getElementById('review').classList.add('show');
   document.body.classList.add('review-open');
-  if(window.innerWidth<=760){ document.getElementById('reviewBackdrop').classList.add('show'); }
+  document.getElementById('reviewBackdrop').classList.add('show');
   paintReview();
 }
 function stackStep(delta){
@@ -567,7 +533,6 @@ function paintReview(){
   }
   const isLeg = r.legendaryCanonical === true;
   rName.innerHTML = r.name + (isLeg?'<span class="rv-name-bolt">⚡</span>':'');
-  const hdr=document.getElementById('rHeaderName'); if(hdr) hdr.textContent=r.name;
   rLoc.textContent=r.loc; rGlyph.textContent=rt.glyph; rLabel.textContent=rt.label;
   const chip=document.querySelector('.rv-rating');
   if(chip){ chip.style.background=rt.color; chip.style.color=(rt.text||'#15130f'); }
@@ -643,41 +608,8 @@ if(focusMarkers.length===1){
 }
 }
 // "Start with the best" — surface Legendary + Worth A Trip as a clickable starting list
-function renderBest(){
-const order={legendary:0,trip:1};
-const best=reviews
-.map((r,i)=>({r,i}))
-.filter(x=>x.r.rating==='legendary'||x.r.rating==='trip')
-.sort((a,b)=>order[a.r.rating]-order[b.r.rating])
-.slice(0,6);
-document.getElementById('bestList').innerHTML = best.map(x=>{
-const rt=RATING[x.r.rating];
-return '<div class="best-item" onclick="flyTo('+x.i+')">'+
-'<span class="best-glyph" style="color:'+rt.color+'">'+rt.glyph+'</span>'+
-'<span class="best-info"><span class="best-name">'+x.r.name+'</span><span class="best-loc">'+x.r.loc+'</span></span>'+
-'<span class="best-tier">'+x.r.tier+'</span></div>';
-}).join('');
-}
-function flyTo(i){
-const r=reviews[i];
-const mk=markers.find(x=>x.review===r);
-map.setView([r.lat,r.lng],15);
-if(mk) mk.marker.openPopup();
-showReview(r);
-}
-// Mobile: collapse the "Top burgers" panel by default so the map gets the screen.
-function togglePanel(){
-  const p=document.getElementById('panel');
-  if(p) p.classList.toggle('collapsed');
-  setTimeout(()=>{ if(map) map.invalidateSize(); }, 280);
-}
-function initPanelState(){
-  const p=document.getElementById('panel');
-  if(p && window.innerWidth<=760){ p.classList.add('collapsed'); }
-}
 function closeReview(){
 document.getElementById('review').classList.remove('show');
-document.getElementById('panelEmpty').style.display='block';
 document.getElementById('reviewBackdrop').classList.remove('show');
 document.body.classList.remove('review-open');
 map.closePopup();
@@ -705,14 +637,10 @@ map.fitBounds(grp.getBounds().pad(shown.length===1?2:0.25));
 (async()=>{
 await loadReviews();
 buildMarkers();
-renderBest();
 buildCityDropdown();
-initPanelState();
 if(!reviews.length){
-// empty database: center on Portland, show a prompt in the panel
+// empty database: center on Portland
 map.setView([45.535,-122.66],12);
-const bl=document.getElementById('bestList');
-if(bl) bl.innerHTML='<div style="color:#948D80;font-size:13px;padding:8px 0;">No reviews yet. <a href="submit.html" style="color:#FF9D2E;">Post the first one →</a></div>';
 return;
 }
 const qp=new URLSearchParams(location.search);
