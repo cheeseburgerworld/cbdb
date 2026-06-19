@@ -42,6 +42,9 @@
   label.fl { display:block; font-size:11px; letter-spacing:1px; text-transform:uppercase; color:#C3BDB2; margin-bottom:7px; }
   label.fl .opt { color:#948D80; text-transform:none; letter-spacing:0; }
   input[type=text], textarea, select { width:100%; background:#211e1a; border:1px solid #38332b; color:#F5F4F2; font-family:'IBM Plex Mono',monospace; font-size:14px; padding:11px 13px; margin-bottom:16px; }
+  select { -webkit-appearance:none; -moz-appearance:none; appearance:none; cursor:pointer; padding-right:38px; background-image:url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14'%3E%3Cpath d='M3 5l4 4 4-4' stroke='%23FF9D2E' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 13px center; }
+  select:hover { border-color:#5f574a; }
+  select:invalid { color:#948D80; }
   textarea { resize:vertical; min-height:92px; line-height:1.6; }
   input::placeholder, textarea::placeholder { color:#948D80; }
   input:focus, textarea:focus, select:focus { outline:none; border-color:#FF9D2E; }
@@ -87,7 +90,9 @@
   .preview.show { display:block; }
   .preview-tag { display:flex; justify-content:space-between; align-items:center; font-size:10px; letter-spacing:1px; text-transform:uppercase; color:#3B9AF8; margin-bottom:10px; }
   .cc { color:#948D80; } .cc.over { color:#FF5A4E; font-weight:600; }
-  .para-cc { font-size:11px; color:#948D80; text-align:right; margin:-8px 0 16px; }
+  .preview-callout { border:1px solid #FF9D2E; background:#1c160c; padding:14px 16px; margin-top:8px; }
+  .pc-title { font-family:'Bebas Neue',sans-serif; font-size:22px; letter-spacing:1px; color:#FF9D2E; line-height:1; margin-bottom:7px; }
+  .pc-sub { font-size:12px; color:#C3BDB2; line-height:1.6; margin-bottom:16px; }
   .bsky-card { background:#16140f; border:1px solid #38332b; border-radius:8px; padding:14px 16px; }
   .bsky-top { display:flex; align-items:center; gap:9px; margin-bottom:10px; }
   .bsky-av { width:34px; height:34px; border-radius:50%; background:#2a2620; border:1px solid #3B9AF8; display:flex; align-items:center; justify-content:center; font-family:'Bebas Neue',sans-serif; font-size:17px; color:#3B9AF8; }
@@ -204,20 +209,14 @@
       <select id="f_tier" name="tier" required><option value="">Select…</option><option value="$">$ — under $11</option><option value="$$">$$ — $12–21</option><option value="$$$">$$$ — $22+</option></select>
       <div class="bucket">
         <div class="bucket-head"><span class="bucket-num">1</span><span class="bucket-label">The Burger</span></div>
-        <p class="bucket-hint">What's on it — patty, bun, toppings, how it's cooked. Call out anything house-made, ground in-house, or scratch. Read it off the menu if you have to, then tell us what stood out.</p>
+        <p class="bucket-hint">What's on it — patty, bun, toppings, how it's cooked. Call out anything house-made. Describe the burger you ate, then tell us what stood out.</p>
         <textarea id="f_burger" name="burger" aria-label="The Burger — what's on it, what's made in-house" required></textarea>
-        <div class="para-cc" id="ccBurger">0 chars</div>
       </div>
       <div class="bucket">
-        <div class="bucket-head"><span class="bucket-num">2</span><span class="bucket-label">Value &amp; Experience</span></div>
-        <p class="bucket-hint">Worth the price? Sides, room, the visit overall — and why you landed on your rating.</p>
-        <textarea id="f_value" name="value" aria-label="Value and Experience — worth the price, sides, the visit, why you rated it" required></textarea>
-        <div class="para-cc" id="ccValue">0 chars</div>
+        <div class="bucket-head"><span class="bucket-num">2</span><span class="bucket-label">The Take</span></div>
+        <p class="bucket-hint">Why'd you land on your rating? The value, the sides, the visit overall.</p>
+        <textarea id="f_value" name="value" aria-label="The Take — why you rated it, value, sides, the visit" required></textarea>
       </div>
-      <label class="fl" for="f_photo">Photo <span class="opt">(a photo of the burger from your visit)</span></label>
-      <input type="file" id="f_photo" name="photo" accept="image/*" onchange="onPhoto(event)">
-      <label class="fl" for="f_alt">Photo description <span class="opt">(alt text — describe it for screen readers)</span></label>
-      <input type="text" id="f_alt" name="alt" placeholder="A double smash burger with melted cheese on a toasted bun, fries alongside.">
       <span class="fl" id="ratingLabel">Rating</span>
       <div class="field-help">
         <div class="fh-row"><span class="fh-glyph" style="color:#5BD94B">⭐⭐⭐</span><b>Legendary</b> — Exceptional. A benchmark. Rare by design.</div>
@@ -232,21 +231,29 @@
         <div class="rating-opt" role="radio" tabindex="0" aria-checked="false" data-val="legendary" data-glyph="⭐⭐⭐"><div class="glyph">⭐⭐⭐</div><div class="name">Legendary</div></div>
       </div>
       <input type="hidden" name="rating" id="ratingInput" required>
+      <label class="fl" for="f_photo">Photo <span class="opt">(a photo of the burger from your visit)</span></label>
+      <input type="file" id="f_photo" name="photo" accept="image/*" onchange="onPhoto(event)">
+      <label class="fl" for="f_alt">Photo description <span class="opt">(alt text — describe it for screen readers)</span></label>
+      <input type="text" id="f_alt" name="alt" placeholder="A double smash burger with melted cheese on a toasted bun, fries alongside.">
       <div class="crosspost">
         <input type="checkbox" id="xpost" checked style="display:none;">
         <div class="cp-head">
           <div><div class="cp-label">Your review posts to Bluesky</div><div class="cp-sub">It lives on your profile under your handle, tagged #CBDB. CBDB just indexes it — you own it, and can delete it anytime.</div></div>
         </div>
-        <div class="preview" id="preview">
-          <div class="preview-tag"><span>Preview · your Bluesky post</span><span class="cc" id="cc">0 / 300 · whole post</span></div>
-          <div class="bsky-card">
-            <div class="bsky-top">
-              <div class="bsky-av" id="bAv">A</div>
-              <div><div class="bsky-name" id="bName">Ash</div><div class="bsky-handle" id="bHandle">@ash.cheeseburger.world</div></div>
+        <div class="preview-callout">
+          <div class="pc-title">Review Preview</div>
+          <div class="pc-sub">Confirm this looks right before posting. If words are cut off, tighten your review — we recommend keeping reviews within these limits to maintain quality.</div>
+          <div class="preview" id="preview">
+            <div class="preview-tag"><span>Your Bluesky post</span><span class="cc" id="cc">0 / 300 · whole post</span></div>
+            <div class="bsky-card">
+              <div class="bsky-top">
+                <div class="bsky-av" id="bAv">A</div>
+                <div><div class="bsky-name" id="bName">Ash</div><div class="bsky-handle" id="bHandle">@ash.cheeseburger.world</div></div>
+              </div>
+              <div class="bsky-text" id="bskyText"></div>
+              <div class="bsky-img" id="bskyImg">No photo attached yet</div>
+              <div class="bsky-altrow" id="bskyAltRow" style="display:none;"><span class="alt-badge" id="altBadge">ALT</span><span id="altText"></span></div>
             </div>
-            <div class="bsky-text" id="bskyText"></div>
-            <div class="bsky-img" id="bskyImg">No photo attached yet</div>
-            <div class="bsky-altrow" id="bskyAltRow" style="display:none;"><span class="alt-badge" id="altBadge">ALT</span><span id="altText"></span></div>
           </div>
         </div>
       </div>
@@ -397,10 +404,6 @@
       const cc=document.getElementById('cc');
       cc.textContent=count+' / 300 · whole post';
       cc.classList.toggle('over',count>300);
-      const bc=document.getElementById('ccBurger');
-      const vc=document.getElementById('ccValue');
-      if(bc) bc.textContent=graphemes(get('burger')||'')+' chars';
-      if(vc) vc.textContent=graphemes(get('value')||'')+' chars';
       document.getElementById('bskyText').innerHTML=(header+body).replace(/\n/g,'<br>')+'<br><br><span class="hash">#CBDB</span>';
       const img=document.getElementById('bskyImg');
       const alt=get('alt');
