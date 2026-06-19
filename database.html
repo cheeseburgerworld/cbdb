@@ -229,6 +229,8 @@
   .card.legendary .card-name { color:#5BD94B; }
   .card-bolt { position:absolute; top:8px; right:9px; font-family:'Bebas Neue',sans-serif; font-size:13px; letter-spacing:1px; color:#0d0900; background:#5BD94B; padding:3px 8px 2px; }
   .card-build { font-size:13px; color:#E4DFD6; line-height:1.6; flex:1; }
+  .card-body { cursor:pointer; }
+  .card-more .card-foot { margin-top:13px; padding-top:11px; border-top:1px solid #2a2620; }
   .card-more { max-height:0; overflow:hidden; transition:max-height .28s ease; }
   .card.open .card-more { max-height:360px; }
   .card-2label { font-size:9px; letter-spacing:1.5px; text-transform:uppercase; color:#948D80; margin:14px 0 6px; }
@@ -274,23 +276,40 @@
   .drawer-head { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:22px; }
   .drawer-id { display:flex; gap:13px; align-items:center; }
   .rank-badge { width:34px; height:34px; border-radius:6px; background:#16140f; border:1px solid #38332b; display:flex; align-items:center; justify-content:center; font-size:18px; line-height:1; flex-shrink:0; }
-  .p-name { font-family:'Bebas Neue',sans-serif; font-size:24px; letter-spacing:0.5px; color:#F5F4F2; }
-  .p-handle { font-size:12px; color:#948D80; }
+  .p-avatar { width:48px; height:48px; border-radius:50%; flex-shrink:0; background:#2a2620; border:1px solid #38332b; object-fit:cover; }
+  .p-name { font-family:'Bebas Neue',sans-serif; font-size:26px; letter-spacing:0.5px; color:#F5F4F2; line-height:1; }
+  .p-handle { font-size:12px; color:#3B9AF8; margin-top:3px; }
   .drawer-x { background:none; border:none; color:#C3BDB2; font-size:26px; cursor:pointer; line-height:1; }
-  .p-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:18px; }
-  .p-stat { background:#16140f; border:1px solid #38332b; padding:14px 8px; text-align:center; }
-  .p-num { font-family:'Bebas Neue',sans-serif; font-size:30px; color:#F5F4F2; line-height:1; }
-  .p-stat.rank-link { cursor:pointer; transition:border-color .12s; }
-  .p-stat.rank-link:hover { border-color:#FF9D2E; }
-  .p-lab { font-size:10px; letter-spacing:1px; text-transform:uppercase; color:#C3BDB2; margin-top:6px; }
-  .p-next { background:#1d2417; border:1px solid #38332b; padding:12px 14px; font-size:12px; color:#C3BDB2; line-height:1.5; margin-bottom:20px; }
+  .p-rank-line { display:flex; align-items:center; gap:10px; background:#16140f; border:1px solid #38332b; padding:11px 14px; margin-bottom:11px; }
+  .p-rank-emoji { font-size:20px; line-height:1; }
+  .p-rank-name { font-family:'Bebas Neue',sans-serif; font-size:22px; letter-spacing:1px; color:#F5F4F2; }
+  .p-rank-tag { font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:#948D80; margin-left:auto; }
+  .p-next { background:#1d2417; border:1px solid #2f3a22; border-left:3px solid #4ADE52; padding:11px 13px; font-size:12px; color:#C3BDB2; line-height:1.5; margin-bottom:11px; cursor:pointer; transition:border-color .12s; }
+  .p-next:hover { border-color:#4ADE52; }
   .p-next b { color:#4ADE52; }
-  .p-hist-label { font-size:11px; letter-spacing:1px; text-transform:uppercase; color:#948D80; margin-bottom:10px; }
-  .p-history .ph-item { padding:11px 0; border-bottom:1px solid #2a2620; }
-  .ph-top { display:flex; justify-content:space-between; align-items:baseline; gap:10px; }
-  .ph-name { font-size:14px; color:#F5F4F2; }
-  .ph-rating { font-size:12px; flex-shrink:0; }
-  .ph-loc { font-size:11px; color:#948D80; margin-top:2px; }
+  .p-stats { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:20px; }
+  .p-stat { background:#16140f; border:1px solid #38332b; padding:14px 8px; text-align:center; }
+  .p-num { font-family:'Bebas Neue',sans-serif; font-size:34px; line-height:1; color:#FF9D2E; }
+  .p-lab { font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:#948D80; margin-top:6px; }
+  .p-hist-label { font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:#948D80; margin-bottom:11px; }
+  .p-history { display:flex; flex-direction:column; gap:9px; }
+  .pcard { background:#16140f; border:1px solid #38332b; border-left-width:3px; cursor:pointer; transition:border-color .12s; }
+  .pcard:hover { border-color:#5f574a; }
+  .pcard-head { display:flex; align-items:center; gap:12px; padding:11px 13px; }
+  .pcard-chip { font-size:13px; flex-shrink:0; width:54px; text-align:center; }
+  .pcard-body { flex:1; min-width:0; }
+  .pcard-name { font-family:'Bebas Neue',sans-serif; font-size:18px; letter-spacing:0.4px; color:#F5F4F2; line-height:1.05; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .pcard.legendary { border-color:#5BD94B; }
+  .pcard.legendary .pcard-name { color:#5BD94B; }
+  .pcard-meta { font-size:11px; color:#948D80; margin-top:1px; }
+  .pcard-bolt { color:#5BD94B; flex-shrink:0; font-size:14px; }
+  .pcard-more { max-height:0; overflow:hidden; transition:max-height .26s ease; }
+  .pcard.open .pcard-more { max-height:260px; }
+  .pcard-more-inner { padding:0 13px 13px 13px; }
+  .pcard-take { font-size:12px; color:#C3BDB2; line-height:1.6; border-top:1px solid #2a2620; padding-top:10px; }
+  .pcard-links { display:flex; gap:14px; margin-top:10px; }
+  .pcard-link { font-size:11px; color:#3B9AF8; cursor:pointer; }
+  .pcard-link:hover { text-decoration:underline; }
   .p-empty { font-size:13px; color:#948D80; padding:20px 0; text-align:center; line-height:1.6; }
   .p-signout { margin-top:26px; padding-top:18px; border-top:1px solid #2a2620; text-align:center; }
   .signout-link { background:none; border:1px solid #38332b; color:#948D80; font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:0.5px; padding:9px 18px; cursor:pointer; transition:border-color .12s, color .12s; }
@@ -379,17 +398,21 @@
 <div class="drawer" id="drawer">
   <div class="drawer-head">
     <div class="drawer-id">
-      <div class="rank-badge" id="pBadge" style="display:none;">⚡</div>
+      <img class="p-avatar" id="pAvatar" alt="">
       <div><div class="p-name" id="pName">—</div><div class="p-handle" id="pHandle">—</div></div>
     </div>
     <button class="drawer-x" onclick="closeProfile()">×</button>
   </div>
+  <div class="p-rank-line">
+    <span class="p-rank-emoji" id="pRankEmoji"></span>
+    <span class="p-rank-name" id="pRank">—</span>
+    <span class="p-rank-tag">Rank</span>
+  </div>
+  <div class="p-next" id="pNext" onclick="location.href='ranks.html'"></div>
   <div class="p-stats">
     <div class="p-stat"><div class="p-num" id="pCount">0</div><div class="p-lab">Reviews</div></div>
-    <div class="p-stat rank-link" onclick="location.href='ranks.html'" title="How ranks work"><div class="p-num" id="pRank">—</div><div class="p-lab">Rank</div></div>
     <div class="p-stat"><div class="p-num" id="pCities">0</div><div class="p-lab">Cities</div></div>
   </div>
-  <div class="p-next" id="pNext"></div>
   <div class="p-hist-label">Your reviews</div>
   <div class="p-history" id="pHistory"></div>
   <div class="p-signout"><button class="signout-link" onclick="cbdbSignOut()">Sign out</button></div>
@@ -404,6 +427,7 @@
 
   // ── Shared session (demo: in-memory; real build = ATProto OAuth) ──
   const state = (window.__cbdb_state = window.__cbdb_state || {signedIn:false,handle:null,displayName:null});
+  const PROFILE_FALLBACK_AVATAR = "data:image/svg+xml;utf8," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48"><rect width="48" height="48" fill="#2a2620"/><circle cx="24" cy="19" r="9" fill="#FF9D2E"/><ellipse cx="24" cy="42" rx="15" ry="11" fill="#FF9D2E"/></svg>');
 
   // ── Profile drawer (shared) ──
   // Ranks climb by approved-review count. Each earned tier carries an emoji badge —
@@ -422,8 +446,10 @@
     const mine=(typeof myReviews==="function")?myReviews(state):reviews.filter(r=>r.by===state.handle);
     const cities=new Set(mine.map(r=>r.loc)).size;
     const rk=rankFor(mine.length);
-    const badgeEl=document.getElementById('pBadge');
-    if(badgeEl){ if(rk.badge){ badgeEl.style.display='flex'; badgeEl.textContent=rk.badge; badgeEl.title=rk.name; } else { badgeEl.style.display='none'; } }
+    const av=document.getElementById('pAvatar');
+    if(av){ av.src = state.avatar || PROFILE_FALLBACK_AVATAR; }
+    const emo=document.getElementById('pRankEmoji');
+    if(emo){ emo.textContent = rk.badge || '•'; }
     document.getElementById('pName').textContent=state.displayName;
     document.getElementById('pHandle').textContent='@'+state.handle;
     document.getElementById('pCount').textContent=mine.length;
@@ -431,16 +457,30 @@
     document.getElementById('pCities').textContent=cities;
     const nx=nextRank(mine.length);
     document.getElementById('pNext').innerHTML = nx
-      ? 'Next: <b>'+nx.name+'</b> at '+nx.min+' reviews. '+(nx.min-mine.length)+' to go.'
+      ? 'Next: <b>'+nx.name+'</b> at '+nx.min+' reviews. <b>'+(nx.min-mine.length)+'</b> to go.'
       : 'Top rank reached. <b>Burger Master.</b>';
     const hist=document.getElementById('pHistory');
-    hist.innerHTML = mine.length ? mine.map(r=>{
+    hist.innerHTML = mine.length ? mine.map((r,i)=>{
       const rt=RATING[r.rating];
-      return '<div class="ph-item"><div class="ph-top"><span class="ph-name">'+r.name+'</span><span class="ph-rating" style="color:'+rt.color+'">'+rt.glyph+'</span></div><div class="ph-loc">'+r.loc+' · '+r.tier+'</div></div>';
+      const leg = r.legendaryCanonical === true;
+      const take = r.value ? r.value : '';
+      const idx = reviews.indexOf(r);
+      const mapLink = (typeof goMap==='function') ? '<span class="pcard-link" onclick="event.stopPropagation();goMap('+idx+')">View on map →</span>' : '';
+      const bsky = (typeof goReview==='function') ? '<span class="pcard-link" onclick="event.stopPropagation();goReview('+idx+')">On Bluesky →</span>' : '';
+      const links = (mapLink||bsky) ? '<div class="pcard-links">'+mapLink+bsky+'</div>' : '';
+      return '<div class="pcard'+(leg?' legendary':'')+'" id="ppc'+i+'" style="border-left-color:'+rt.color+'" onclick="pToggle('+i+')">'+
+        '<div class="pcard-head">'+
+          '<span class="pcard-chip" style="color:'+rt.color+'">'+rt.glyph+'</span>'+
+          '<div class="pcard-body"><div class="pcard-name">'+r.name+'</div><div class="pcard-meta">'+r.loc+' · '+r.tier+'</div></div>'+
+          (leg?'<span class="pcard-bolt">⚡</span>':'')+
+        '</div>'+
+        (take?'<div class="pcard-more"><div class="pcard-more-inner"><div class="pcard-take">'+take+'</div>'+links+'</div></div>':'')+
+      '</div>';
     }).join('') : '<div class="p-empty">No reviews yet.<br>Post your first one to start climbing the leaderboard.</div>';
     document.getElementById('drawerBg').classList.add('show');
     document.getElementById('drawer').classList.add('show');
   }
+  function pToggle(i){ const el=document.getElementById('ppc'+i); if(el) el.classList.toggle('open'); }
   function closeProfile(){
     document.getElementById('drawerBg').classList.remove('show');
     document.getElementById('drawer').classList.remove('show');
@@ -465,23 +505,26 @@ function renderCards(){
       const date=(typeof shortDate==='function')?shortDate(r.createdAt):'';
       const isLeg = r.legendaryCanonical === true;
       const take = r.value ? r.value : '';
-      // name/image → map; "The take" expands in place; byline → Bluesky.
+      // Image → map. Card body → expand/collapse. Byline → Bluesky (stops propagation).
+      // Collapsed shows the build; expanded reveals the take, then byline + date below it.
       return '<div class="card'+(isLeg?' legendary':'')+'" id="dbcard'+idx+'">'+
         '<div class="card-img" style="background:'+cardImage(r,rt)+'" onclick="goMap('+idx+')">'+
           '<div class="card-rating" style="background:'+rt.color+';color:'+(rt.text||'#15130f')+'">'+rt.glyph+' '+rt.label+'</div>'+
           (isLeg?'<div class="card-bolt">⚡ LEGENDARY</div>':'')+
         '</div>'+
-        '<div class="card-body">'+
-          '<div class="card-name" onclick="goMap('+idx+')">'+r.name+'</div>'+
+        '<div class="card-body" onclick="dbToggle('+idx+')">'+
+          '<div class="card-name">'+r.name+'</div>'+
           '<div class="card-loc">'+r.loc+'</div>'+
           '<div class="card-meta"><span class="card-tier">'+r.tier+'</span><span class="card-style">'+r.style+'</span></div>'+
           '<div class="card-build">'+r.burger+'</div>'+
-          '<div class="card-foot">'+
-            '<span class="card-by" onclick="event.stopPropagation();goReview('+idx+')" title="View on Bluesky">'+(r.by?'@'+r.by:'')+'</span>'+
-            (date?'<span class="card-date">'+date+'</span>':'')+
+          (take?'<div class="card-more">'+
+            '<div class="card-2label">The take</div><div class="card-take">'+take+'</div>'+
+            '<div class="card-foot">'+
+              '<span class="card-by" onclick="event.stopPropagation();goReview('+idx+')" title="View on Bluesky">'+(r.by?'@'+r.by:'')+'</span>'+
+              (date?'<span class="card-date">'+date+'</span>':'')+
+            '</div>'+
           '</div>'+
-          (take?'<div class="card-more"><div class="card-2label">The take</div><div class="card-take">'+take+'</div></div>'+
-          '<div class="card-expand" onclick="dbToggle('+idx+')"><span class="arr">▸</span><span class="lbl-closed">The take</span><span class="lbl-open">Less</span></div>':'')+
+          '<div class="card-expand"><span class="arr">▸</span><span class="lbl-closed">The take</span><span class="lbl-open">Less</span></div>':'')+
         '</div></div>';
     }).join('');
   }
