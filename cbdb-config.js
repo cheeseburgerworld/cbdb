@@ -108,6 +108,7 @@ async function loadReviews(){
       return false;
     }
     reviews = Array.isArray(r.rows) ? r.rows.map(mapRow) : [];
+    try { window.dispatchEvent(new CustomEvent('cbdb-reviews-loaded')); } catch(e){}
     return reviews.length > 0;
   }catch(e){
     console.error('CBDB: Supabase fetch error —', e.message);
