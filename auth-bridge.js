@@ -42,9 +42,11 @@
       form.classList.add('show');
       const initial = (state.displayName||state.handle||'?').charAt(0).toUpperCase();
       const strip = document.getElementById('idStrip');
-      if(strip) strip.innerHTML =
-        avatarHTML('avatar')+
-        '<div><div class="handle">@'+state.handle+'</div><div class="role">Contributor</div></div>';
+      if(strip){
+        strip.innerHTML =
+          avatarHTML('avatar')+
+          '<div><div class="handle">@'+state.handle+'</div></div>';
+      }
       // Bluesky preview card avatar: real photo if present, else initial.
       const bAv=document.getElementById('bAv');
       if(bAv){
@@ -65,6 +67,7 @@
   // Update everything when auth state changes (or on first load).
   function refresh(){ paintNav(); paintSubmit(); }
   window.addEventListener('cbdb-auth', refresh);
+  window.addEventListener('cbdb-reviews-loaded', refresh);
   document.addEventListener('DOMContentLoaded', refresh);
   refresh();
 
