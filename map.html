@@ -101,6 +101,7 @@ without abandoning the dark theme. */
 .leaflet-popup-tip { background:#211e1a; }
 .pop-name { font-family:'Bebas Neue',sans-serif; font-size:18px; letter-spacing:1px; color:#F5F4F2; }
 .pop-rating { font-size:12px; color:#F5F4F2; margin-top:2px; }
+.pop-price { font-size:12px; color:#FF9D2E; margin-top:2px; letter-spacing:1px; }
 .pop-cta { font-size:11px; color:#C3BDB2; margin-top:4px; text-decoration:underline; }
 /* ── SUBMIT VIEW ── */
 .submit-wrap { max-width:680px; margin:0 auto; padding:34px 20px 90px; }
@@ -338,9 +339,25 @@ input[type=file]::file-selector-button { background:#38332b; color:#F5F4F2; bord
   background:#211e1a; border:1px solid #FF9D2E; box-shadow:0 12px 40px rgba(0,0,0,0.6);
   z-index:1300;
 }
+/* Keep the X pinned and tappable while the card body scrolls (mobile).
+   Card is centered (max 440px, ~16px side margins) and max-height:82vh,
+   so its top edge sits ~9vh down — anchor the fixed button there. */
+.review.show .rv-close {
+  position:fixed;
+  top:calc(9vh + 6px);
+  right:24px;
+  z-index:1320;
+}
+@media (min-width:441px){
+  /* on wider phones the 440px card is centered, not full-width — pin X to card edge */
+  .review.show .rv-close { right:calc(50% - 220px + 12px); }
+}
+/* Soft fade at the bottom edge so it's obvious there's more to scroll. */
+.review.show::after {
+  content:''; position:sticky; bottom:0; left:0; display:block; height:34px; margin-top:-34px;
+  background:linear-gradient(to bottom, rgba(33,30,26,0), #211e1a); pointer-events:none;
+}
 .review-backdrop { display:none; position:fixed; inset:0; background:rgba(8,6,3,0.82); z-index:1250; }
-.review-backdrop.show { display:block; }
-.review-backdrop { display:none; position:fixed; inset:0; background:rgba(8,6,3,0.7); z-index:1250; }
 .review-backdrop.show { display:block; }
 /* with the modal open on mobile, suppress map chrome so it can't punch through the card */
 body.review-open .map-filter, body.review-open .leaflet-control-zoom, body.review-open .legend { display:none !important; }
@@ -609,8 +626,9 @@ Object.values(groups).forEach(group=>{
   const r0=group[0];
   const m=L.marker([r0.lat,r0.lng],{icon}).addTo(map);
   const popName = r0.name + (canonicalLeg?' ⚡':'');
-  const popSub = count>1 ? (count+' reviews · best: '+rt.label) : (rt.glyph+' '+rt.label+' · '+r0.tier);
-  m.bindPopup('<div class="pop-name">'+popName+'</div><div class="pop-rating">'+popSub+'</div>');
+  const popSub = count>1 ? (count+' reviews · best: '+rt.label) : (rt.glyph+' '+rt.label);
+  const popPrice = count>1 ? '' : ('<div class="pop-price">'+r0.tier+'</div>');
+  m.bindPopup('<div class="pop-name">'+popName+'</div><div class="pop-rating">'+popSub+'</div>'+popPrice);
   m.on('click',()=>{m.openPopup();showReview(r0);});
   // store the group's loc/name so city filter still works
   markers.push({marker:m, review:r0, group:group});
