@@ -41,6 +41,7 @@ body { overflow-y:auto; }
 without abandoning the dark theme. */
 #map .leaflet-tile-pane { filter:brightness(1.45) contrast(1.12); }
 .panel { width:380px; flex-shrink:0; background:#211e1a; border-left:1px solid #38332b; overflow-y:auto; }
+.panel-toggle { display:none; }
 .panel-empty { padding:40px 26px; text-align:center; }
 .panel-empty .big { font-family:'Bebas Neue',sans-serif; font-size:26px; color:#F5F4F2; letter-spacing:1px; margin-bottom:8px; }
 .panel-empty .sub { font-size:13px; color:#948D80; }
@@ -72,7 +73,6 @@ without abandoning the dark theme. */
 .rv-bucket-text { font-size:13px; color:#E4DFD6; line-height:1.6; }
 .rv-price { font-size:13px; color:#F5F4F2; margin-bottom:7px; }
 .rv-price b { color:#FF9D2E; }
-.rv-verdict { padding:16px 26px; font-size:13px; color:#F5F4F2; font-style:italic; border-bottom:1px solid #2a2620; line-height:1.6; }
 .rv-by { padding:14px 26px; font-size:11px; color:#948D80; letter-spacing:0.5px; }
 .rv-by b { color:#C3BDB2; }
 .rv-date { color:#948D80; }
@@ -317,10 +317,15 @@ input[type=file]::file-selector-button { background:#38332b; color:#F5F4F2; bord
 .nav-id { flex-shrink:0; font-size:11px; }
 .footer-inner { flex-direction:column; align-items:flex-start; gap:14px; }
 .map-layout { flex-direction:column; }
-/* Panel (with "Start with the best") stays stacked below the map as before. */
-.panel { width:100%; border-left:none; border-top:1px solid #38332b; max-height:46%; }
-#map { min-height:54%; }
-#mapView { height:calc(100vh - 130px); }
+/* Mobile: the map is the experience. The "best" panel collapses to a small
+   bottom strip with a toggle, so it never eats half the opening screen. */
+.panel { width:100%; border-left:none; border-top:1px solid #38332b; max-height:42%; transition:max-height .25s ease; }
+.panel.collapsed { max-height:46px; overflow:hidden; }
+#map { flex:1; min-height:0; }
+#mapView { height:calc(100vh - 130px); display:flex; flex-direction:column; }
+.panel-toggle { display:flex; align-items:center; justify-content:center; gap:8px; padding:14px; font-size:12px; letter-spacing:1px; text-transform:uppercase; color:#FF9D2E; cursor:pointer; border-bottom:1px solid #2a2620; background:#1a1813; }
+.panel-toggle .chev { transition:transform .2s; }
+.panel.collapsed .panel-toggle .chev { transform:rotate(180deg); }
 .vs { grid-template-columns:1fr; }
 /* City filter back to top-left; legend hidden on mobile (explained on the About page). */
 .map-filter { top:14px; left:14px; bottom:auto; right:auto; transform:none; }
@@ -392,7 +397,8 @@ a.tab { text-decoration:none; display:inline-block; }
 <div class="legend-row"><span class="legend-dot" style="background:#E8843C"></span>Solid</div>
 <div class="legend-row"><span class="legend-dot" style="background:#6B4A2F"></span>Skip It</div>
 </div>
-<div class="panel">
+<div class="panel" id="panel">
+<div class="panel-toggle" onclick="togglePanel()"><span class="chev">▲</span> Top burgers</div>
 <div class="panel-empty" id="panelEmpty">
 <div class="big">Start with the best</div>
 <div class="sub">The highest-rated spots on the map. Click one — or pick any marker to read its review.</div>
@@ -419,7 +425,6 @@ a.tab { text-decoration:none; display:inline-block; }
 </div>
 <div class="rv-bucket"><div class="rv-bucket-label">The Burger</div><div class="rv-bucket-text" id="rBurger"></div></div>
 <div class="rv-bucket"><div class="rv-bucket-label">The Take</div><div class="rv-bucket-text" id="rValue"></div></div>
-<div class="rv-verdict" id="rVerdict"></div>
 <div class="rv-by">Reviewed by <b id="rBy"></b><span id="rDate" class="rv-date"></span></div>
 <a class="rv-bsky" id="rBsky" href="#" target="_blank" rel="noopener" style="display:none;">View &amp; discuss on Bluesky →</a>
 </div>
@@ -558,7 +563,7 @@ function paintReview(){
   if(chip){ chip.style.background=rt.color; chip.style.color=(rt.text||'#15130f'); }
   const lab=document.getElementById('rLabel'); if(lab) lab.style.color=(rt.text||'#15130f');
   rTier.textContent=r.tier; rStyle.textContent=r.style; rBurger.textContent=r.burger;
-  rValue.textContent=r.value; rVerdict.textContent=r.verdict?'“'+r.verdict+'”':''; rBy.textContent=r.by;
+  rValue.textContent=r.value; rBy.textContent=r.by;
   const rd=document.getElementById('rDate');
   if(rd) rd.textContent=(typeof shortDate==='function')?shortDate(r.createdAt):'';
   const bsky=document.getElementById('rBsky');
@@ -612,9 +617,19 @@ Object.values(groups).forEach(group=>{
 });
 }
 function fitAll(){
-if(!markers.length){ map.setView([45.535,-122.66],12); return; }
-const grp=L.featureGroup(markers.map(x=>x.marker));
-map.fitBounds(grp.getBounds().pad(0.25));
+if(!markers.length){ map.setView([45.535,-122.66],11); return; }
+// Default to the city (loc) with the most reviews — best opening view, esp. on mobile.
+const byCity={};
+markers.forEach(x=>{ const c=x.review.loc; (byCity[c]=byCity[c]||[]).push(x); });
+let topCity=null, topN=0;
+Object.keys(byCity).forEach(c=>{ if(byCity[c].length>topN){ topN=byCity[c].length; topCity=c; } });
+const focusMarkers = topCity ? byCity[topCity] : markers;
+const grp=L.featureGroup(focusMarkers.map(x=>x.marker));
+if(focusMarkers.length===1){
+  const r=focusMarkers[0].review; map.setView([r.lat,r.lng],13);
+} else {
+  map.fitBounds(grp.getBounds().pad(0.3));
+}
 }
 // "Start with the best" — surface Legendary + Worth A Trip as a clickable starting list
 function renderBest(){
@@ -638,6 +653,16 @@ const mk=markers.find(x=>x.review===r);
 map.setView([r.lat,r.lng],15);
 if(mk) mk.marker.openPopup();
 showReview(r);
+}
+// Mobile: collapse the "Top burgers" panel by default so the map gets the screen.
+function togglePanel(){
+  const p=document.getElementById('panel');
+  if(p) p.classList.toggle('collapsed');
+  setTimeout(()=>{ if(map) map.invalidateSize(); }, 280);
+}
+function initPanelState(){
+  const p=document.getElementById('panel');
+  if(p && window.innerWidth<=760){ p.classList.add('collapsed'); }
 }
 function closeReview(){
 document.getElementById('review').classList.remove('show');
@@ -671,6 +696,7 @@ await loadReviews();
 buildMarkers();
 renderBest();
 buildCityDropdown();
+initPanelState();
 if(!reviews.length){
 // empty database: center on Portland, show a prompt in the panel
 map.setView([45.535,-122.66],12);
