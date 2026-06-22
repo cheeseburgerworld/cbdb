@@ -52,9 +52,17 @@ without abandoning the dark theme. */
 .review.show { display:block; }
 .panel.has-review .panel-empty { display:none; }
 /* thin white header bar with the X */
-.rv-header { position:sticky; top:0; z-index:25; display:flex; align-items:center; justify-content:flex-end; padding:0 8px; height:30px; background:#948D80; }
-.rv-close { flex-shrink:0; width:20px; height:20px; border-radius:50%; background:#15130f; border:none; color:#F5F4F2; font-size:14px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; }
-.rv-close:hover { background:#000; color:#fff; }
+/* No header bar. A sticky X stays pinned to the card's top-right while it scrolls,
+   readable over the photo and over dark content alike. */
+.rv-close { position:sticky; top:10px; float:right; margin:10px 10px -46px 0; width:30px; height:30px; border-radius:50%; background:rgba(13,9,0,0.6); -webkit-backdrop-filter:blur(3px); backdrop-filter:blur(3px); border:1px solid rgba(255,255,255,0.25); color:#fff; font-size:17px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:30; }
+.rv-close:hover { background:rgba(0,0,0,0.85); }
+/* Carousel arrows + count pill — only shown for restaurants with multiple reviews. */
+.rv-arrow { position:absolute; top:118px; width:38px; height:38px; border:none; border-radius:50%; background:#FF9D2E; color:#15130f; font-size:22px; font-weight:700; line-height:1; cursor:pointer; display:none; align-items:center; justify-content:center; z-index:28; box-shadow:0 2px 8px rgba(0,0,0,0.45); }
+.rv-arrow:hover { background:#ffb152; }
+.rv-arrow:active { transform:translateY(1px); }
+.rv-arrow.left { left:10px; } .rv-arrow.right { right:10px; }
+.rv-count { position:absolute; top:128px; left:50%; transform:translateX(-50%); display:none; z-index:28; background:rgba(13,9,0,0.78); color:#F5F4F2; font-size:11px; letter-spacing:1px; padding:3px 10px; border-radius:10px; }
+.review.multi .rv-arrow, .review.multi .rv-count { display:flex; }
 .rv-photo { width:100%; height:240px; background:#16140f; background-size:contain; background-repeat:no-repeat; background-position:center; border-bottom:1px solid #38332b; }
 .rv-head { padding:22px 26px 16px; border-bottom:1px solid #38332b; }
 .rv-name { font-family:'Bebas Neue',sans-serif; font-size:34px; letter-spacing:1px; color:#F5F4F2; line-height:1; }
@@ -69,21 +77,12 @@ without abandoning the dark theme. */
 .rv-bucket-text { font-size:13px; color:#E4DFD6; line-height:1.6; }
 .rv-price { font-size:13px; color:#F5F4F2; margin-bottom:7px; }
 .rv-price b { color:#FF9D2E; }
-.rv-by { padding:16px 26px 4px; font-size:13px; color:#C3BDB2; letter-spacing:0.3px; }
+.rv-by { padding:16px 26px 3px; font-size:13px; color:#C3BDB2; letter-spacing:0.3px; }
 .rv-by b { color:#F5F4F2; font-weight:600; }
-.rv-date { display:block; padding:0 26px 16px; font-size:12px; color:#A39B8D; letter-spacing:0.5px; }
+.rv-date { display:block; padding:0 26px 16px; font-size:12px; color:#B8B0A2; letter-spacing:0.5px; }
 .rv-bsky { display:block; margin:4px 26px 22px; padding:11px 14px; background:#3B9AF8; color:#fff; text-decoration:none; font-size:13px; text-align:center; font-weight:600; }
 .rv-bsky:hover { background:#5aabfa; }
 .cb-pin { border-radius:50%; border:3px solid #1a1815; box-shadow:0 0 0 1px rgba(0,0,0,0.6), 0 1px 6px rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; box-sizing:border-box; }
-/* multi-review stack nav inside the surfaced card */
-.rv-stack { display:none; align-items:center; justify-content:space-between; gap:10px; padding:10px 26px; border-bottom:1px solid #2a2620; background:#1a1813; }
-.rv-stack.show { display:flex; }
-.rv-stack-count { font-size:12px; letter-spacing:1px; text-transform:uppercase; color:#C3BDB2; font-weight:600; }
-.rv-stack-btns { display:flex; gap:10px; }
-.rv-stack-btn { width:34px; height:34px; border:none; border-radius:6px; background:#FF9D2E; color:#15130f; cursor:pointer; font-size:20px; font-weight:700; line-height:1; display:flex; align-items:center; justify-content:center; transition:background .12s; }
-.rv-stack-btn:hover { background:#ffb152; }
-.rv-stack-btn:active { transform:translateY(1px); }
-.rv-stack-btn:disabled { background:#38332b; color:#6b6356; cursor:default; transform:none; }
 .rv-name-bolt { color:#5BD94B; font-size:0.7em; vertical-align:middle; margin-left:6px; }
 .pin-skip { background:#6B4A2F; width:14px; height:14px; }
 .pin-solid { background:#E8843C; width:18px; height:18px; }
@@ -397,16 +396,10 @@ a.tab { text-decoration:none; display:inline-block; }
   <div class="pe-sub">Tap any pin to read its review. Bigger pins are better burgers — the green one is Legendary.</div>
 </div>
 <div class="review" id="review">
-<div class="rv-header">
-  <button class="rv-close" onclick="closeReview()" aria-label="Close">×</button>
-</div>
-<div class="rv-stack" id="rStack">
-  <span class="rv-stack-count" id="rStackCount">1 of 1</span>
-  <span class="rv-stack-btns">
-    <button class="rv-stack-btn" id="rPrev" onclick="stackStep(-1)" aria-label="Previous review">‹</button>
-    <button class="rv-stack-btn" id="rNext" onclick="stackStep(1)" aria-label="Next review">›</button>
-  </span>
-</div>
+<button class="rv-close" onclick="closeReview()" aria-label="Close">×</button>
+<button class="rv-arrow left" id="rPrev" onclick="stackStep(-1)" aria-label="Previous review">‹</button>
+<button class="rv-arrow right" id="rNext" onclick="stackStep(1)" aria-label="Next review">›</button>
+<span class="rv-count" id="rStackCount">1 of 1</span>
 <div class="rv-photo" id="rPhoto"></div>
 <div class="rv-head">
 <div class="rv-name" id="rName"></div>
@@ -543,13 +536,13 @@ function stackStep(delta){
 function paintReview(){
   const r = stackReviews[stackIndex];
   const rt=RATING[r.rating];
-  // stack nav — only show when >1 review for this restaurant
-  const stack=document.getElementById('rStack');
+  // Carousel arrows + count pill — only when >1 review for this restaurant.
+  const card=document.getElementById('review');
   if(stackReviews.length>1){
-    stack.classList.add('show');
+    card.classList.add('multi');
     document.getElementById('rStackCount').textContent=(stackIndex+1)+' of '+stackReviews.length;
   } else {
-    stack.classList.remove('show');
+    card.classList.remove('multi');
   }
   const isLeg = r.legendaryCanonical === true;
   rName.innerHTML = r.name + (isLeg?'<span class="rv-name-bolt">⚡</span>':'');
