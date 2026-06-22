@@ -40,24 +40,20 @@ body { overflow-y:auto; }
 /* Lift the dark CartoDB tiles so streets, water, and labels are legible
 without abandoning the dark theme. */
 #map .leaflet-tile-pane { filter:brightness(1.45) contrast(1.12); }
+
+/* Desktop: side panel beside the map — map stays visible while you read. */
+.panel { width:380px; flex-shrink:0; background:#211e1a; border-left:1px solid #38332b; overflow-y:auto; display:flex; flex-direction:column; }
+.panel-empty { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:40px 30px; }
+.pe-bolt { font-size:34px; margin-bottom:16px; font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif; opacity:0.9; }
+.pe-title { font-family:'Bebas Neue',sans-serif; font-size:26px; letter-spacing:1px; color:#F5F4F2; margin-bottom:10px; }
+.pe-sub { font-size:13px; color:#948D80; line-height:1.6; max-width:240px; }
+.review-backdrop { display:none; }
 .review { display:none; }
-.review-backdrop { display:none; position:fixed; inset:0; background:rgba(8,6,3,0.82); z-index:1250; }
-.review-backdrop.show { display:block; }
-.review.show {
-  display:block; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
-  width:calc(100% - 40px); max-width:440px; max-height:84vh; overflow-y:auto;
-  background:#211e1a; border:1px solid #F5F4F2; box-shadow:0 14px 44px rgba(0,0,0,0.6);
-  z-index:1300;
-}
-/* Soft fade at the bottom edge so it's obvious there's more to scroll. */
-.review.show::after {
-  content:''; position:sticky; bottom:0; left:0; display:block; height:34px; margin-top:-34px;
-  background:linear-gradient(to bottom, rgba(33,30,26,0), #211e1a); pointer-events:none;
-}
-/* with the modal open, suppress map chrome so it can't punch through the card */
-body.review-open .map-filter, body.review-open .leaflet-control-zoom, body.review-open .legend { display:none !important; }
-.rv-header { position:sticky; top:0; z-index:25; display:flex; align-items:center; justify-content:flex-end; padding:0 8px; height:34px; background:#FF9D2E; }
-.rv-close { flex-shrink:0; width:22px; height:22px; border-radius:50%; background:#15130f; border:none; color:#FF9D2E; font-size:15px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+.review.show { display:block; }
+.panel.has-review .panel-empty { display:none; }
+/* thin white header bar with the X */
+.rv-header { position:sticky; top:0; z-index:25; display:flex; align-items:center; justify-content:flex-end; padding:0 8px; height:30px; background:#F5F4F2; }
+.rv-close { flex-shrink:0; width:20px; height:20px; border-radius:50%; background:#15130f; border:none; color:#F5F4F2; font-size:14px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; }
 .rv-close:hover { background:#000; color:#fff; }
 .rv-photo { width:100%; height:240px; background:#16140f; background-size:contain; background-repeat:no-repeat; background-position:center; border-bottom:1px solid #38332b; }
 .rv-head { padding:22px 26px 16px; border-bottom:1px solid #38332b; }
@@ -283,7 +279,7 @@ input[type=file]::file-selector-button { background:#38332b; color:#F5F4F2; bord
 .drawer-x { background:none; border:none; color:#C3BDB2; font-size:26px; cursor:pointer; line-height:1; }
 .p-rank-line { display:flex; align-items:center; gap:10px; background:#16140f; border:1px solid #38332b; padding:11px 14px; margin-bottom:11px; cursor:pointer; transition:border-color .12s; }
 .p-rank-line:hover { border-color:#5f574a; }
-.p-rank-emoji { font-size:20px; line-height:1; }
+.p-rank-emoji { font-size:20px; line-height:1; font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif; }
 .p-rank-name { font-family:'Bebas Neue',sans-serif; font-size:22px; letter-spacing:1px; color:#F5F4F2; }
 .p-rank-tag { font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:#948D80; margin-left:auto; }
 .p-next { background:#1d2417; border:1px solid #2f3a22; border-left:3px solid #4ADE52; padding:11px 13px; font-size:12px; color:#C3BDB2; line-height:1.6; margin-bottom:11px; cursor:pointer; transition:border-color .12s; }
@@ -323,8 +319,23 @@ input[type=file]::file-selector-button { background:#38332b; color:#F5F4F2; bord
 /* City filter back to top-left; legend hidden on mobile (explained on the About page). */
 .map-filter { top:14px; left:14px; bottom:auto; right:auto; transform:none; }
 .legend { display:none; }
-/* Slightly tighter modal margins on phones. */
-.review.show { width:calc(100% - 28px); max-height:82vh; }
+/* Mobile: no side panel. The map is full-height; a tapped review surfaces as a
+   centered modal over the map. The panel wrapper carries no layout/space. */
+.panel { width:auto; border:none; background:transparent; display:contents; }
+.panel-empty { display:none; }
+.review-backdrop { display:none; position:fixed; inset:0; background:rgba(8,6,3,0.82); z-index:1250; }
+.review-backdrop.show { display:block; }
+.review.show {
+  position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
+  width:calc(100% - 28px); max-width:440px; max-height:82vh; overflow-y:auto;
+  background:#211e1a; border:1px solid #F5F4F2; box-shadow:0 14px 44px rgba(0,0,0,0.6);
+  z-index:1300;
+}
+.review.show::after {
+  content:''; position:sticky; bottom:0; left:0; display:block; height:30px; margin-top:-30px;
+  background:linear-gradient(to bottom, rgba(33,30,26,0), #211e1a); pointer-events:none;
+}
+body.review-open .map-filter, body.review-open .leaflet-control-zoom { display:none !important; }
 .stat-grid { grid-template-columns:repeat(2,1fr); }
 .card-grid { grid-template-columns:1fr; }
 .bar-lab { min-width:120px; font-size:12px; }
@@ -377,6 +388,12 @@ a.tab { text-decoration:none; display:inline-block; }
 <div class="legend-row"><span class="legend-dot" style="background:#FFC72C"></span>Worth A Trip</div>
 <div class="legend-row"><span class="legend-dot" style="background:#E8843C"></span>Solid</div>
 <div class="legend-row"><span class="legend-dot" style="background:#6B4A2F"></span>Skip It</div>
+</div>
+<div class="panel" id="panel">
+<div class="panel-empty" id="panelEmpty">
+  <div class="pe-bolt">⚡️</div>
+  <div class="pe-title">Explore the map</div>
+  <div class="pe-sub">Tap any pin to read its review. Bigger pins are better burgers — the green one is Legendary.</div>
 </div>
 <div class="review" id="review">
 <div class="rv-header">
@@ -448,7 +465,7 @@ const RANKS=[
 {min:1,name:'Reviewer',badge:'🥬'},
 {min:10,name:'Regular',badge:'🧀'},
 {min:25,name:'Editor',badge:'🍔'},
-{min:50,name:'Burger Master',badge:'⚡'}
+{min:50,name:'Burger Master',badge:'⚡️'}
 ];
 function rankFor(n){ let r=RANKS[0]; for(const x of RANKS) if(n>=x.min) r=x; return r; }
 function nextRank(n){ for(const x of RANKS) if(n<x.min) return x; return null; }
@@ -512,8 +529,10 @@ function showReview(r){
   const idx = stackReviews.findIndex(x=>x===r);
   stackIndex = idx>=0 ? idx : 0;
   document.getElementById('review').classList.add('show');
+  document.getElementById('panel').classList.add('has-review');
   document.body.classList.add('review-open');
   document.getElementById('reviewBackdrop').classList.add('show');
+  const pnl=document.getElementById('panel'); if(pnl) pnl.scrollTop=0;
   paintReview();
 }
 function stackStep(delta){
@@ -610,6 +629,7 @@ if(focusMarkers.length===1){
 // "Start with the best" — surface Legendary + Worth A Trip as a clickable starting list
 function closeReview(){
 document.getElementById('review').classList.remove('show');
+document.getElementById('panel').classList.remove('has-review');
 document.getElementById('reviewBackdrop').classList.remove('show');
 document.body.classList.remove('review-open');
 map.closePopup();
