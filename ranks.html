@@ -137,7 +137,7 @@
 <div class="rk-wrap">
   <div class="eyebrow">◈ Recognition</div>
   <h1 class="rk-title">Ranks</h1>
-  <p class="rk-lead">Ranks are a record of how much you've contributed to the database. Every review you post moves you up the ladder. <b>The rank is the recognition, but there may be a secret perk available when you hit the top rank.</b></p>
+  <p class="rk-lead">Ranks track what you've put into the database. Every live review moves you up. <b>The top rank comes with something the others don't — you'll know it when you get there.</b></p>
 
   <!-- "You are here" — filled in by JS when signed in -->
   <div class="rk-you" id="rkYou">
@@ -149,12 +149,12 @@
 
   <div class="rk-section">
     <div class="rk-head">How it works</div>
-    <p class="rk-text">Sign in with Bluesky and post a review. The moment it's indexed, it counts toward your rank. Your reviews live on your own Bluesky profile under your DID — <b>your rank follows your contributions.</b> Delete a review on Bluesky and it stops counting - the count reflects what's actually live.</p>
+    <p class="rk-text">Post a review and the moment it's indexed, it counts. Your reviews live on your own Bluesky profile under your DID, so <b>your rank follows you, not us.</b> Delete one and it stops counting — the number always reflects what's actually live.</p>
   </div>
 
   <div class="rk-section">
-    <div class="rk-head">Start climbing</div>
-    <p class="rk-text">Every database is built one entry at a time. Post your first and you're on the board.</p>
+    <div class="rk-head">Get on the board</div>
+    <p class="rk-text">Post your first review and you're a Reviewer. Everything else builds from there.</p>
     <a class="rk-cta" href="submit.html">Post a Review →</a>
   </div>
 </div>
@@ -193,11 +193,11 @@ const PROFILE_FALLBACK_AVATAR = "data:image/svg+xml;utf8," + encodeURIComponent(
 
   // ── Rank ladder (shared definition) ──
   const RANKS=[
-  {min:0,name:'Guest',desc:'Signed in, not yet posted. Browse and explore.'},
-  {min:1,name:'Reviewer',badge:'🥬',desc:'Your first review is live. You\u2019re on the board.'},
-  {min:10,name:'Regular',badge:'🧀',desc:'Ten reviews in. A familiar name in the database.'},
-  {min:25,name:'Editor',badge:'🍔',desc:'Twenty-five reviews. A real pillar of the record.'},
-  {min:50,name:'Burger Master',badge:'⚡',desc:'Fifty reviews. Top tier burger connoisseur.'}
+  {min:0,name:'Guest',desc:'Signed in. Nothing posted yet.'},
+  {min:1,name:'Reviewer',badge:'🥬',desc:'One review live. You\u2019re on the board.'},
+  {min:10,name:'Regular',badge:'🧀',desc:'Ten reviews. You know your way around.'},
+  {min:25,name:'Editor',badge:'🍔',desc:'Twenty-five. Part of the record now.'},
+  {min:50,name:'Burger Master',badge:'⚡',desc:'Fifty. The top — and it carries something.'}
   ];
   function rankFor(n){ let r=RANKS[0]; for(const x of RANKS) if(n>=x.min) r=x; return r; }
   function nextRank(n){ for(const x of RANKS) if(n<x.min) return x; return null; }
