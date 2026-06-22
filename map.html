@@ -46,7 +46,7 @@ without abandoning the dark theme. */
 .review.show {
   display:block; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
   width:calc(100% - 40px); max-width:440px; max-height:84vh; overflow-y:auto;
-  background:#211e1a; border:1px solid #FF9D2E; box-shadow:0 14px 44px rgba(0,0,0,0.6);
+  background:#211e1a; border:1px solid #F5F4F2; box-shadow:0 14px 44px rgba(0,0,0,0.6);
   z-index:1300;
 }
 /* Soft fade at the bottom edge so it's obvious there's more to scroll. */
@@ -73,11 +73,10 @@ body.review-open .map-filter, body.review-open .leaflet-control-zoom, body.revie
 .rv-bucket-text { font-size:13px; color:#E4DFD6; line-height:1.6; }
 .rv-price { font-size:13px; color:#F5F4F2; margin-bottom:7px; }
 .rv-price b { color:#FF9D2E; }
-.rv-by { padding:14px 26px; font-size:11px; color:#948D80; letter-spacing:0.5px; }
+.rv-by { padding:14px 26px 4px; font-size:12px; color:#948D80; letter-spacing:0.3px; }
 .rv-by b { color:#C3BDB2; }
-.rv-date { color:#948D80; }
-.rv-date:before { content:' · '; }
-.rv-bsky { display:block; margin:4px 26px 22px; padding:10px 14px; background:#3B9AF8; color:#fff; text-decoration:none; font-size:13px; text-align:center; font-weight:600; }
+.rv-date { display:block; padding:0 26px 14px; font-size:11px; color:#7d766a; letter-spacing:0.5px; }
+.rv-bsky { display:block; margin:4px 26px 22px; padding:11px 14px; background:#3B9AF8; color:#fff; text-decoration:none; font-size:13px; text-align:center; font-weight:600; }
 .rv-bsky:hover { background:#5aabfa; }
 .cb-pin { border-radius:50%; border:3px solid #1a1815; box-shadow:0 0 0 1px rgba(0,0,0,0.6), 0 1px 6px rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; box-sizing:border-box; }
 /* multi-review stack nav inside the surfaced card */
@@ -402,7 +401,8 @@ a.tab { text-decoration:none; display:inline-block; }
 </div>
 <div class="rv-bucket"><div class="rv-bucket-label">The Burger</div><div class="rv-bucket-text" id="rBurger"></div></div>
 <div class="rv-bucket"><div class="rv-bucket-label">The Take</div><div class="rv-bucket-text" id="rValue"></div></div>
-<div class="rv-by">Reviewed by <b id="rBy"></b><span id="rDate" class="rv-date"></span></div>
+<div class="rv-by">Reviewed by <b id="rBy"></b></div>
+<div class="rv-date" id="rDate"></div>
 <a class="rv-bsky" id="rBsky" href="#" target="_blank" rel="noopener" style="display:none;">View &amp; discuss on Bluesky →</a>
 </div>
 </div>
