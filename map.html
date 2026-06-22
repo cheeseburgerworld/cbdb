@@ -52,20 +52,22 @@ without abandoning the dark theme. */
 .review.show { display:block; }
 .panel.has-review .panel-empty { display:none; }
 /* thin white header bar with the X */
-/* No header bar. A sticky X stays pinned to the card's top-right while it scrolls,
-   readable over the photo and over dark content alike. */
-.rv-close { position:sticky; top:10px; float:right; margin:10px 10px -46px 0; width:30px; height:30px; border-radius:50%; background:rgba(13,9,0,0.65); -webkit-backdrop-filter:blur(3px); backdrop-filter:blur(3px); border:1px solid rgba(255,255,255,0.3); color:#fff; font-size:20px; font-weight:700; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:30; }
-.rv-close:hover { background:rgba(0,0,0,0.9); }
-/* Carousel arrows tucked into the photo's lower corners — off the burger, on the darker edges. */
-.rv-arrow { position:absolute; top:194px; width:38px; height:38px; border:none; border-radius:50%; background:#FF9D2E; color:#15130f; font-size:22px; font-weight:700; line-height:1; cursor:pointer; display:none; align-items:center; justify-content:center; z-index:28; box-shadow:0 2px 10px rgba(0,0,0,0.6); }
+/* Thin near-black title bar, sticky, white X right-aligned (OS-window style). */
+.rv-header { position:sticky; top:0; z-index:30; display:flex; align-items:center; justify-content:flex-end; height:30px; padding:0 9px; background:#0d0900; border-bottom:1px solid #2a2620; }
+.rv-close { width:22px; height:22px; border:none; background:none; color:#fff; font-size:20px; font-weight:700; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+.rv-close:hover { color:#FF9D2E; }
+/* Name row: restaurant name with a single forward arrow (cycles reviews) right-aligned. */
+.rv-namerow { display:flex; align-items:center; gap:10px; }
+.rv-nav { display:none; flex-shrink:0; }
+.review.multi .rv-nav { display:flex; }
+.rv-arrow { width:32px; height:32px; border:none; border-radius:50%; background:#FF9D2E; color:#15130f; font-size:19px; font-weight:700; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:background .12s; }
 .rv-arrow:hover { background:#ffb152; }
 .rv-arrow:active { transform:translateY(1px); }
-.rv-arrow.left { left:12px; } .rv-arrow.right { right:12px; }
-.rv-count { position:absolute; top:14px; left:50%; transform:translateX(-50%); display:none; z-index:28; background:rgba(13,9,0,0.82); -webkit-backdrop-filter:blur(3px); backdrop-filter:blur(3px); color:#F5F4F2; font-size:11px; font-weight:600; letter-spacing:1px; padding:4px 11px; border-radius:11px; }
-.review.multi .rv-arrow, .review.multi .rv-count { display:flex; }
+.rv-count { display:none; font-size:11px; color:#948D80; letter-spacing:1px; margin:5px 0 0; }
+.review.multi .rv-count { display:block; }
 .rv-photo { width:100%; height:240px; background:#16140f; background-size:contain; background-repeat:no-repeat; background-position:center; border-bottom:1px solid #38332b; }
 .rv-head { padding:22px 26px 16px; border-bottom:1px solid #38332b; }
-.rv-name { font-family:'Bebas Neue',sans-serif; font-size:34px; letter-spacing:1px; color:#F5F4F2; line-height:1; }
+.rv-name { font-family:'Bebas Neue',sans-serif; font-size:34px; letter-spacing:1px; color:#F5F4F2; line-height:1; flex:1; min-width:0; }
 .rv-loc { font-size:12px; color:#C3BDB2; margin-top:5px; }
 .rv-meta { display:flex; gap:12px; margin-top:14px; align-items:center; flex-wrap:wrap; }
 .rv-rating { font-size:15px; display:inline-flex; align-items:center; gap:6px; padding:4px 11px; border-radius:4px; }
@@ -396,13 +398,14 @@ a.tab { text-decoration:none; display:inline-block; }
   <div class="pe-sub">Tap any pin to read its review. Bigger pins are better burgers — the green one is Legendary.</div>
 </div>
 <div class="review" id="review">
-<button class="rv-close" onclick="closeReview()" aria-label="Close">×</button>
-<button class="rv-arrow left" id="rPrev" onclick="stackStep(-1)" aria-label="Previous review">‹</button>
-<button class="rv-arrow right" id="rNext" onclick="stackStep(1)" aria-label="Next review">›</button>
-<span class="rv-count" id="rStackCount">1 of 1</span>
+<div class="rv-header"><button class="rv-close" onclick="closeReview()" aria-label="Close">×</button></div>
 <div class="rv-photo" id="rPhoto"></div>
 <div class="rv-head">
-<div class="rv-name" id="rName"></div>
+<div class="rv-namerow">
+  <div class="rv-name" id="rName"></div>
+  <div class="rv-nav"><button class="rv-arrow" id="rNext" onclick="stackStep(1)" aria-label="Next review">›</button></div>
+</div>
+<div class="rv-count" id="rStackCount"></div>
 <div class="rv-loc" id="rLoc"></div>
 <div class="rv-meta">
 <span class="rv-rating"><span id="rGlyph"></span><span class="lab" id="rLabel"></span></span>
@@ -540,7 +543,7 @@ function paintReview(){
   const card=document.getElementById('review');
   if(stackReviews.length>1){
     card.classList.add('multi');
-    document.getElementById('rStackCount').textContent=(stackIndex+1)+' of '+stackReviews.length;
+    document.getElementById('rStackCount').textContent=(stackIndex+1)+' of '+stackReviews.length+' reviews';
   } else {
     card.classList.remove('multi');
   }
