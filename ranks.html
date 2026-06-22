@@ -35,7 +35,7 @@
   /* "You are here" banner (only shown when signed in) */
   .rk-you { display:none; margin:30px 0 0; background:#1d2417; border:1px solid #38332b; border-left:3px solid #4ADE52; padding:16px 18px; }
   .rk-you.show { display:flex; align-items:center; gap:14px; }
-  .rk-you-badge { width:42px; height:42px; border-radius:8px; background:#16140f; border:1px solid #38332b; display:flex; align-items:center; justify-content:center; font-size:22px; line-height:1; flex-shrink:0; }
+  .rk-you-badge { width:42px; height:42px; border-radius:8px; background:#16140f; border:1px solid #38332b; display:flex; align-items:center; justify-content:center; font-size:22px; line-height:1; flex-shrink:0; font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif; }
   .rk-you-text { font-size:13px; color:#C3BDB2; line-height:1.5; }
   .rk-you-text b { color:#F5F4F2; }
   .rk-you-next { color:#4ADE52; }
@@ -43,7 +43,7 @@
   .rk-ladder { margin-top:40px; display:flex; flex-direction:column; gap:1px; background:#38332b; border:1px solid #38332b; }
   .rk-row { display:flex; align-items:center; gap:18px; background:#211e1a; padding:20px 22px; position:relative; }
   .rk-row.here { background:#1d2417; }
-  .rk-badge { width:48px; height:48px; border-radius:8px; background:#16140f; border:1px solid #38332b; display:flex; align-items:center; justify-content:center; font-size:26px; line-height:1; flex-shrink:0; }
+  .rk-badge { width:48px; height:48px; border-radius:8px; background:#16140f; border:1px solid #38332b; display:flex; align-items:center; justify-content:center; font-size:26px; line-height:1; flex-shrink:0; font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif; }
   .rk-badge.none { font-family:'Bebas Neue',sans-serif; font-size:22px; color:#948D80; }
   .rk-info { flex:1; min-width:0; }
   .rk-name { font-family:'Bebas Neue',sans-serif; font-size:24px; letter-spacing:1px; color:#F5F4F2; line-height:1; }
@@ -73,7 +73,7 @@
   .drawer-x { background:none; border:none; color:#C3BDB2; font-size:26px; cursor:pointer; line-height:1; }
   .p-rank-line { display:flex; align-items:center; gap:10px; background:#16140f; border:1px solid #38332b; padding:11px 14px; margin-bottom:11px; cursor:pointer; transition:border-color .12s; }
   .p-rank-line:hover { border-color:#5f574a; }
-  .p-rank-emoji { font-size:20px; line-height:1; }
+  .p-rank-emoji { font-size:20px; line-height:1; font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif; }
   .p-rank-name { font-family:'Bebas Neue',sans-serif; font-size:22px; letter-spacing:1px; color:#F5F4F2; }
   .p-rank-tag { font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:#948D80; margin-left:auto; }
   .p-next { background:#1d2417; border:1px solid #2f3a22; border-left:3px solid #4ADE52; padding:11px 13px; font-size:12px; color:#C3BDB2; line-height:1.6; margin-bottom:11px; cursor:pointer; transition:border-color .12s; }
@@ -141,7 +141,7 @@
 
   <!-- "You are here" — filled in by JS when signed in -->
   <div class="rk-you" id="rkYou">
-    <div class="rk-you-badge" id="rkYouBadge">⚡</div>
+    <div class="rk-you-badge" id="rkYouBadge">⚡&#xFE0F;</div>
     <div class="rk-you-text" id="rkYouText"></div>
   </div>
 
@@ -197,7 +197,7 @@ const PROFILE_FALLBACK_AVATAR = "data:image/svg+xml;utf8," + encodeURIComponent(
   {min:1,name:'Reviewer',badge:'🥬',desc:'One review live. You\u2019re on the board.'},
   {min:10,name:'Regular',badge:'🧀',desc:'Ten reviews. You know your way around.'},
   {min:25,name:'Editor',badge:'🍔',desc:'Twenty-five. Part of the record now.'},
-  {min:50,name:'Burger Master',badge:'⚡',desc:'Fifty. The top — and it carries something.'}
+  {min:50,name:'Burger Master',badge:'⚡️',desc:'Fifty. The top — and it carries something.'}
   ];
   function rankFor(n){ let r=RANKS[0]; for(const x of RANKS) if(n>=x.min) r=x; return r; }
   function nextRank(n){ for(const x of RANKS) if(n<x.min) return x; return null; }
