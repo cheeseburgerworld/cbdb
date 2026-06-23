@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Database — CB⚡DB</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9A%A1%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -201,10 +202,28 @@
   .db-wrap { max-width:1100px; margin:0 auto; padding:34px 20px 90px; }
   .db-bar { margin-bottom:24px; }
   .db-title { font-family:'Bebas Neue',sans-serif; font-size:42px; letter-spacing:1.5px; color:#FF9D2E; line-height:1; margin-bottom:18px; }
-  .db-filters { display:flex; gap:8px; flex-wrap:wrap; }
-  .chip { font-family:'IBM Plex Mono',monospace; font-size:12px; color:#C3BDB2; background:#211e1a; border:1px solid #38332b; padding:7px 12px; cursor:pointer; }
+  .db-controls { display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
+  .db-filters { display:flex; gap:6px; flex-wrap:wrap; }
+  /* Rating chips: compact, emoji-forward. The glyph carries the meaning;
+     the title attribute gives the full label on hover/long-press. */
+  .chip { font-family:'IBM Plex Mono',monospace; font-size:14px; line-height:1; color:#C3BDB2; background:#211e1a; border:1px solid #38332b; padding:8px 11px; cursor:pointer; border-radius:6px; transition:border-color .12s, background .12s, color .12s; }
   .chip:hover { border-color:#FF9D2E; color:#F5F4F2; }
   .chip.active { background:#FF9D2E; color:#15130f; border-color:#FF9D2E; font-weight:600; }
+  .chip-all { font-size:11px; letter-spacing:0.5px; text-transform:uppercase; }
+  /* Style sort: native select, themed to match the chips. */
+  .db-sort { display:flex; align-items:center; gap:8px; margin-left:auto; }
+  .db-sort-lab { font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:#948D80; }
+  .db-select { font-family:'IBM Plex Mono',monospace; font-size:12px; color:#F5F4F2; background:#211e1a; border:1px solid #38332b; border-radius:6px; padding:8px 30px 8px 11px; cursor:pointer; appearance:none; -webkit-appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%23948D80' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 11px center; }
+  .db-select:hover { border-color:#FF9D2E; color:#F5F4F2; }
+  .db-select:focus { outline:none; border-color:#FF9D2E; }
+
+  /* ── PAGER (old-school, paginated) ── */
+  .db-pager { display:flex; align-items:center; justify-content:center; gap:6px; flex-wrap:wrap; margin-top:34px; }
+  .pg-btn, .pg-num { font-family:'IBM Plex Mono',monospace; font-size:13px; line-height:1; color:#C3BDB2; background:#211e1a; border:1px solid #38332b; border-radius:6px; padding:9px 13px; cursor:pointer; transition:border-color .12s, background .12s, color .12s; }
+  .pg-num { min-width:38px; text-align:center; }
+  .pg-btn:hover:not([disabled]), .pg-num:hover { border-color:#FF9D2E; color:#F5F4F2; }
+  .pg-num.active { background:#FF9D2E; color:#15130f; border-color:#FF9D2E; font-weight:600; cursor:default; }
+  .pg-btn[disabled] { opacity:0.35; cursor:default; }
   .card-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(320px, 1fr)); gap:18px; }
   .card { background:#211e1a; border:1px solid #38332b; overflow:hidden; cursor:pointer; transition:transform .12s, border-color .12s; display:flex; flex-direction:column; }
   .card:hover { transform:translateY(-3px); border-color:#F5F4F2; }
@@ -227,7 +246,7 @@
   .card.legendary { border-color:#5BD94B; }
   .card.legendary:hover { border-color:#7CFF6A; }
   .card.legendary .card-name { color:#5BD94B; }
-  .card-bolt { position:absolute; top:8px; right:9px; font-family:'Bebas Neue',sans-serif; font-size:13px; letter-spacing:1px; color:#0d0900; background:#5BD94B; padding:3px 8px 2px; }
+  .card-bolt { position:absolute; top:8px; right:9px; width:28px; height:28px; display:flex; align-items:center; justify-content:center; font-size:15px; line-height:1; background:#5BD94B; border-radius:50%; box-shadow:0 0 0 2px rgba(91,217,75,0.25), 0 2px 6px rgba(0,0,0,0.4); }
   .card-build { font-size:13px; color:#E4DFD6; line-height:1.6; flex:1; }
   .card-body { cursor:pointer; }
   .card-more .card-foot { margin-top:13px; padding-top:11px; border-top:1px solid #2a2620; }
@@ -324,6 +343,11 @@
     .legend { bottom:auto; top:10px; left:10px; }
     .stat-grid { grid-template-columns:repeat(2,1fr); }
     .card-grid { grid-template-columns:1fr; }
+    .db-title { font-size:34px; }
+    .db-controls { gap:10px; }
+    .db-sort { margin-left:0; width:100%; }
+    .db-select { flex:1; }
+    .chip { padding:9px 13px; font-size:15px; }
     .bar-lab { min-width:120px; font-size:12px; }
     .drawer { width:100%; max-width:100%; }
     .row { flex-direction:column; gap:0; }
@@ -373,15 +397,24 @@
   <div class="db-wrap">
     <div class="db-bar">
       <h1 class="db-title">The Database</h1>
-      <div class="db-filters" id="dbFilters">
-        <button class="chip active" data-filter="all" onclick="filterDb('all',this)">All</button>
-        <button class="chip" data-filter="legendary" onclick="filterDb('legendary',this)">⭐⭐⭐ Legendary</button>
-        <button class="chip" data-filter="trip" onclick="filterDb('trip',this)">⭐⭐ Worth A Trip</button>
-        <button class="chip" data-filter="solid" onclick="filterDb('solid',this)">⭐ Solid</button>
-        <button class="chip" data-filter="skip" onclick="filterDb('skip',this)">ㄨ Skip It</button>
+      <div class="db-controls">
+        <div class="db-filters" id="dbFilters">
+          <button class="chip chip-all active" data-filter="all" onclick="filterDb('all',this)" title="All ratings">All</button>
+          <button class="chip" data-filter="legendary" onclick="filterDb('legendary',this)" title="Legendary" aria-label="Legendary">⚡</button>
+          <button class="chip" data-filter="trip" onclick="filterDb('trip',this)" title="Worth A Trip" aria-label="Worth A Trip">⭐⭐</button>
+          <button class="chip" data-filter="solid" onclick="filterDb('solid',this)" title="Solid" aria-label="Solid">⭐</button>
+          <button class="chip" data-filter="skip" onclick="filterDb('skip',this)" title="Skip It" aria-label="Skip It">ㄨ</button>
+        </div>
+        <div class="db-sort">
+          <span class="db-sort-lab">Style</span>
+          <select class="db-select" id="styleSort" onchange="setStyle(this.value)" aria-label="Filter by burger style">
+            <option value="all">All styles</option>
+          </select>
+        </div>
       </div>
     </div>
     <div class="card-grid" id="cardGrid"></div>
+    <div class="db-pager" id="dbPager" style="display:none;"></div>
   </div>
 </div>
 
@@ -476,16 +509,39 @@
   function paintSignedIn(){ /* handled by auth-bridge.js */ }
   paintSignedIn();
 
+  const PAGE_SIZE = 12;
+  let dbPage = 1;
+
+  // Filtered + date-sorted view of the data (newest first).
+  // Sorts a copy so reviews.indexOf(r) still maps to the original index
+  // (used for stable card IDs and the map deep-link).
+  function visibleReviews(){
+    return reviews
+      .filter(r=>
+        (dbFilter==='all' || r.rating===dbFilter) &&
+        (dbStyle==='all'  || r.style===dbStyle))
+      .sort((a,b)=> new Date(b.createdAt||0) - new Date(a.createdAt||0));
+  }
+
 function renderCards(){
     const grid=document.getElementById('cardGrid');
-    const list = dbFilter==='all' ? reviews : reviews.filter(r=>r.rating===dbFilter);
-    if(!list.length){
+    const all = visibleReviews();
+    if(!all.length){
+      const noun = dbStyle!=='all' ? dbStyle+' ' : '';
       grid.innerHTML = '<div class="db-empty">'+
-        (reviews.length ? 'No '+dbFilter+' reviews yet.' :
+        (reviews.length ? 'No '+noun+'reviews match that filter.' :
           'No reviews yet. <a href="submit.html">Post the first one →</a>')+
         '</div>';
+      renderPager(0);
       return;
     }
+    // Clamp the page in case a filter shrank the set below the current page.
+    const pages = Math.ceil(all.length / PAGE_SIZE);
+    if(dbPage > pages) dbPage = pages;
+    if(dbPage < 1) dbPage = 1;
+    const start = (dbPage-1)*PAGE_SIZE;
+    const list = all.slice(start, start+PAGE_SIZE);
+
     grid.innerHTML = list.map((r,i)=>{
       const rt=RATING[r.rating];
       const idx=reviews.indexOf(r);
@@ -496,8 +552,9 @@ function renderCards(){
       // Collapsed shows the build; expanded reveals the take, then byline + date below it.
       return '<div class="card'+(isLeg?' legendary':'')+'" id="dbcard'+idx+'">'+
         '<div class="card-img" style="background:'+cardImage(r,rt)+'" onclick="goMap('+idx+')">'+
-          '<div class="card-rating" style="background:'+rt.color+';color:'+(rt.text||'#15130f')+'">'+rt.glyph+' '+rt.label+'</div>'+
-          (isLeg?'<div class="card-bolt">⚡ LEGENDARY</div>':'')+
+          (isLeg
+            ? '<div class="card-bolt" title="Legendary" aria-label="Legendary">⚡</div>'
+            : '<div class="card-rating" style="background:'+rt.color+';color:'+(rt.text||'#15130f')+'">'+rt.glyph+' '+rt.label+'</div>')+
         '</div>'+
         '<div class="card-body" onclick="dbToggle('+idx+')">'+
           '<div class="card-name">'+r.name+'</div>'+
@@ -514,13 +571,54 @@ function renderCards(){
           '<div class="card-expand"><span class="arr">▸</span><span class="lbl-closed">The take</span><span class="lbl-open">Less</span></div>':'')+
         '</div></div>';
     }).join('');
+
+    renderPager(all.length);
+  }
+
+  // Old-school pager. Hidden entirely when everything fits on one page,
+  // so a small database never shows a lonely "Page 1 of 1".
+  function renderPager(total){
+    const pager=document.getElementById('dbPager');
+    if(!pager) return;
+    const pages=Math.ceil(total/PAGE_SIZE);
+    if(pages<=1){ pager.innerHTML=''; pager.style.display='none'; return; }
+    pager.style.display='flex';
+    let html='';
+    html+='<button class="pg-btn" '+(dbPage<=1?'disabled':'')+' onclick="goToPage('+(dbPage-1)+')">← Prev</button>';
+    for(let p=1;p<=pages;p++){
+      html+='<button class="pg-num'+(p===dbPage?' active':'')+'" onclick="goToPage('+p+')">'+p+'</button>';
+    }
+    html+='<button class="pg-btn" '+(dbPage>=pages?'disabled':'')+' onclick="goToPage('+(dbPage+1)+')">Next →</button>';
+    pager.innerHTML=html;
+  }
+
+  function goToPage(p){
+    dbPage=p;
+    renderCards();
+    // Jump back to the top of the grid so the new page starts in view.
+    const bar=document.querySelector('.db-bar');
+    if(bar) bar.scrollIntoView({behavior:'smooth', block:'start'});
   }
   function dbToggle(i){ const el=document.getElementById('dbcard'+i); if(el) el.classList.toggle('open'); }
 function filterDb(f, btn){
     dbFilter=f;
+    dbPage=1;
     document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
     btn.classList.add('active');
     renderCards();
+  }
+  // Style sort (second axis). Narrows the grid to one burger style.
+  function setStyle(v){ dbStyle=v; dbPage=1; renderCards(); }
+  // Build the style dropdown from whatever styles exist in the live data,
+  // so new styles appear automatically with no code change.
+  function buildStyleOptions(){
+    const sel=document.getElementById('styleSort');
+    if(!sel) return;
+    const styles=[...new Set(reviews.map(r=>r.style).filter(Boolean))].sort();
+    const current=sel.value;
+    sel.innerHTML='<option value="all">All styles</option>'+
+      styles.map(s=>'<option value="'+s+'">'+s+'</option>').join('');
+    if(styles.includes(current)) sel.value=current;
   }
   // Handle click → Bluesky discussion
   function goReview(i){
@@ -532,13 +630,14 @@ function filterDb(f, btn){
   function goMap(i){ location.href='map.html?r='+i; }
 
   let dbFilter='all';
+  let dbStyle='all';
   function cardImage(r, rt){
     if(r.photoUrl) return "#16140f url('"+r.photoUrl+"') center/cover";
     // No photo: rating color as the background so it's instantly readable.
     const c = rt ? rt.color : '#6B4A2F';
     return 'linear-gradient(135deg, '+c+'55, '+c+'22)';
   }
-  (async()=>{ await loadReviews(); renderCards(); })();
+  (async()=>{ await loadReviews(); buildStyleOptions(); renderCards(); })();
 </script>
 
 <!-- FOOTER -->
