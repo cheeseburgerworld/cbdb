@@ -159,6 +159,8 @@ input[type=file]::file-selector-button { background:#38332b; color:#F5F4F2; bord
 .doc-text b { color:#F5F4F2; } .doc-text i { color:#4ADE52; font-style:normal; }
 .doc-pull { font-family:'Bebas Neue',sans-serif; font-size:26px; letter-spacing:1px; color:#F5F4F2; margin:6px 0 22px; line-height:1.2; }
 .doc-fine { font-size:12px; color:#B6B0A4; margin-top:14px; line-height:1.6; }
+.doc-kicker { font-size:15px; color:#F5F4F2; line-height:1.65; margin-top:20px; padding:14px 18px; border-left:3px solid #3B9AF8; background:rgba(59,154,248,0.06); }
+.doc-kicker b { color:#5AABFA; }
 .mono-tag { color:#3B9AF8; font-weight:600; }
 .rate-row { display:flex; gap:16px; padding:14px 0; border-bottom:1px solid #2a2620; }
 .rate-glyph { font-size:18px; min-width:60px; }
@@ -334,7 +336,7 @@ a.tab { text-decoration:none; display:inline-block; }
 <p class="doc-text">Every review is a real record on <span class="mono-tag">AT Protocol</span> — the open network behind Bluesky, known as the <span class="mono-tag">Atmosphere</span>. It's signed by your identity, stored on your account, and readable by any app on the network. We don't host your words, we just point at them.</p>
 <p class="doc-text">That's the whole thing in one line: <b>you write, we index.</b> Your voice is portable, permanent, and yours alone.</p>
 <p class="doc-text">Your identity is a <span class="mono-tag">DID</span> — a portable handle that follows you across the entire Atmosphere. One identity, every app, no lock-in.</p>
-<p class="doc-fine">This is the part most sites can't claim. It isn't a privacy policy you have to trust. It's an architecture you can verify.</p>
+<p class="doc-kicker">This is the part most sites can't claim. It isn't a privacy policy you have to trust — <b>it's an architecture you can verify.</b></p>
 </div>
 <div class="doc-section">
 <div class="doc-head">What we promise</div>
@@ -448,6 +450,9 @@ document.getElementById('drawer').classList.remove('show');
 // Restore signed-in nav state across pages (demo uses window; real build reads session)
 function paintSignedIn(){ /* handled by auth-bridge.js */ }
 paintSignedIn();
+// Load reviews so the profile drawer can show the signed-in user's history.
+// (about renders no review list itself, but the shared drawer reads `reviews`.)
+if(typeof loadReviews==='function'){ loadReviews(); }
 </script>
 <!-- FOOTER -->
 <footer class="site-footer">
