@@ -110,6 +110,25 @@
       const handle = (input.value||'').trim().replace(/^@/,'');
       if(!handle){ err.textContent='Enter your Bluesky handle.'; err.style.display='block'; return; }
       err.style.display='none';
+
+      // auth.js loads as a deferred ES module, so on a slow connection
+      // window.cbdbAuth may not be defined yet when this runs. Wait briefly
+      // for it instead of throwing "undefined is not an object".
+      if(!window.cbdbAuth || typeof window.cbdbAuth.signIn !== 'function'){
+        err.textContent='Connecting…'; err.style.display='block';
+        let waited = 0;
+        while((!window.cbdbAuth || typeof window.cbdbAuth.signIn !== 'function') && waited < 5000){
+          await new Promise(r=>setTimeout(r, 100));
+          waited += 100;
+        }
+        if(!window.cbdbAuth || typeof window.cbdbAuth.signIn !== 'function'){
+          err.textContent='Sign-in didn\u2019t load. Reload the page and try again.';
+          err.style.display='block';
+          return;
+        }
+        err.style.display='none';
+      }
+
       try { sessionStorage.setItem('cbdb_return', location.pathname); } catch {}
       try {
         await window.cbdbAuth.signIn(handle);
