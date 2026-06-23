@@ -150,15 +150,19 @@
   .p-lab { font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:#B6B0A4; margin-top:6px; }
   .p-hist-label { font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:#B6B0A4; margin-bottom:11px; }
   .p-history { display:flex; flex-direction:column; }
-  .ph-item { display:flex; align-items:center; gap:12px; padding:12px 2px; border-bottom:1px solid #2a2620; cursor:pointer; transition:background .1s; }
-  .ph-item:hover { background:#1a1813; }
-  .ph-chip { font-size:13px; flex-shrink:0; width:48px; text-align:center; }
+  .p-history { display:flex; flex-direction:column; gap:8px; }
+  /* Dark cards that pop against the lighter drawer panel. */
+  .ph-item { display:flex; align-items:center; gap:12px; padding:13px 14px; background:#16140f; border:1px solid #2a2620; border-radius:9px; cursor:pointer; transition:border-color .12s, background .12s, transform .12s; }
+  .ph-item:hover { border-color:#FF9D2E; background:#1b1813; transform:translateX(2px); }
+  .ph-item.leg { border-color:rgba(91,217,75,0.35); }
+  .ph-item.leg:hover { border-color:#5BD94B; }
+  .ph-chip { font-size:16px; flex-shrink:0; width:40px; text-align:center; }
   .ph-body { flex:1; min-width:0; }
   .ph-name { font-size:14px; color:#F5F4F2; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .ph-name.legendary { color:#5BD94B; }
-  .ph-loc { font-size:11px; color:#B6B0A4; margin-top:1px; }
-  .ph-bolt { color:#5BD94B; flex-shrink:0; font-size:13px; }
-  .ph-arrow { color:#3B9AF8; flex-shrink:0; font-size:12px; }
+  .ph-loc { font-size:11px; color:#B6B0A4; margin-top:2px; }
+  .ph-arrow { color:#B6B0A4; flex-shrink:0; font-size:13px; transition:color .12s; }
+  .ph-item:hover .ph-arrow { color:#FF9D2E; }
   .p-empty { font-size:13px; color:#B6B0A4; padding:20px 0; text-align:center; line-height:1.6; }
   .p-signout { margin-top:26px; padding-top:18px; border-top:1px solid #2a2620; text-align:center; }
   .signout-link { background:none; border:1px solid #38332b; color:#B6B0A4; font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:0.5px; padding:9px 18px; cursor:pointer; transition:border-color .12s, color .12s; }
@@ -233,7 +237,7 @@
         <div class="fh-row"><span class="fh-glyph" style="color:#5BD94B">⚡</span><b>Legendary</b> — Exceptional. A benchmark. Rare by design.</div>
         <div class="fh-row"><span class="fh-glyph" style="color:#FFC72C">⭐⭐</span><b>Worth A Trip</b> — Notably good. Worth a specific visit.</div>
         <div class="fh-row"><span class="fh-glyph" style="color:#E8843C">⭐</span><b>Solid</b> — Competently done. Order it if you're there.</div>
-        <div class="fh-row"><span class="fh-glyph" style="color:#B08862">ㄨ</span><b>Skip It</b> — Not worth the time or money.</div>
+        <div class="fh-row"><span class="fh-glyph" style="color:#D4A878">ㄨ</span><b>Skip It</b> — Not worth the time or money.</div>
       </div>
       <div class="ratings" id="ratings" role="radiogroup" aria-labelledby="ratingLabel">
         <div class="rating-opt" role="radio" tabindex="0" aria-checked="false" data-val="skip" data-glyph="ㄨ"><div class="glyph">ㄨ</div><div class="name">Skip It</div></div>
@@ -355,17 +359,22 @@
       const rt=RATING[r.rating];
       const leg = r.legendaryCanonical === true;
       const uri = r.bskyUri || '';
-      return '<div class="ph-item" onclick="goBsky(\''+uri+'\')">'+
-        '<span class="ph-chip" style="color:'+rt.color+'">'+rt.glyph+'</span>'+
+      // Build a proper bsky.app post URL from the canonical at:// record.
+      const postUrl = (typeof bskyWebUrl==='function') ? bskyWebUrl(uri, r.by) : '';
+      // Skip It's pin-brown is unreadable as text; use a legible tan for the glyph.
+      const glyphColor = r.rating==='skip' ? '#D4A878' : rt.color;
+      return '<div class="ph-item'+(leg?' leg':'')+'" onclick="goBsky(\''+postUrl+'\')">'+
+        '<span class="ph-chip" style="color:'+glyphColor+'">'+rt.glyph+'</span>'+
         '<div class="ph-body"><div class="ph-name'+(leg?' legendary':'')+'">'+r.name+'</div><div class="ph-loc">'+r.loc+'</div></div>'+
-        (leg?'<span class="ph-bolt">⚡</span>':'')+
-        '<span class="ph-arrow">→</span>'+
+        '<span class="ph-arrow">↗</span>'+
       '</div>';
     }).join('') : '<div class="p-empty">No reviews yet.<br>Post your first one to start climbing the leaderboard.</div>';
     document.getElementById('drawerBg').classList.add('show');
     document.getElementById('drawer').classList.add('show');
   }
-  function goBsky(uri){ if(!uri) return; window.open(uri.startsWith('http')?uri:('https://bsky.app/profile/'+uri), '_blank'); }
+  // Opens the canonical Bluesky post. URL is pre-built via bskyWebUrl();
+  // if a review has no URI yet (still syncing), the row simply doesn't navigate.
+  function goBsky(url){ if(url) window.open(url, '_blank', 'noopener'); }
   function closeProfile(){
     document.getElementById('drawerBg').classList.remove('show');
     document.getElementById('drawer').classList.remove('show');
