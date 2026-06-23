@@ -16,10 +16,10 @@
   // building the burger as you go: 🥬 → 🧀 → 🍔 → ⚡
   const RANKS = [
     { min:0,  name:'Guest',         desc:'Signed in. Nothing posted yet.' },
-    { min:1,  name:'Reviewer',      badge:'🥬', desc:'One review live. You\u2019re on the board.' },
-    { min:10, name:'Regular',       badge:'🧀', desc:'Ten reviews. You know your way around.' },
-    { min:25, name:'Editor',        badge:'🍔', desc:'Twenty-five. Part of the record now.' },
-    { min:50, name:'Burger Master', badge:'⚡', desc:'Fifty. The top — and it carries something.' }
+    { min:1,  name:'Reviewer',      badge:'🥬', desc:'One review live. You\u2019ve contributed to the database.' },
+    { min:10, name:'Regular',       badge:'🧀', desc:'Ten reviews. You\u2019re a regular here now.' },
+    { min:25, name:'Editor',        badge:'🍔', desc:'Twenty-five reviews in. Your palate is dialed.' },
+    { min:50, name:'Burger Master', badge:'⚡', desc:'Fifty reviews. A true connoisseur — and the top of the ladder.' }
   ];
   function rankFor(n){ let r=RANKS[0]; for(const x of RANKS) if(n>=x.min) r=x; return r; }
   function nextRank(n){ for(const x of RANKS) if(n<x.min) return x; return null; }
