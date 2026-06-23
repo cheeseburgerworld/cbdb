@@ -103,9 +103,9 @@
             '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">'+BSKY_LOGO+
               '<span style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#948D80;">New account?</span>'+
             '</div>'+
-            '<div style="font-size:12px;color:#C3BDB2;line-height:1.6;margin-bottom:10px;">If you don\u2019t have an account (or you don\u2019t want to post burgers on main) click here to create an account.</div>'+
+            '<div style="font-size:12px;color:#C3BDB2;line-height:1.6;margin-bottom:10px;">If you don\u2019t have an account (or you don\u2019t want to post burgers on main) click here.</div>'+
             '<button id="cbdbCreate" style="width:100%;background:none;color:#FF9D2E;border:1px solid #FF9D2E;font-family:\'IBM Plex Mono\',monospace;font-weight:600;font-size:14px;padding:12px;cursor:pointer;">Create a new account →</button>'+
-            '<div style="font-size:11px;color:#948D80;line-height:1.6;margin-top:10px;">Use it as your main handle for all Bluesky / Atmosphere apps, or make a dedicated one for Cheeseburger World. Your call.</div>'+
+            '<div style="font-size:11px;color:#948D80;line-height:1.6;margin-top:10px;">Use it as your main handle for all Atmosphere apps, or make a dedicated one for Cheeseburger World. Your call.</div>'+
           '</div>'+
         '</div>'+
       '</div>';
