@@ -87,15 +87,16 @@
         '</div>'+
         '<div style="padding:20px;">'+
           '<div style="font-size:13px;color:#C3BDB2;line-height:1.6;margin-bottom:18px;">CB⚡DB runs on Bluesky. Your reviews live on your own account — you own them, and you can delete them anytime. We just index them.</div>'+
-          '<div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#948D80;margin-bottom:8px;">Already on Bluesky?</div>'+
-          '<input id="cbdbHandleInput" type="text" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="you.bsky.social" style="width:100%;background:#16140f;border:1px solid #38332b;color:#F5F4F2;font-family:\'IBM Plex Mono\',monospace;font-size:14px;padding:11px 13px;margin-bottom:10px;box-sizing:border-box;">'+
-          '<button id="cbdbHandleGo" style="width:100%;background:#3B9AF8;color:#fff;border:none;font-family:\'IBM Plex Mono\',monospace;font-weight:600;font-size:14px;padding:12px;cursor:pointer;">Sign in with Bluesky</button>'+
-          '<div id="cbdbSignInErr" style="display:none;font-size:12px;color:#FF5A4E;margin-top:10px;"></div>'+
-          '<div style="display:flex;align-items:center;gap:12px;margin:20px 0;"><span style="flex:1;height:1px;background:#38332b;"></span><span style="font-size:11px;color:#948D80;">or</span><span style="flex:1;height:1px;background:#38332b;"></span></div>'+
-          '<div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#948D80;margin-bottom:8px;">New to Bluesky?</div>'+
-          '<div style="font-size:12px;color:#C3BDB2;line-height:1.6;margin-bottom:10px;">Create a free account. Use your main handle, or make a dedicated one for your burger reviews — your call.</div>'+
-          '<button id="cbdbCreate" style="width:100%;background:none;color:#FF9D2E;border:1px solid #FF9D2E;font-family:\'IBM Plex Mono\',monospace;font-weight:600;font-size:14px;padding:12px;cursor:pointer;">Create a Bluesky account →</button>'+
-          '<div style="font-size:11px;color:#948D80;line-height:1.6;margin-top:14px;">Once your account is ready, come back here and sign in with your new handle. <a href="about.html" style="color:#3B9AF8;text-decoration:none;">Why Bluesky?</a></div>'+
+          // Sign-in box: bordered in Bluesky blue so it reads as the primary action.
+          '<div style="border:1px solid #3B9AF8;padding:16px;margin-bottom:16px;">'+
+            '<div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#948D80;margin-bottom:8px;">Already on Bluesky?</div>'+
+            '<input id="cbdbHandleInput" type="text" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="you.bsky.social" style="width:100%;background:#16140f;border:1px solid #38332b;color:#F5F4F2;font-family:\'IBM Plex Mono\',monospace;font-size:14px;padding:11px 13px;margin-bottom:10px;box-sizing:border-box;">'+
+            '<button id="cbdbHandleGo" style="width:100%;background:#3B9AF8;color:#fff;border:none;font-family:\'IBM Plex Mono\',monospace;font-weight:600;font-size:14px;padding:12px;cursor:pointer;">Sign in</button>'+
+            '<div id="cbdbSignInErr" style="display:none;font-size:12px;color:#FF5A4E;margin-top:10px;"></div>'+
+          '</div>'+
+          '<div style="font-size:12px;color:#C3BDB2;line-height:1.6;margin-bottom:16px;">Or if you don\u2019t want to post burgers on main, create an account below.</div>'+
+          '<button id="cbdbCreate" style="width:100%;background:none;color:#FF9D2E;border:1px solid #FF9D2E;font-family:\'IBM Plex Mono\',monospace;font-weight:600;font-size:14px;padding:12px;cursor:pointer;">Create a new account →</button>'+
+          '<div style="font-size:11px;color:#948D80;line-height:1.6;margin-top:12px;">Use it as your main handle for all Bluesky / Atmosphere apps, or make a dedicated one for Cheeseburger World — your call.</div>'+
         '</div>'+
       '</div>';
     document.body.appendChild(wrap);
