@@ -46,11 +46,14 @@
   .p-next { background:#1d2417; border:1px solid #2f3a22; border-left:3px solid #4ADE52; padding:11px 13px; font-size:12px; color:#E4E0D8; line-height:1.6; margin-bottom:11px; cursor:pointer; transition:border-color .12s; }
   .p-next:hover { border-color:#4ADE52; }
   .p-next b { color:#4ADE52; }
-  .p-stats { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:20px; }
+  .p-stats { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px; }
   .p-stat { background:#16140f; border:1px solid #38332b; padding:14px 8px; text-align:center; }
   .p-num { font-family:'Bebas Neue',sans-serif; font-size:34px; line-height:1; color:#F5F4F2; }
   .p-lab { font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:#B6B0A4; margin-top:6px; }
   .p-hist-label { font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:#B6B0A4; margin-bottom:11px; }
+  .p-profile-cta { display:flex; align-items:center; justify-content:center; gap:8px; background:#FF9D2E; color:#15130f; font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:13px; letter-spacing:0.5px; text-decoration:none; padding:12px; margin-bottom:22px; transition:background .12s; }
+  .p-profile-cta:hover { background:#ffad4e; }
+  .p-profile-cta span { font-size:15px; line-height:1; }
   .p-history { display:flex; flex-direction:column; }
   .p-history { display:flex; flex-direction:column; gap:8px; }
   /* Dark cards that pop against the lighter drawer panel. */
@@ -96,8 +99,7 @@
     <div class="p-stat"><div class="p-num" id="pCount">0</div><div class="p-lab">Reviews</div></div>
     <div class="p-stat"><div class="p-num" id="pCities">0</div><div class="p-lab">Cities</div></div>
   </div>
-  <div class="p-hist-label">Your reviews</div>
-  <div class="p-history" id="pHistory"></div>
+  <a class="p-profile-cta" href="profile.html">View full profile <span>&rarr;</span></a>
   <div class="p-signout"><button class="signout-link" onclick="cbdbSignOut()">Sign out</button></div>
 </div>`;
   if(!document.getElementById('drawer')){
@@ -111,7 +113,7 @@
 
   // ---- Behavior ----
   function openProfile(){
-    if(!state.signedIn){ window.location.href='submit.html'; return; }
+    if(!state.signedIn){ window.cbdbSignInPrompt ? window.cbdbSignInPrompt() : (window.location.href='submit.html'); return; }
     const mine=(typeof myReviews==="function")?myReviews(state):(window.reviews||[]).filter(r=>r.by===state.handle);
     const cities=new Set(mine.map(r=>r.loc)).size;
     const rk=rankFor(mine.length);
@@ -128,28 +130,9 @@
     document.getElementById('pNext').innerHTML = nx
       ? 'Next: <b>'+nx.name+'</b> at '+nx.min+' reviews. <b>'+(nx.min-mine.length)+'</b> to go.'
       : 'Top rank reached. <b>Burger Master.</b>';
-    const hist=document.getElementById('pHistory');
-    hist.innerHTML = mine.length ? mine.map(r=>{
-      const rt=RATING[r.rating];
-      const leg = r.legendaryCanonical === true;
-      const uri = r.bskyUri || '';
-      // Build a proper bsky.app post URL from the canonical at:// record.
-      const postUrl = (typeof bskyWebUrl==='function') ? bskyWebUrl(uri, r.by) : '';
-      // Skip It's pin-brown is unreadable as text; use a legible tan for the glyph.
-      const glyphColor = r.rating==='skip' ? '#D4A878' : rt.color;
-      return '<div class="ph-item'+(leg?' leg':'')+'" onclick="goBsky(\''+postUrl+'\')">'+
-        '<span class="ph-chip" style="color:'+glyphColor+'">'+rt.glyph+'</span>'+
-        '<div class="ph-body"><div class="ph-name'+(leg?' legendary':'')+'">'+r.name+'</div><div class="ph-loc">'+r.loc+'</div></div>'+
-        '<span class="ph-arrow">↗</span>'+
-      '</div>';
-    }).join('') : '<div class="p-empty">No reviews yet.<br>Post your first one to start climbing the leaderboard.</div>';
     document.getElementById('drawerBg').classList.add('show');
     document.getElementById('drawer').classList.add('show');
   }
-
-  // Opens the canonical Bluesky post. URL is pre-built via bskyWebUrl();
-  // if a review has no URI yet (still syncing), the row simply doesn't navigate.
-  function goBsky(url){ if(url) window.open(url, '_blank', 'noopener'); }
 
   function closeProfile(){
     document.getElementById('drawerBg').classList.remove('show');
@@ -159,7 +142,6 @@
   // ---- Expose the handful of globals pages/markup call via inline onclick ----
   window.openProfile  = openProfile;
   window.closeProfile = closeProfile;
-  window.goBsky       = goBsky;
   window.RANKS        = RANKS;      // ranks.html renders its own ladder from this
   window.rankFor      = rankFor;
   window.nextRank     = nextRank;
