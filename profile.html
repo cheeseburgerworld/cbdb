@@ -95,6 +95,8 @@
   .pf-rv:hover .pf-rv-arrow { color:#FF9D2E; }
   .pf-rv-empty { text-align:center; padding:34px 20px; color:#B6B0A4; font-size:13px; line-height:1.7; }
   .pf-rv-empty a { color:#FF9D2E; text-decoration:none; }
+  .pf-more { width:100%; margin-top:4px; background:none; border:1px solid #38332b; color:#E4E0D8; font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:0.5px; padding:12px; cursor:pointer; transition:border-color .12s, color .12s; }
+  .pf-more:hover { border-color:#FF9D2E; color:#FF9D2E; }
 
   .pf-signout { margin-top:10px; text-align:center; }
   .signout-link { background:none; border:1px solid #38332b; color:#B6B0A4; font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:0.5px; padding:9px 18px; cursor:pointer; }
@@ -142,7 +144,7 @@
   <!-- Signed-out gate -->
   <div class="pf-gate" id="pfGate">
     <div class="pf-gate-title">Your profile</div>
-    <p class="pf-gate-text">Sign in with Bluesky to see your stats, your badge case, and every review you've put on the board.</p>
+    <p class="pf-gate-text">Sign in with Bluesky to see your stats, your badge case, and every review you've added to the database.</p>
     <button class="pf-gate-cta" onclick="cbdbSignInPrompt()">Sign in →</button>
   </div>
 
@@ -319,33 +321,51 @@
 
     const bWrap=document.getElementById('pfBadges');
     if(!mine.length){
-      bWrap.innerHTML='<div class="pf-badges-empty">Post your first review to start earning badges. Each burger style is its own badge — and every new city counts toward Globetrotter.</div>';
+      bWrap.innerHTML='<div class="pf-badges-empty">Post your first review to start earning badges. Each burger style is its own badge to level up.</div>';
     } else {
       bWrap.innerHTML = badges.map(renderBadge).join('');
     }
 
-    // Reviews
-    const rvWrap=document.getElementById('pfReviews');
+    // Reviews — paginated at 10, "Show more" reveals the next batch.
     document.getElementById('pfRvNote').textContent = mine.length ? mine.length+(mine.length===1?' review':' reviews') : '';
+    rvShown = 10;            // reset the window on each full render
+    renderReviews(mine);
+  }
+
+  const PER_PAGE = 10;
+  let rvShown = PER_PAGE;
+
+  function reviewRow(r){
+    const rt = RATING[r.rating] || { glyph:'•', color:'#B6B0A4' };
+    const leg = r.legendaryCanonical === true;
+    const url = (typeof bskyWebUrl==='function') ? bskyWebUrl(r.bskyUri, r.by) : '';
+    const glyphColor = r.rating==='skip' ? '#D4A878' : rt.color;
+    const meta = [r.loc, r.style].filter(Boolean).join(' · ');
+    const tag = url ? 'a href="'+url+'" target="_blank" rel="noopener"' : 'div';
+    const close = url ? 'a' : 'div';
+    return '<'+tag+' class="pf-rv'+(leg?' leg':'')+'">'+
+      '<span class="pf-rv-chip" style="color:'+glyphColor+'">'+rt.glyph+'</span>'+
+      '<div class="pf-rv-body"><div class="pf-rv-name'+(leg?' legendary':'')+'">'+r.name+'</div>'+
+      '<div class="pf-rv-meta">'+meta+'</div></div>'+
+      (url?'<span class="pf-rv-arrow">↗</span>':'')+
+    '</'+close+'>';
+  }
+
+  function renderReviews(mine){
+    const rvWrap=document.getElementById('pfReviews');
     if(!mine.length){
-      rvWrap.innerHTML='<div class="pf-rv-empty">No reviews yet.<br><a href="submit.html">Post your first one →</a></div>';
-    } else {
-      rvWrap.innerHTML = mine.map(r=>{
-        const rt = RATING[r.rating] || { glyph:'•', color:'#B6B0A4' };
-        const leg = r.legendaryCanonical === true;
-        const url = (typeof bskyWebUrl==='function') ? bskyWebUrl(r.bskyUri, r.by) : '';
-        const glyphColor = r.rating==='skip' ? '#D4A878' : rt.color;
-        const meta = [r.loc, r.style].filter(Boolean).join(' · ');
-        const tag = url ? 'a href="'+url+'" target="_blank" rel="noopener"' : 'div';
-        const close = url ? 'a' : 'div';
-        return '<'+tag+' class="pf-rv'+(leg?' leg':'')+'">'+
-          '<span class="pf-rv-chip" style="color:'+glyphColor+'">'+rt.glyph+'</span>'+
-          '<div class="pf-rv-body"><div class="pf-rv-name'+(leg?' legendary':'')+'">'+r.name+'</div>'+
-          '<div class="pf-rv-meta">'+meta+'</div></div>'+
-          (url?'<span class="pf-rv-arrow">↗</span>':'')+
-        '</'+close+'>';
-      }).join('');
+      rvWrap.innerHTML='<div class="pf-rv-empty">No reviews yet.<br><a href="submit.html">Post your first review. →</a></div>';
+      return;
     }
+    const shown = mine.slice(0, rvShown);
+    let html = shown.map(reviewRow).join('');
+    if(mine.length > rvShown){
+      const remaining = mine.length - rvShown;
+      html += '<button class="pf-more" id="pfMore">Show more · '+remaining+' left</button>';
+    }
+    rvWrap.innerHTML = html;
+    const more=document.getElementById('pfMore');
+    if(more){ more.addEventListener('click', ()=>{ rvShown += PER_PAGE; renderReviews(mine); }); }
   }
 
   // On this page, the nav chip should land here — but we're already here,
@@ -371,12 +391,11 @@
 <footer class="site-footer">
   <div class="footer-inner">
     <div class="footer-links">
-      <a href="database.html">Database</a>
-      <a href="map.html">Map</a>
+      <a href="stats.html">Stats</a>
       <a href="about.html">About</a>
-      <a href="submit.html">Post a Review</a>
+      <a href="https://github.com/cheeseburgerworld/cbdb" target="_blank" rel="noopener">GitHub</a>
     </div>
-    <div class="footer-copy">We index it. We don't own it.</div>
+    <div class="footer-copy">© 2026 Cheeseburger World LLC</div>
   </div>
 </footer>
 
