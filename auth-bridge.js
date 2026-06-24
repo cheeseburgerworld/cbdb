@@ -26,7 +26,8 @@
     const nav = document.getElementById('navId');
     if(!nav) return;
     if(state.signedIn){
-      nav.innerHTML = '<span class="dot"></span>Online · @' + state.handle;
+      const label = state.displayName || state.handle;
+      nav.innerHTML = '<span class="dot"></span><span class="nav-id-name">' + label + '</span>';
     } else {
       nav.innerHTML = '<span class="dot out"></span>Not signed in';
     }
@@ -84,27 +85,26 @@
     wrap.innerHTML =
       '<div role="dialog" aria-label="Sign in" style="width:100%;max-width:420px;background:#211e1a;border:1px solid #38332b;font-family:\'IBM Plex Mono\',monospace;color:#F5F4F2;">'+
         '<div style="display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:1px solid #38332b;">'+
-          '<span style="font-family:\'Bebas Neue\',sans-serif;font-size:24px;letter-spacing:1px;color:#FF9D2E;">Sign in to CB⚡DB</span>'+
+          '<span style="font-family:\'Bebas Neue\',sans-serif;font-size:22px;letter-spacing:0.5px;color:#FF9D2E;line-height:1.05;">Login with your Bluesky / Atmosphere account</span>'+
           '<button id="cbdbSignInX" aria-label="Close" style="background:none;border:none;color:#C3BDB2;font-size:24px;line-height:1;cursor:pointer;">×</button>'+
         '</div>'+
         '<div style="padding:20px;">'+
           // Sign-in box: bordered in Bluesky blue.
-          '<div style="border:1px solid #3B9AF8;padding:16px;margin-bottom:14px;">'+
-            '<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">'+BSKY_LOGO+
-              '<span style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#948D80;">Already on Bluesky</span>'+
+          '<div style="padding:0;margin-bottom:18px;">'+
+            '<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">'+BSKY_LOGO+
+              '<span style="font-size:14px;font-weight:600;color:#F5F4F2;">Sign in</span>'+
             '</div>'+
             '<input id="cbdbHandleInput" type="text" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="you.bsky.social" style="width:100%;background:#16140f;border:1px solid #38332b;color:#F5F4F2;font-family:\'IBM Plex Mono\',monospace;font-size:14px;padding:11px 13px;margin-bottom:10px;box-sizing:border-box;">'+
             '<button id="cbdbHandleGo" style="width:100%;background:#3B9AF8;color:#fff;border:none;font-family:\'IBM Plex Mono\',monospace;font-weight:600;font-size:14px;padding:12px;cursor:pointer;">Sign in</button>'+
             '<div id="cbdbSignInErr" style="display:none;font-size:12px;color:#FF5A4E;margin-top:10px;"></div>'+
           '</div>'+
           // New-account box: same design, bordered in amber.
-          '<div style="border:1px solid #FF9D2E;padding:16px;">'+
-            '<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">'+BSKY_LOGO+
-              '<span style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#948D80;">New here</span>'+
+          '<div style="padding:18px 0 0;border-top:1px solid #38332b;">'+
+            '<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">'+BSKY_LOGO+
+              '<span style="font-size:14px;font-weight:600;color:#F5F4F2;">Don\u2019t have an account?</span>'+
             '</div>'+
-            '<div style="font-size:12px;color:#C3BDB2;line-height:1.65;margin-bottom:12px;">No account, or don\u2019t want burgers on main? Grab a free Bluesky handle — it works across every app on the Atmosphere.</div>'+
+            '<div style="font-size:12px;color:#C3BDB2;line-height:1.65;margin-bottom:12px;">Or have one, but don\u2019t want to post burgers on main?</div>'+
             '<button id="cbdbCreate" style="width:100%;background:none;color:#FF9D2E;border:1px solid #FF9D2E;font-family:\'IBM Plex Mono\',monospace;font-weight:600;font-size:14px;padding:12px;cursor:pointer;">Create an account →</button>'+
-            '<div style="font-size:11px;color:#948D80;line-height:1.65;margin-top:10px;">Use it as your main, or make a dedicated one for Cheeseburger World. Your call.</div>'+
           '</div>'+
         '</div>'+
       '</div>';
@@ -150,7 +150,7 @@
     document.getElementById('cbdbHandleGo').addEventListener('click', go);
     document.getElementById('cbdbHandleInput').addEventListener('keydown', e=>{ if(e.key==='Enter') go(); });
     document.getElementById('cbdbCreate').addEventListener('click', ()=>{
-      window.open('https://bsky.app/', '_blank', 'noopener');
+      window.open('https://bsky.app/signup', '_blank', 'noopener');
     });
   }
 
