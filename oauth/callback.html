@@ -20,16 +20,55 @@
   </div>
   <script type="module">
     // Loading auth.js runs initAuth(), which finishes the OAuth redirect
-    // (exchanges the code, stores the session), then we send the user back.
+    // (exchanges the code, stores the session). We must NOT redirect until the
+    // session is genuinely established — on mobile WebKit (Safari, DuckDuckGo)
+    // the code exchange + storage write is slower, and redirecting early lands
+    // the user on a page with no agent (the old "please sign in" bug). So we
+    // poll for a real signed-in state (signedIn AND a live agent) and only then
+    // return. The timeout is a true last resort, not a race against init.
     import './../auth.js';
-    // give init a moment, then return to wherever they started (or the map)
+
+    const statusEl = document.getElementById('status');
     const back = sessionStorage.getItem('cbdb_return') || '/map.html';
-    window.addEventListener('cbdb-auth', () => {
+
+    function sessionReady(){
+      try {
+        return !!(window.cbdbAuth
+          && window.cbdbAuth.state
+          && window.cbdbAuth.state.signedIn
+          && window.cbdbAuth.getAgent
+          && window.cbdbAuth.getAgent());
+      } catch(e){ return false; }
+    }
+
+    let done = false;
+    function finish(){
+      if(done) return; done = true;
       sessionStorage.removeItem('cbdb_return');
       window.location.replace(back);
-    });
-    // fallback if the event doesn't fire
-    setTimeout(() => { window.location.replace(back); }, 4000);
+    }
+
+    // Poll for a fully-established session. Cheap, and it waits for the real
+    // thing instead of guessing with a fixed delay.
+    const startedAt = Date.now();
+    const poll = setInterval(() => {
+      if(sessionReady()){ clearInterval(poll); finish(); }
+    }, 150);
+
+    // Also finish on the post-exchange auth event, in case the agent is ready
+    // a tick before the poll catches it.
+    window.addEventListener('cbdb-auth', () => { if(sessionReady()){ clearInterval(poll); finish(); } });
+
+    // Last resort: if after 12s we still don't have a live session, the sign-in
+    // genuinely didn't complete (network, blocked storage). Don't dump the user
+    // into a broken state silently — tell them, then send them home.
+    setTimeout(() => {
+      if(done) return;
+      clearInterval(poll);
+      if(sessionReady()){ finish(); return; }
+      statusEl.textContent = 'Sign-in didn\u2019t complete. Returning you home — please try again.';
+      setTimeout(() => { sessionStorage.removeItem('cbdb_return'); window.location.replace('/index.html'); }, 2200);
+    }, 12000);
   </script>
 </body>
 </html>
