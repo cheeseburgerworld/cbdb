@@ -161,6 +161,16 @@ input[type=file]::file-selector-button { background:#38332b; color:#F5F4F2; bord
 .doc-fine { font-size:12px; color:#B6B0A4; margin-top:14px; line-height:1.6; }
 .doc-kicker { font-size:15px; color:#F5F4F2; line-height:1.65; margin-top:20px; padding:14px 18px; border-left:3px solid #3B9AF8; background:rgba(59,154,248,0.06); }
 .doc-kicker b { color:#5AABFA; }
+.doc-nerd { margin-top:6px; border:1px solid #2a2620; background:#1c1916; }
+.doc-nerd summary { cursor:pointer; padding:13px 16px; font-size:12px; letter-spacing:1px; text-transform:uppercase; color:#3B9AF8; list-style:none; user-select:none; transition:color .12s; }
+.doc-nerd summary::-webkit-details-marker { display:none; }
+.doc-nerd summary::after { content:' +'; color:#6B6258; }
+.doc-nerd[open] summary::after { content:' –'; }
+.doc-nerd summary:hover { color:#5AABFA; }
+.doc-nerd[open] summary { border-bottom:1px solid #2a2620; }
+.doc-nerd > p { padding:0 16px; }
+.doc-nerd > p:first-of-type { padding-top:16px; }
+.doc-nerd > .doc-kicker { margin:16px; padding:14px 18px; }
 .mono-tag { color:#3B9AF8; font-weight:600; }
 .rate-row { display:flex; gap:16px; padding:14px 0; border-bottom:1px solid #2a2620; }
 .rate-glyph { font-size:18px; min-width:60px; }
@@ -294,10 +304,13 @@ a.tab { text-decoration:none; display:inline-block; }
 <div class="doc-section">
 <div class="doc-head">Built on the open network</div>
 <p class="doc-pull">Your reviews aren't trapped here. They live on the open social web.</p>
+<p class="doc-text">That's the whole thing in one line: <b>you write, we index.</b> Your voice is portable, permanent, and yours alone — not locked in our platform.</p>
+<details class="doc-nerd">
+<summary>The technical part - for the curious</summary>
 <p class="doc-text">Every review is a real record on <span class="mono-tag">AT Protocol</span> — the open network behind Bluesky, known as the <span class="mono-tag">Atmosphere</span>. It's signed by your identity, stored on your account, and readable by any app on the network. We don't host your words, we just point at them.</p>
-<p class="doc-text">That's the whole thing in one line: <b>you write, we index.</b> Your voice is portable, permanent, and yours alone.</p>
 <p class="doc-text">Your identity is a <span class="mono-tag">DID</span> — a portable handle that follows you across the entire Atmosphere. One identity, every app, no lock-in.</p>
-<p class="doc-kicker">This is the part most sites can't claim. It isn't a privacy policy you have to trust — <b>it's an architecture you can verify.</b></p>
+<p class="doc-kicker">This is the part most sites can't claim. It isn't a privacy policy you have to trust — <b>it's an architecture you can verify.</b> The code is open on <a href="https://github.com/cheeseburgerworld/cbdb" target="_blank" rel="noopener" class="mono-tag">GitHub</a>, so you can see exactly what we do with your reviews — index them, nothing more.</p>
+</details>
 </div>
 <div class="doc-section">
 <div class="doc-head">What we promise</div>
@@ -318,6 +331,18 @@ a.tab { text-decoration:none; display:inline-block; }
 <div class="vs">
 <div class="vs-them">Anyone posts, ratings inflate, five stars means nothing.</div>
 <div class="vs-us">Real people, calibrated ratings. Legendary means legendary.</div>
+</div>
+<div class="vs">
+<div class="vs-them">An app-install wall just to read a review.</div>
+<div class="vs-us">Read everything in your browser. No app, no login to look.</div>
+</div>
+<div class="vs">
+<div class="vs-them">Trackers follow you around to sell what you browse.</div>
+<div class="vs-us">No trackers. We don't sell your data — we don't collect it.</div>
+</div>
+<div class="vs">
+<div class="vs-them">Built to feed the online ad machine.</div>
+<div class="vs-us">We opted out of the ad ecosystem. Entirely.</div>
 </div>
 <div class="vs">
 <div class="vs-them">A feed tuned to keep you scrolling — not for your benefit.</div>
