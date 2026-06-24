@@ -48,7 +48,9 @@
   .pf-id-text { min-width:0; }
   .pf-name { font-family:'Bebas Neue',sans-serif; font-size:40px; letter-spacing:0.5px; color:#F5F4F2; line-height:1; }
   .pf-handle { font-size:13px; color:#3B9AF8; margin-top:5px; word-break:break-all; }
-  .pf-rank { display:inline-flex; align-items:center; gap:8px; margin-top:9px; font-size:12px; letter-spacing:1px; text-transform:uppercase; color:#B6B0A4; }
+  .pf-rank { display:inline-flex; align-items:center; gap:8px; margin-top:9px; font-size:12px; letter-spacing:1px; text-transform:uppercase; color:#B6B0A4; text-decoration:none; transition:color .12s; }
+  .pf-rank:hover { color:#E4E0D8; }
+  .pf-rank:hover b { color:#ffad4e; }
   .pf-rank-emoji { font-size:15px; font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif; }
   .pf-rank b { color:#FF9D2E; font-weight:400; }
 
@@ -79,6 +81,7 @@
   .badge-count { color:#F5F4F2; }
 
   .pf-badges-empty { grid-column:1/-1; text-align:center; padding:30px 20px; color:#B6B0A4; font-size:13px; line-height:1.6; }
+  .pf-badge-divider { grid-column:1/-1; font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:#6B6258; margin:14px 0 2px; padding-top:14px; border-top:1px solid #2a2620; }
 
   /* ── Review list (mirrors drawer ph-item) ── */
   .pf-reviews { display:flex; flex-direction:column; gap:8px; }
@@ -144,7 +147,7 @@
   <!-- Signed-out gate -->
   <div class="pf-gate" id="pfGate">
     <div class="pf-gate-title">Your profile</div>
-    <p class="pf-gate-text">Sign in with Bluesky to see your stats, your badge case, and every review you've added to the database.</p>
+    <p class="pf-gate-text">Sign in with Bluesky to see your stats, your badge case, and every review you've put on the board.</p>
     <button class="pf-gate-cta" onclick="cbdbSignInPrompt()">Sign in →</button>
   </div>
 
@@ -156,7 +159,7 @@
       <div class="pf-id-text">
         <div class="pf-name" id="pfName">—</div>
         <div class="pf-handle" id="pfHandle">—</div>
-        <div class="pf-rank"><span class="pf-rank-emoji" id="pfRankEmoji"></span><span id="pfRank">—</span></div>
+        <a class="pf-rank" href="ranks.html"><span class="pf-rank-emoji" id="pfRankEmoji"></span><span id="pfRank">—</span></a>
       </div>
     </div>
 
@@ -207,30 +210,36 @@
      without touching any rendering below.
      ============================================================ */
 
-  // Tier colors climb brown -> yellow -> amber -> pink. The LABELS are plain
-  // (Tier I-IV) so they never collide with the rating words (Legendary, etc.).
-  // Green (#5BD94B) stays reserved for the Legendary RATING and is unused here.
+  // Tier colors climb brown -> yellow -> amber -> pink (universal "how rare").
+  // The LABELS come in two flavors so the words fit what each badge measures —
+  // depth (expertise) vs. reach (range) — without ever colliding with the
+  // rating words. Green (#5BD94B) stays reserved for the Legendary RATING.
   const TIER_COLORS = ['#6B4A2F','#FFC72C','#FF9D2E','#FF1F8F'];
-  const TIER_LABELS = ['Tier I','Tier II','Tier III','Tier IV'];
+  const LABELS = {
+    // Mastery of one thing: styles, price habits, honesty.
+    expertise: ['Tried it','Knows it','Expert','Authority'],
+    // Breadth of ground covered: cities (and Cartographer later).
+    range:     ['Local','Traveler','Voyager','Worldly']
+  };
 
   // Canonical style list — the same options the submit form offers, so the
   // badge case shows every style as a slot (earned or locked) without drifting.
   const STYLES = ['Classic','Smash','Bistro','Fast Food','Veggie'];
 
-  // Per-badge thresholds. Style badges use the common ladder; cities are
+  // Per-badge thresholds. Most badges use the common count ladder; cities are
   // rarer so Globetrotter has its own, gentler-but-meaningful ladder.
   const LADDERS = {
-    style: [1, 5, 10, 25],
+    count: [1, 5, 10, 25],
     city:  [3, 7, 12, 20]
   };
 
-  // Given a count and a ladder, return {idx, color, label} for the highest
-  // tier reached, or null if none. (No "next threshold" — we don't surface it.)
-  function tierFor(n, ladder){
+  // Given a count, a ladder, and a label set, return {idx, color, label} for
+  // the highest tier reached, or null if none.
+  function tierFor(n, ladder, labelSet){
     let idx=-1;
     ladder.forEach((min,i)=>{ if(n>=min) idx=i; });
     if(idx<0) return null;
-    return { idx, color:TIER_COLORS[idx], label:TIER_LABELS[idx] };
+    return { idx, color:TIER_COLORS[idx], label:labelSet[idx] };
   }
 
   /* Returns an ordered list of badge objects ready to render.
@@ -238,10 +247,10 @@
   function computeBadges(mine){
     const badges=[];
 
-    // ---- Globetrotter: distinct cities ----
+    // ---- Globetrotter: distinct cities (RANGE ladder) ----
     const cityCount = new Set(mine.map(r=>(r.loc||'').trim()).filter(Boolean)).size;
     badges.push({ key:'globetrotter', name:'Globetrotter', glyph:'🌍',
-      count:cityCount, tier:tierFor(cityCount, LADDERS.city), unit:'cities' });
+      count:cityCount, tier:tierFor(cityCount, LADDERS.city, LABELS.range), unit:'cities' });
 
     // ---- Burger Explorer: review all 5 styles (single achievement) ----
     const stylesHit = new Set(
@@ -252,13 +261,28 @@
       tier: stylesHit.size>=STYLES.length
         ? { idx:3, color:TIER_COLORS[3], label:'Complete' } : null });
 
+    // ---- Big Spender: reviews at $$$ spots (EXPERTISE ladder) ----
+    const bigSpend = mine.filter(r=>(r.tier||'')==='$$$').length;
+    badges.push({ key:'bigspender', name:'Big Spender', glyph:'💸',
+      count:bigSpend, tier:tierFor(bigSpend, LADDERS.count, LABELS.expertise), unit:'$$$ spots' });
+
+    // ---- Big on Value: reviews at $ spots ----
+    const bigValue = mine.filter(r=>(r.tier||'')==='$').length;
+    badges.push({ key:'bigvalue', name:'Big on Value', glyph:'🪙',
+      count:bigValue, tier:tierFor(bigValue, LADDERS.count, LABELS.expertise), unit:'$ spots' });
+
+    // ---- The Honest: "Skip It" reviews — rewards editorial integrity ----
+    const honest = mine.filter(r=>(r.rating||'')==='skip').length;
+    badges.push({ key:'honest', name:'Tough Crowd', glyph:'🧂',
+      count:honest, tier:tierFor(honest, LADDERS.count, LABELS.expertise), unit:'Skip Its' });
+
     // ---- Style badges: one evolving badge per style, ALL styles shown ----
     const styleCounts={};
     mine.forEach(r=>{ const s=(r.style||'').trim(); if(s){ styleCounts[s]=(styleCounts[s]||0)+1; } });
     STYLES.forEach(style=>{
       const n=styleCounts[style]||0;
       badges.push({ key:'style:'+style, name:style+' Burger', glyph:'🍔',
-        count:n, tier:tierFor(n, LADDERS.style), unit:style });
+        count:n, tier:tierFor(n, LADDERS.count, LABELS.expertise), unit:style });
     });
 
     return badges;
@@ -321,9 +345,18 @@
 
     const bWrap=document.getElementById('pfBadges');
     if(!mine.length){
-      bWrap.innerHTML='<div class="pf-badges-empty">Post your first review to start earning badges.</div>';
+      bWrap.innerHTML='<div class="pf-badges-empty">Post your first review to start earning badges. Each burger style is its own badge to level up.</div>';
     } else {
-      bWrap.innerHTML = badges.map(renderBadge).join('');
+      // Earned first (highest tier shown first), then a divider, then locked.
+      const earned = badges.filter(b=>b.tier)
+        .sort((a,b)=> (b.tier.idx||0) - (a.tier.idx||0));
+      const locked = badges.filter(b=>!b.tier);
+      let html = earned.map(renderBadge).join('');
+      if(earned.length && locked.length){
+        html += '<div class="pf-badge-divider">Not yet earned</div>';
+      }
+      html += locked.map(renderBadge).join('');
+      bWrap.innerHTML = html;
     }
 
     // Reviews — paginated at 10, "Show more" reveals the next batch.
@@ -354,7 +387,7 @@
   function renderReviews(mine){
     const rvWrap=document.getElementById('pfReviews');
     if(!mine.length){
-      rvWrap.innerHTML='<div class="pf-rv-empty">No reviews yet.<br><a href="submit.html">Post your first review →</a></div>';
+      rvWrap.innerHTML='<div class="pf-rv-empty">No reviews yet.<br><a href="submit.html">Post your first one →</a></div>';
       return;
     }
     const shown = mine.slice(0, rvShown);
