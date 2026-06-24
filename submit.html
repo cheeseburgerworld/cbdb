@@ -150,6 +150,31 @@
 </style>
 </head>
 <body>
+<div id="cbdbDiag" style="position:sticky;top:0;z-index:9999;background:#000;color:#5BD94B;font-family:monospace;font-size:12px;line-height:1.5;padding:10px 14px;border-bottom:2px solid #FF1F8F;white-space:pre-wrap;word-break:break-all;">loading auth diagnostic…</div>
+<script>
+(function(){
+  function snap(){
+    const s = window.__cbdb_state || {};
+    let agent = '?';
+    try { agent = (window.cbdbAuth && window.cbdbAuth.getAgent) ? (window.cbdbAuth.getAgent() ? 'YES' : 'null') : 'no fn'; } catch(e){ agent='err'; }
+    let ls = '?', idb = '?';
+    try { localStorage.setItem('_t','1'); ls = localStorage.getItem('_t')==='1' ? 'OK' : 'fail'; localStorage.removeItem('_t'); } catch(e){ ls='BLOCKED'; }
+    try { idb = (window.indexedDB) ? 'present' : 'MISSING'; } catch(e){ idb='BLOCKED'; }
+    let cache = '?';
+    try { cache = localStorage.getItem('cbdb_auth') ? 'has cbdb_auth' : 'no cbdb_auth'; } catch(e){ cache='err'; }
+    document.getElementById('cbdbDiag').textContent =
+      'AUTH DIAGNOSTIC (temporary)\n'+
+      'signedIn: '+(s.signedIn||false)+'  |  agent: '+agent+'\n'+
+      'did: '+(s.did||'(none)')+'\n'+
+      'handle: '+(s.handle||'(none)')+'\n'+
+      'localStorage: '+ls+'  |  indexedDB: '+idb+'\n'+
+      'cache: '+cache;
+  }
+  snap();
+  window.addEventListener('cbdb-auth', snap);
+  setInterval(snap, 1000);
+})();
+</script>
 <div class="nav">
   <div class="nav-left">
     <a class="logo" href="index.html">CB<span class="bolt">⚡</span>DB</a>
