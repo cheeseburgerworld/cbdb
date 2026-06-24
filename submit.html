@@ -373,10 +373,11 @@
     const on=document.getElementById('xpost').checked;
     const f=document.getElementById('reviewForm');
     const get=n=>f.elements[n]?f.elements[n].value.trim():'';
-    // Agent may be null if we're signed-in-by-cache but the live session hasn't
-    // resolved yet (optimistic restore after a transient init miss). Try to
-    // materialize it before giving up, so a logged-in user isn't wrongly told
-    // to sign in. Only error if we truly can't recover a session.
+    // Agent may be null if the session hasn't fully established. Try once to
+    // materialize it, then give an accurate message — without the speculative
+    // draft-save/re-auth flow (the real fix for the fresh-session mobile race
+    // lives in oauth/callback.html, which now waits for a live session before
+    // returning here).
     let agent = window.cbdbAuth && window.cbdbAuth.getAgent ? window.cbdbAuth.getAgent() : null;
     if(!agent && window.cbdbAuth && window.cbdbAuth.ensureAgent){
       const btn0=f.querySelector('.submit-btn'); if(btn0){ btn0.disabled=true; btn0.textContent='Reconnecting…'; }
@@ -384,11 +385,9 @@
       if(btn0){ btn0.disabled=false; btn0.textContent='Post Review'; }
     }
     if(!agent){
-      if(state.signedIn){
-        alert('Your session needs to reconnect. Give it a moment and tap Post again — if it keeps happening, refresh the page.');
-      } else {
-        alert('Please sign in with Bluesky first.');
-      }
+      alert(state.signedIn
+        ? 'Your session is still connecting. Give it a few seconds and tap Post again.'
+        : 'Please sign in with Bluesky first.');
       return;
     }
     const btn=f.querySelector('.submit-btn'); if(btn){ btn.disabled=true; btn.textContent='Posting…'; }
