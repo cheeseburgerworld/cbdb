@@ -321,7 +321,7 @@
 
     const bWrap=document.getElementById('pfBadges');
     if(!mine.length){
-      bWrap.innerHTML='<div class="pf-badges-empty">Post your first review to start earning badges. Each burger style is its own badge to level up.</div>';
+      bWrap.innerHTML='<div class="pf-badges-empty">Post your first review to start earning badges.</div>';
     } else {
       bWrap.innerHTML = badges.map(renderBadge).join('');
     }
@@ -354,7 +354,7 @@
   function renderReviews(mine){
     const rvWrap=document.getElementById('pfReviews');
     if(!mine.length){
-      rvWrap.innerHTML='<div class="pf-rv-empty">No reviews yet.<br><a href="submit.html">Post your first review. →</a></div>';
+      rvWrap.innerHTML='<div class="pf-rv-empty">No reviews yet.<br><a href="submit.html">Post your first review →</a></div>';
       return;
     }
     const shown = mine.slice(0, rvShown);
@@ -368,23 +368,24 @@
     if(more){ more.addEventListener('click', ()=>{ rvShown += PER_PAGE; renderReviews(mine); }); }
   }
 
-  // On this page, the nav chip should land here — but we're already here,
-  // so override openProfile to just re-render (and prompt sign-in if needed).
-  window.openProfile = function(){
-    if(!state.signedIn){ cbdbSignInPrompt(); return; }
-    render();
-  };
+  // NOTE: we deliberately do NOT override window.openProfile here. The nav
+  // chip opens the shared drawer on every page — including this one — so the
+  // logged-in experience is identical everywhere. drawer.js owns that behavior.
 
+  // Re-render whenever auth state settles (session restore fires 'cbdb-auth'
+  // after the page loads, since auth.js is a deferred module). This is what
+  // flips the page from the signed-out gate to your stats once the session
+  // is verified — without it the page would paint "guest" and never update.
   window.addEventListener('cbdb-auth', render);
-  window.addEventListener('cbdb-reviews-loaded', render);
-  document.addEventListener('DOMContentLoaded', render);
-  render();
 
-  // Reviews may already be loaded by a prior page paint, or arrive via the
-  // event above. Kick a load if the array is empty so a direct visit works.
-  if(typeof loadReviews==='function' && Array.isArray(window.reviews) && !window.reviews.length){
-    loadReviews().then(render).catch(()=>{});
-  }
+  // Load data exactly the way the database page does: await it, then render.
+  // No conditional guards — a direct visit always pulls the reviews so the
+  // stats and badges fill in. loadReviews() also fires 'cbdb-reviews-loaded'.
+  (async()=>{
+    render();                       // first paint (gate or cached session)
+    try { await loadReviews(); } catch(e){ console.warn('profile: loadReviews failed', e); }
+    render();                       // repaint with data
+  })();
 })();
 </script>
 
