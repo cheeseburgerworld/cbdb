@@ -295,7 +295,8 @@
     .tabs { overflow-x:auto; -webkit-overflow-scrolling:touch; gap:2px; scrollbar-width:none; }
     .tabs::-webkit-scrollbar { display:none; }
     .tab { flex:0 0 auto; white-space:nowrap; padding:8px 11px; }
-    .nav-id { flex-shrink:0; font-size:11px; }
+    .nav-id { flex-shrink:0; font-size:11px; max-width:40vw; }
+    .nav-id-name { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
     .footer-inner { flex-direction:column; align-items:flex-start; gap:14px; }
     .map-layout { flex-direction:column; }
     .panel { width:100%; border-left:none; border-top:1px solid #38332b; max-height:46%; }
@@ -454,7 +455,7 @@ function renderCards(){
               (date?'<span class="card-date">'+date+'</span>':'')+
             '</div>'+
           '</div>'+
-          '<div class="card-expand"><span class="arr">▸</span><span class="lbl-closed">The take</span><span class="lbl-open">Less</span></div>':'')+
+          '<div class="card-expand"><span class="arr">▸</span><span class="lbl-closed">More</span><span class="lbl-open">Less</span></div>':'')+
         '</div></div>';
     }).join('');
 
