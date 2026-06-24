@@ -180,8 +180,26 @@ async function signOut() {
 
 function getAgent() { return agent; }
 
+// Force the agent to materialize when we're signed-in-by-cache but the live
+// session (and thus the agent) hasn't resolved yet — e.g. after an optimistic
+// cache restore where init()/restore() missed transiently. Returns the agent
+// or null. Safe to call right before an action that needs a live session
+// (like posting a review), so the user isn't blocked by a not-yet-ready agent.
+async function ensureAgent() {
+  if (agent) return agent;
+  const did = state.did || cachedDID();
+  if (!did || !oauthClient) return null;
+  try {
+    const session = await oauthClient.restore(did);
+    await applySession(session, /*couldNotVerify on miss*/ true);
+  } catch (e) {
+    console.warn('CBDB auth: ensureAgent restore failed.', e);
+  }
+  return agent;
+}
+
 // expose to non-module page scripts
-window.cbdbAuth = { initAuth, signIn, signOut, getAgent, state, refreshOnWake };
+window.cbdbAuth = { initAuth, signIn, signOut, getAgent, ensureAgent, state, refreshOnWake };
 
 // ---- wake / focus listeners --------------------------------------------
 // These keep the token fresh on a returning desktop tab and on mobile resume.
