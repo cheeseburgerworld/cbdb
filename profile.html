@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Profile — CB⚡DB</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9A%A1%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html, body { height:100%; }
+  body { background:#1a1815; color:#F5F4F2; font-family:'IBM Plex Mono',monospace; line-height:1.6; -webkit-font-smoothing:antialiased; }
+
+  /* ── Shared nav (identical to every page) ── */
+  .nav { position:sticky; top:0; z-index:50; display:flex; align-items:center; justify-content:space-between; background:#211e1a; border-bottom:2px solid #FF9D2E; padding:12px 20px; }
+  .nav-left { display:flex; align-items:center; gap:22px; }
+  .logo { font-family:'Bebas Neue',sans-serif; font-size:30px; letter-spacing:2px; color:#F5F4F2; line-height:1; }
+  .logo .bolt { color:#4ADE52; }
+  .tabs { display:flex; gap:4px; }
+  .tab { font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:0.5px; text-transform:uppercase; color:#F5F4F2; background:none; border:1px solid transparent; padding:8px 14px; cursor:pointer; }
+  .tab.active { color:#15130f; background:#FF9D2E; font-weight:600; }
+  .nav-id { font-size:12px; color:#E4E0D8; display:flex; align-items:center; gap:8px; cursor:pointer; }
+  .nav-id .dot { width:8px; height:8px; border-radius:50%; background:#4ADE52; flex-shrink:0; }
+  .nav-id .dot.out { background:#B6B0A4; }
+  a.logo { text-decoration:none; }
+  a.tab { text-decoration:none; display:inline-block; }
+
+  /* ── Profile page ── */
+  .pf-wrap { max-width:760px; margin:0 auto; padding:40px 20px 90px; }
+
+  /* Signed-out gate */
+  .pf-gate { display:none; text-align:center; padding:80px 20px; }
+  .pf-gate.show { display:block; }
+  .pf-gate-title { font-family:'Bebas Neue',sans-serif; font-size:42px; letter-spacing:1.5px; color:#FF9D2E; line-height:1; margin-bottom:14px; }
+  .pf-gate-text { font-size:15px; color:#E4E0D8; line-height:1.7; max-width:440px; margin:0 auto 26px; }
+  .pf-gate-cta { display:inline-block; background:#FF9D2E; color:#15130f; font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:14px; letter-spacing:0.5px; text-decoration:none; padding:13px 24px; cursor:pointer; border:none; }
+  .pf-gate-cta:hover { background:#ffad4e; }
+
+  /* Body (signed in) */
+  .pf-body { display:none; }
+  .pf-body.show { display:block; }
+
+  /* Identity header */
+  .pf-id { display:flex; align-items:center; gap:18px; margin-bottom:30px; }
+  .pf-avatar { width:72px; height:72px; border-radius:50%; flex-shrink:0; background:#2a2620; border:1px solid #38332b; object-fit:cover; display:flex; align-items:center; justify-content:center; font-family:'Bebas Neue',sans-serif; font-size:34px; color:#FF9D2E; }
+  .pf-id-text { min-width:0; }
+  .pf-name { font-family:'Bebas Neue',sans-serif; font-size:40px; letter-spacing:0.5px; color:#F5F4F2; line-height:1; }
+  .pf-handle { font-size:13px; color:#3B9AF8; margin-top:5px; word-break:break-all; }
+  .pf-rank { display:inline-flex; align-items:center; gap:8px; margin-top:9px; font-size:12px; letter-spacing:1px; text-transform:uppercase; color:#B6B0A4; }
+  .pf-rank-emoji { font-size:15px; font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif; }
+  .pf-rank b { color:#FF9D2E; font-weight:400; }
+
+  /* Stats */
+  .pf-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:42px; }
+  .pf-stat { background:#211e1a; border:1px solid #38332b; padding:18px 10px; text-align:center; }
+  .pf-num { font-family:'Bebas Neue',sans-serif; font-size:40px; line-height:1; color:#F5F4F2; }
+  .pf-lab { font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:#B6B0A4; margin-top:7px; }
+
+  /* Section heading shared */
+  .pf-sec { margin-bottom:42px; }
+  .pf-sec-head { display:flex; align-items:baseline; justify-content:space-between; margin-bottom:18px; }
+  .pf-eyebrow { font-family:'Bebas Neue',sans-serif; font-size:26px; letter-spacing:1.5px; color:#FF9D2E; }
+  .pf-sec-note { font-size:11px; letter-spacing:1px; text-transform:uppercase; color:#B6B0A4; }
+
+  /* ── BADGE CASE (signature element) ── */
+  .pf-badges { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:12px; }
+  .badge { background:#211e1a; border:1px solid #38332b; padding:18px 16px; display:flex; flex-direction:column; align-items:center; text-align:center; position:relative; }
+  /* The frame: a top accent bar whose color = current tier. */
+  .badge::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:var(--tier,#38332b); }
+  .badge.locked { opacity:0.55; }
+  .badge-tile { width:56px; height:56px; border-radius:10px; background:#16140f; border:2px solid var(--tier,#38332b); display:flex; align-items:center; justify-content:center; font-size:30px; line-height:1; margin-bottom:12px; font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif; }
+  .badge.locked .badge-tile { filter:grayscale(1) brightness(0.7); border-color:#38332b; }
+  .badge-name { font-family:'Bebas Neue',sans-serif; font-size:18px; letter-spacing:0.8px; color:#F5F4F2; line-height:1.1; }
+  .badge-tier { font-size:10px; letter-spacing:1.5px; text-transform:uppercase; margin-top:5px; color:var(--tier,#B6B0A4); font-weight:600; }
+  .badge.locked .badge-tier { color:#B6B0A4; }
+  .badge-prog { font-size:11px; color:#B6B0A4; margin-top:8px; line-height:1.4; }
+  .badge-count { color:#F5F4F2; }
+
+  .pf-badges-empty { grid-column:1/-1; text-align:center; padding:30px 20px; color:#B6B0A4; font-size:13px; line-height:1.6; }
+
+  /* ── Review list (mirrors drawer ph-item) ── */
+  .pf-reviews { display:flex; flex-direction:column; gap:8px; }
+  .pf-rv { display:flex; align-items:center; gap:13px; padding:14px 15px; background:#211e1a; border:1px solid #2a2620; border-radius:9px; cursor:pointer; transition:border-color .12s, background .12s, transform .12s; text-decoration:none; }
+  .pf-rv:hover { border-color:#FF9D2E; background:#1b1813; transform:translateX(2px); }
+  .pf-rv.leg { border-color:rgba(91,217,75,0.35); }
+  .pf-rv.leg:hover { border-color:#5BD94B; }
+  .pf-rv-chip { font-size:17px; flex-shrink:0; width:42px; text-align:center; font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif; }
+  .pf-rv-body { flex:1; min-width:0; }
+  .pf-rv-name { font-size:14px; color:#F5F4F2; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .pf-rv-name.legendary { color:#5BD94B; }
+  .pf-rv-meta { font-size:11px; color:#B6B0A4; margin-top:2px; }
+  .pf-rv-arrow { color:#B6B0A4; flex-shrink:0; font-size:13px; transition:color .12s; }
+  .pf-rv:hover .pf-rv-arrow { color:#FF9D2E; }
+  .pf-rv-empty { text-align:center; padding:34px 20px; color:#B6B0A4; font-size:13px; line-height:1.7; }
+  .pf-rv-empty a { color:#FF9D2E; text-decoration:none; }
+
+  .pf-signout { margin-top:10px; text-align:center; }
+  .signout-link { background:none; border:1px solid #38332b; color:#B6B0A4; font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:0.5px; padding:9px 18px; cursor:pointer; }
+  .signout-link:hover { border-color:#FF5A4E; color:#FF5A4E; }
+
+  .site-footer { border-top:1px solid #38332b; background:#211e1a; margin-top:40px; padding:22px 20px; }
+  .footer-inner { max-width:1100px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+  .footer-links { display:flex; align-items:center; gap:20px; flex-wrap:wrap; }
+  .footer-links a { font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:0.5px; color:#E4E0D8; text-decoration:none; }
+  .footer-links a:hover { color:#FF9D2E; }
+  .footer-copy { font-size:11px; color:#B6B0A4; }
+
+  @media (max-width:760px) {
+    .nav { gap:12px; }
+    .nav-left { gap:14px; min-width:0; flex:1; }
+    .tabs { overflow-x:auto; -webkit-overflow-scrolling:touch; gap:2px; scrollbar-width:none; }
+    .tabs::-webkit-scrollbar { display:none; }
+    .tab { flex:0 0 auto; white-space:nowrap; padding:8px 11px; }
+    .nav-id { flex-shrink:0; font-size:11px; max-width:40vw; }
+    .nav-id-name { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .pf-name { font-size:32px; }
+    .pf-stats { gap:8px; }
+    .pf-num { font-size:32px; }
+    .pf-badges { grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); }
+    .footer-inner { flex-direction:column; align-items:flex-start; gap:14px; }
+    .drawer { width:100%; max-width:100%; }
+  }
+</style>
+</head>
+<body>
+<div class="nav">
+  <div class="nav-left">
+    <a class="logo" href="index.html">CB<span class="bolt">⚡</span>DB</a>
+    <div class="tabs">
+      <a class="tab" href="database.html">Database</a>
+      <a class="tab" href="map.html">Map</a>
+      <a class="tab" href="submit.html">Post a Review</a>
+    </div>
+  </div>
+  <div class="nav-id" id="navId" onclick="openProfile()"><span class="dot out"></span>Not signed in</div>
+</div>
+
+<div class="pf-wrap">
+
+  <!-- Signed-out gate -->
+  <div class="pf-gate" id="pfGate">
+    <div class="pf-gate-title">Your profile</div>
+    <p class="pf-gate-text">Sign in with Bluesky to see your stats, your badge case, and every review you've put on the board.</p>
+    <button class="pf-gate-cta" onclick="cbdbSignInPrompt()">Sign in →</button>
+  </div>
+
+  <!-- Signed-in body -->
+  <div class="pf-body" id="pfBody">
+
+    <div class="pf-id">
+      <div class="pf-avatar" id="pfAvatar"></div>
+      <div class="pf-id-text">
+        <div class="pf-name" id="pfName">—</div>
+        <div class="pf-handle" id="pfHandle">—</div>
+        <div class="pf-rank"><span class="pf-rank-emoji" id="pfRankEmoji"></span><span id="pfRank">—</span></div>
+      </div>
+    </div>
+
+    <div class="pf-stats">
+      <div class="pf-stat"><div class="pf-num" id="pfCount">0</div><div class="pf-lab">Reviews</div></div>
+      <div class="pf-stat"><div class="pf-num" id="pfCities">0</div><div class="pf-lab">Cities</div></div>
+      <div class="pf-stat"><div class="pf-num" id="pfBadgeCount">0</div><div class="pf-lab">Badges</div></div>
+    </div>
+
+    <div class="pf-sec">
+      <div class="pf-sec-head">
+        <span class="pf-eyebrow">Badge case</span>
+        <span class="pf-sec-note">Earned by posting</span>
+      </div>
+      <div class="pf-badges" id="pfBadges"></div>
+    </div>
+
+    <div class="pf-sec">
+      <div class="pf-sec-head">
+        <span class="pf-eyebrow">Your reviews</span>
+        <span class="pf-sec-note" id="pfRvNote"></span>
+      </div>
+      <div class="pf-reviews" id="pfReviews"></div>
+    </div>
+
+    <div class="pf-signout"><button class="signout-link" onclick="cbdbSignOut()">Sign out</button></div>
+
+  </div>
+</div>
+
+<!-- PROFILE DRAWER (shared) — still present so the nav chip works site-wide,
+     but on THIS page tapping the chip lands here, so the drawer is rarely opened. -->
+
+<script src="cbdb-config.js"></script>
+<script type="module" src="auth.js"></script>
+<script src="auth-bridge.js"></script>
+<script src="drawer.js"></script>
+<script>
+(function(){
+  'use strict';
+
+  /* ============================================================
+     BADGE ENGINE
+     Pure function of the contributor's reviews. Nothing is stored.
+     This is the seam: when the contributor base grows enough that
+     client-side aggregation matters, swap computeBadges()'s internals
+     for a single Supabase RPC call — get_contributor_badges(did) —
+     without touching any rendering below.
+     ============================================================ */
+
+  // Tier colors climb brown -> yellow -> amber -> pink. The LABELS are plain
+  // (Tier I-IV) so they never collide with the rating words (Legendary, etc.).
+  // Green (#5BD94B) stays reserved for the Legendary RATING and is unused here.
+  const TIER_COLORS = ['#6B4A2F','#FFC72C','#FF9D2E','#FF1F8F'];
+  const TIER_LABELS = ['Tier I','Tier II','Tier III','Tier IV'];
+
+  // Canonical style list — the same options the submit form offers, so the
+  // badge case shows every style as a slot (earned or locked) without drifting.
+  const STYLES = ['Classic','Smash','Bistro','Fast Food','Veggie'];
+
+  // Per-badge thresholds. Style badges use the common ladder; cities are
+  // rarer so Globetrotter has its own, gentler-but-meaningful ladder.
+  const LADDERS = {
+    style: [1, 5, 10, 25],
+    city:  [3, 7, 12, 20]
+  };
+
+  // Given a count and a ladder, return {idx, color, label} for the highest
+  // tier reached, or null if none. (No "next threshold" — we don't surface it.)
+  function tierFor(n, ladder){
+    let idx=-1;
+    ladder.forEach((min,i)=>{ if(n>=min) idx=i; });
+    if(idx<0) return null;
+    return { idx, color:TIER_COLORS[idx], label:TIER_LABELS[idx] };
+  }
+
+  /* Returns an ordered list of badge objects ready to render.
+     Each: { key, name, glyph, count, tier, unit, single? }. */
+  function computeBadges(mine){
+    const badges=[];
+
+    // ---- Globetrotter: distinct cities ----
+    const cityCount = new Set(mine.map(r=>(r.loc||'').trim()).filter(Boolean)).size;
+    badges.push({ key:'globetrotter', name:'Globetrotter', glyph:'🌍',
+      count:cityCount, tier:tierFor(cityCount, LADDERS.city), unit:'cities' });
+
+    // ---- Burger Explorer: review all 5 styles (single achievement) ----
+    const stylesHit = new Set(
+      mine.map(r=>(r.style||'').trim()).filter(s=>STYLES.includes(s))
+    );
+    badges.push({ key:'explorer', name:'Burger Explorer', glyph:'✨',
+      count:stylesHit.size, unit:'styles', single:true, target:STYLES.length,
+      tier: stylesHit.size>=STYLES.length
+        ? { idx:3, color:TIER_COLORS[3], label:'Complete' } : null });
+
+    // ---- Style badges: one evolving badge per style, ALL styles shown ----
+    const styleCounts={};
+    mine.forEach(r=>{ const s=(r.style||'').trim(); if(s){ styleCounts[s]=(styleCounts[s]||0)+1; } });
+    STYLES.forEach(style=>{
+      const n=styleCounts[style]||0;
+      badges.push({ key:'style:'+style, name:style+' Burger', glyph:'🍔',
+        count:n, tier:tierFor(n, LADDERS.style), unit:style });
+    });
+
+    return badges;
+  }
+
+  /* ============================================================
+     RENDER
+     ============================================================ */
+  const state = (window.__cbdb_state = window.__cbdb_state || {});
+
+  function avatarInitial(){
+    return (state.displayName||state.handle||'?').charAt(0).toUpperCase();
+  }
+
+  function renderBadge(b){
+    const earned = !!b.tier;
+    const tierColor = earned ? b.tier.color : '#38332b';
+    const tierLabel = earned ? b.tier.label : 'Locked';
+    // Single achievements (Burger Explorer) show "N / target styles".
+    // Tiered badges just show the bare count + unit — no next-threshold hint.
+    const prog = b.single
+      ? '<span class="badge-count">'+b.count+'</span> / '+b.target+' '+b.unit
+      : '<span class="badge-count">'+b.count+'</span> '+b.unit;
+    return '<div class="badge'+(earned?'':' locked')+'" style="--tier:'+tierColor+'">'+
+      '<div class="badge-tile">'+b.glyph+'</div>'+
+      '<div class="badge-name">'+b.name+'</div>'+
+      '<div class="badge-tier">'+tierLabel+'</div>'+
+      '<div class="badge-prog">'+prog+'</div>'+
+    '</div>';
+  }
+
+  function render(){
+    const signedIn = !!state.signedIn;
+    document.getElementById('pfGate').classList.toggle('show', !signedIn);
+    document.getElementById('pfBody').classList.toggle('show', signedIn);
+    if(!signedIn) return;
+
+    const mine = (typeof myReviews==='function') ? myReviews(state) : [];
+    const cities = new Set(mine.map(r=>(r.loc||'').trim()).filter(Boolean)).size;
+    const rk = (typeof rankFor==='function') ? rankFor(mine.length) : null;
+
+    // Identity
+    const av=document.getElementById('pfAvatar');
+    if(state.avatar){
+      av.innerHTML='<img src="'+state.avatar+'" alt="" style="width:100%;height:100%;border-radius:50%;object-fit:cover;" onerror="this.parentNode.textContent=\''+avatarInitial()+'\'">';
+    } else { av.textContent=avatarInitial(); }
+    document.getElementById('pfName').textContent = state.displayName || state.handle || '—';
+    document.getElementById('pfHandle').textContent = state.handle ? '@'+state.handle : '';
+    if(rk){
+      document.getElementById('pfRankEmoji').textContent = rk.badge || '•';
+      document.getElementById('pfRank').innerHTML = 'Rank · <b>'+rk.name+'</b>';
+    }
+
+    // Badges
+    const badges = computeBadges(mine);
+    const earnedCount = badges.filter(b=>b.tier).length;
+    document.getElementById('pfCount').textContent = mine.length;
+    document.getElementById('pfCities').textContent = cities;
+    document.getElementById('pfBadgeCount').textContent = earnedCount;
+
+    const bWrap=document.getElementById('pfBadges');
+    if(!mine.length){
+      bWrap.innerHTML='<div class="pf-badges-empty">Post your first review to start earning badges. Each burger style is its own badge — and every new city counts toward Globetrotter.</div>';
+    } else {
+      bWrap.innerHTML = badges.map(renderBadge).join('');
+    }
+
+    // Reviews
+    const rvWrap=document.getElementById('pfReviews');
+    document.getElementById('pfRvNote').textContent = mine.length ? mine.length+(mine.length===1?' review':' reviews') : '';
+    if(!mine.length){
+      rvWrap.innerHTML='<div class="pf-rv-empty">No reviews yet.<br><a href="submit.html">Post your first one →</a></div>';
+    } else {
+      rvWrap.innerHTML = mine.map(r=>{
+        const rt = RATING[r.rating] || { glyph:'•', color:'#B6B0A4' };
+        const leg = r.legendaryCanonical === true;
+        const url = (typeof bskyWebUrl==='function') ? bskyWebUrl(r.bskyUri, r.by) : '';
+        const glyphColor = r.rating==='skip' ? '#D4A878' : rt.color;
+        const meta = [r.loc, r.style].filter(Boolean).join(' · ');
+        const tag = url ? 'a href="'+url+'" target="_blank" rel="noopener"' : 'div';
+        const close = url ? 'a' : 'div';
+        return '<'+tag+' class="pf-rv'+(leg?' leg':'')+'">'+
+          '<span class="pf-rv-chip" style="color:'+glyphColor+'">'+rt.glyph+'</span>'+
+          '<div class="pf-rv-body"><div class="pf-rv-name'+(leg?' legendary':'')+'">'+r.name+'</div>'+
+          '<div class="pf-rv-meta">'+meta+'</div></div>'+
+          (url?'<span class="pf-rv-arrow">↗</span>':'')+
+        '</'+close+'>';
+      }).join('');
+    }
+  }
+
+  // On this page, the nav chip should land here — but we're already here,
+  // so override openProfile to just re-render (and prompt sign-in if needed).
+  window.openProfile = function(){
+    if(!state.signedIn){ cbdbSignInPrompt(); return; }
+    render();
+  };
+
+  window.addEventListener('cbdb-auth', render);
+  window.addEventListener('cbdb-reviews-loaded', render);
+  document.addEventListener('DOMContentLoaded', render);
+  render();
+
+  // Reviews may already be loaded by a prior page paint, or arrive via the
+  // event above. Kick a load if the array is empty so a direct visit works.
+  if(typeof loadReviews==='function' && Array.isArray(window.reviews) && !window.reviews.length){
+    loadReviews().then(render).catch(()=>{});
+  }
+})();
+</script>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-links">
+      <a href="database.html">Database</a>
+      <a href="map.html">Map</a>
+      <a href="about.html">About</a>
+      <a href="submit.html">Post a Review</a>
+    </div>
+    <div class="footer-copy">We index it. We don't own it.</div>
+  </div>
+</footer>
+
+</body>
+</html>
