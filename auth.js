@@ -1,6 +1,5 @@
 /* ============================================================
    CB⚡DB — shared auth (ATProto / Bluesky OAuth)
-   Ported from the working Pizza Official flow.
    - Full client-side OAuth 2.0 + PKCE (no server needed for login)
    - Session persists across pages via the library's own store + a
      localStorage cache, so "Online · @handle" stays put on nav.
@@ -26,6 +25,11 @@ let oauthClient = null;
 let agent = null;
 let initDone = false;          // becomes true after the first full init() round-trip
 let refreshing = false;        // guard so overlapping wake events don't stampede
+
+// KEY FIX: keep a reference to the in-flight initAuth() promise.
+// ensureAgent() awaits this instead of bailing when oauthClient is null,
+// which is the exact race condition that caused "session still connecting" on mobile.
+let initPromise = null;
 
 async function initAuth() {
   // Paint instantly from the persisted cache BEFORE the async OAuth round-trip,
@@ -57,8 +61,7 @@ async function initAuth() {
   // If init() didn't hand us a session but we have a cached DID, the access
   // token has very likely just expired while the library still holds a valid
   // refresh token. Actively restore() that DID — this forces a token refresh
-  // rather than passively reading a possibly-stale token. This is the single
-  // biggest fix for "left and came back, now logged out".
+  // rather than passively reading a possibly-stale token.
   if (!session && !initFailed) {
     const cachedDid = cachedDID();
     if (cachedDid) {
@@ -66,8 +69,6 @@ async function initAuth() {
         session = await oauthClient.restore(cachedDid);
       } catch (e) {
         console.warn('CBDB auth: restore() could not renew the session.', e);
-        // Treat an explicit restore failure like a transient miss this pass —
-        // we do NOT immediately wipe. The next wake/load gets another chance.
         initFailed = true;
       }
     }
@@ -116,19 +117,16 @@ async function applySession(session, couldNotVerify) {
 }
 
 // Re-validate / refresh the session when the tab wakes from background.
-// Desktop tabs left idle expire their access token; this renews it on return
-// so the user never comes back to "Not signed in".
 async function refreshOnWake() {
-  if (!initDone || refreshing) return;       // wait until first init settled
+  if (!initDone || refreshing) return;
   if (document.visibilityState === 'hidden') return;
   const did = state.did || cachedDID();
   if (!did || !oauthClient) return;
   refreshing = true;
   try {
     const session = await oauthClient.restore(did);
-    await applySession(session, /*couldNotVerify on miss*/ true);
+    await applySession(session, true);
   } catch (e) {
-    // Transient — keep the user signed in, next wake retries.
     console.warn('CBDB auth: wake refresh skipped (transient).', e);
   } finally {
     refreshing = false;
@@ -136,7 +134,6 @@ async function refreshOnWake() {
 }
 
 // ---- session cache (UI paint + did pointer) ----------------------------
-// localStorage persists across tabs and reloads.
 function cacheSession() {
   try {
     localStorage.setItem('cbdb_auth', JSON.stringify({
@@ -151,7 +148,6 @@ function restoreCache() {
     if (c && c.signedIn) Object.assign(state, c);
   } catch {}
 }
-// Read just the cached DID even if signedIn flag is stale — used to drive restore().
 function cachedDID() {
   if (state.did) return state.did;
   try {
@@ -165,8 +161,7 @@ function clearState() {
 }
 
 async function signIn(handle) {
-  if (!oauthClient) await initAuth();
-  // redirects to Bluesky; returns to /oauth/callback then back here
+  if (!oauthClient) await initPromise;
   await oauthClient.signIn(handle, {
     scope: 'atproto transition:generic',
   });
@@ -180,18 +175,26 @@ async function signOut() {
 
 function getAgent() { return agent; }
 
-// Force the agent to materialize when we're signed-in-by-cache but the live
-// session (and thus the agent) hasn't resolved yet — e.g. after an optimistic
-// cache restore where init()/restore() missed transiently. Returns the agent
-// or null. Safe to call right before an action that needs a live session
-// (like posting a review), so the user isn't blocked by a not-yet-ready agent.
+// Ensure a live agent is available before performing an authenticated action.
+// FIXED: awaits the in-flight initPromise so we never bail just because
+// oauthClient hasn't loaded yet — the exact race that caused "session still
+// connecting" on mobile after the callback redirect.
 async function ensureAgent() {
+  // If initAuth() is still running, wait for it — agent may already be set
+  // by the time it resolves (happy path on mobile: init completes before user
+  // fills the form and taps Post).
+  if (initPromise) await initPromise;
+
+  // Agent materialized during initAuth? Done.
   if (agent) return agent;
+
+  // initAuth() completed but agent is still null (e.g. restore() missed
+  // transiently). Try one explicit restore with the cached DID.
   const did = state.did || cachedDID();
   if (!did || !oauthClient) return null;
   try {
     const session = await oauthClient.restore(did);
-    await applySession(session, /*couldNotVerify on miss*/ true);
+    await applySession(session, true);
   } catch (e) {
     console.warn('CBDB auth: ensureAgent restore failed.', e);
   }
@@ -202,12 +205,11 @@ async function ensureAgent() {
 window.cbdbAuth = { initAuth, signIn, signOut, getAgent, ensureAgent, state, refreshOnWake };
 
 // ---- wake / focus listeners --------------------------------------------
-// These keep the token fresh on a returning desktop tab and on mobile resume.
 document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'visible') refreshOnWake();
 });
 window.addEventListener('focus', refreshOnWake);
-window.addEventListener('pageshow', (e) => { if (e.persisted) refreshOnWake(); }); // bfcache restore
+window.addEventListener('pageshow', (e) => { if (e.persisted) refreshOnWake(); });
 
-// auto-init on load
-initAuth().catch(e => console.error('CBDB auth init failed:', e));
+// auto-init on load — store the promise so ensureAgent() can await it
+initPromise = initAuth().catch(e => console.error('CBDB auth init failed:', e));
