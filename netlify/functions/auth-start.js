@@ -15,7 +15,7 @@ import {
   signPayload,
   setCookie,
   PKCE_COOKIE,
-} from './_auth-utils.js';
+} from '../_auth-utils.js';
 import { randomBytes } from 'node:crypto';
 
 const CLIENT_ID    = 'https://cheeseburger.world/oauth/client-metadata.json';
