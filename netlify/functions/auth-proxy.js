@@ -84,7 +84,8 @@ async function dispatch(session, action, payload) {
 // ─── Create a Bluesky post ────────────────────────────────────────────────────
 
 async function doPost(session, payload) {
-  const endpoint = `https://bsky.social/xrpc/com.atproto.repo.createRecord`;
+  const pds = session.pdsEndpoint || 'https://bsky.social';
+  const endpoint = `${pds}/xrpc/com.atproto.repo.createRecord`;
   const record = {
     $type:     'app.bsky.feed.post',
     text:      payload.text,
@@ -111,7 +112,8 @@ async function doUploadBlob(session, payload) {
   if (!data || !mimeType) throw new Error('uploadBlob requires data and mimeType');
 
   const bytes    = Buffer.from(data, 'base64');
-  const endpoint = `https://bsky.social/xrpc/com.atproto.repo.uploadBlob`;
+  const pds = session.pdsEndpoint || 'https://bsky.social';
+  const endpoint = `${pds}/xrpc/com.atproto.repo.uploadBlob`;
 
   const result = await bskyRequest(session, 'POST', endpoint, bytes, mimeType);
   return result;
