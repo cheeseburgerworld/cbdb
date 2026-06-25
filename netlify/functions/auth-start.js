@@ -34,7 +34,7 @@ export default async function handler(req) {
 
   try {
     // 1. Discover the auth server for this handle
-    const { did, authorizationEndpoint, tokenEndpoint, pushedAuthorizationEndpoint } =
+    const { did, authServerBase, authorizationEndpoint, tokenEndpoint, pushedAuthorizationEndpoint } =
       await discoverAuthServer(handle);
 
     // 2. Generate PKCE
@@ -53,6 +53,7 @@ export default async function handler(req) {
       privateJwk,
       publicJwk,
       tokenEndpoint,
+      pdsEndpoint: authServerBase,
       did,
       state,
       return: returnPath,
