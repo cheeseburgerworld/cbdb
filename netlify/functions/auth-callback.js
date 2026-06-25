@@ -16,7 +16,7 @@ import {
   clearCookie,
   PKCE_COOKIE,
   SESSION_COOKIE,
-} from './_auth-utils.js';
+} from '../_auth-utils.js';
 
 const CLIENT_ID    = 'https://cheeseburger.world/oauth/client-metadata.json';
 const REDIRECT_URI = 'https://cheeseburger.world/oauth/callback';
