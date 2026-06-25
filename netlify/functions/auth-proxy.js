@@ -17,7 +17,7 @@ import {
   buildDPoPProof,
   refreshAccessToken,
   SESSION_COOKIE,
-} from './_auth-utils.js';
+} from '../_auth-utils.js';
 
 export default async function handler(req) {
   if (req.method !== 'POST') {
