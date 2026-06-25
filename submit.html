@@ -373,21 +373,12 @@
     const on=document.getElementById('xpost').checked;
     const f=document.getElementById('reviewForm');
     const get=n=>f.elements[n]?f.elements[n].value.trim():'';
-    // Agent may be null if the live OAuth session hasn't materialized — known
-    // issue on mobile WebKit where restore() doesn't yield a session (fix in
-    // progress). Try once to materialize it, then give an accurate message.
-    let agent = window.cbdbAuth && window.cbdbAuth.getAgent ? window.cbdbAuth.getAgent() : null;
-    if(!agent && window.cbdbAuth && window.cbdbAuth.ensureAgent){
-      const btn0=f.querySelector('.submit-btn'); if(btn0){ btn0.disabled=true; btn0.textContent='Reconnecting…'; }
-      try { agent = await window.cbdbAuth.ensureAgent(); } catch(e){}
-      if(btn0){ btn0.disabled=false; btn0.textContent='Post Review'; }
-    }
-    if(!agent){
-      alert(state.signedIn
-        ? 'Your session is still connecting. Give it a few seconds and tap Post again.'
-        : 'Please sign in with Bluesky first.');
+
+    if(!state.signedIn){
+      alert('Please sign in with Bluesky first.');
       return;
     }
+
     const btn=f.querySelector('.submit-btn'); if(btn){ btn.disabled=true; btn.textContent='Posting…'; }
     let photoUrl='', bskyUri='';
     try{
@@ -413,11 +404,17 @@
         const file=photoInput.files[0];
         try{
           const prepared=await prepareImage(file);
-          const up=await agent.uploadBlob(prepared.bytes, { encoding:'image/jpeg' });
-          const imageRecord={ image:up.data.blob, alt:get('alt')||restaurant };
+          // Convert Uint8Array to base64 for transport to the proxy function
+          const base64 = btoa(String.fromCharCode(...prepared.bytes));
+          const up = await window.cbdbAuth.proxyAction('uploadBlob', {
+            data: base64,
+            mimeType: 'image/jpeg',
+          });
+          const blob = up.blob;
+          const imageRecord={ image:blob, alt:get('alt')||restaurant };
           if(prepared.width && prepared.height){ imageRecord.aspectRatio={ width:prepared.width, height:prepared.height }; }
           embed={ $type:'app.bsky.embed.images', images:[imageRecord] };
-          const cid = (up.data.blob.ref && (up.data.blob.ref.$link || up.data.blob.ref.toString())) || '';
+          const cid = (blob.ref && (blob.ref.$link || blob.ref.toString())) || '';
           photoUrl = cid ? 'https://cdn.bsky.app/img/feed_fullsize/plain/'+state.did+'/'+cid+'@jpeg' : '';
         }catch(upErr){
           console.error('Image upload failed — posting review without photo:', upErr);
@@ -425,9 +422,9 @@
           alert('Heads up: the photo could not be uploaded, so your review will post without it. You can add a photo by editing the post on Bluesky.');
         }
       }
-      const rt = embed
-        ? await agent.post({ text, facets, embed, createdAt:new Date().toISOString() })
-        : await agent.post({ text, facets, createdAt:new Date().toISOString() });
+      const postPayload = { text, facets, createdAt:new Date().toISOString() };
+      if(embed) postPayload.embed = embed;
+      const rt = await window.cbdbAuth.proxyAction('post', postPayload);
       bskyUri = rt.uri;
       let lat=null, lng=null;
       async function geo(q){
