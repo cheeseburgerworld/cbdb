@@ -14,7 +14,7 @@ import {
   clearCookie,
   refreshAccessToken,
   SESSION_COOKIE,
-} from './_auth-utils.js';
+} from '../_auth-utils.js';
 
 // Access tokens from bsky.social expire after ~2 hours.
 // Refresh if less than 30 minutes remain.
