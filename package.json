@@ -1,0 +1,10 @@
+{
+  "name": "cbdb",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "CB⚡DB — Cheeseburger Database",
+  "dependencies": {
+    "jose": "^6.0.0"
+  }
+}
