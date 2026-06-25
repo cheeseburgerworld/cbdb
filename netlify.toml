@@ -1,13 +1,39 @@
 # CB⚡DB — Netlify configuration
 
-# Serve the OAuth client metadata as JSON (not a download)
+# Serve the OAuth client metadata as JSON
 [[headers]]
   for = "/oauth/client-metadata.json"
   [headers.values]
     Content-Type = "application/json"
 
-# Pretty URL for the OAuth redirect target
+# Auth function routes (clean URLs without /.netlify/functions/)
+[[redirects]]
+  from = "/auth/start"
+  to   = "/.netlify/functions/auth-start"
+  status = 200
+
+[[redirects]]
+  from = "/auth/session"
+  to   = "/.netlify/functions/auth-session"
+  status = 200
+
+[[redirects]]
+  from = "/auth/proxy"
+  to   = "/.netlify/functions/auth-proxy"
+  status = 200
+
+[[redirects]]
+  from = "/auth/signout"
+  to   = "/.netlify/functions/auth-signout"
+  status = 200
+
+# OAuth callback: Bluesky redirects here after auth.
+# Handled by the auth-callback function (not a static HTML file anymore).
 [[redirects]]
   from = "/oauth/callback"
-  to = "/oauth/callback.html"
+  to   = "/.netlify/functions/auth-callback"
   status = 200
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
