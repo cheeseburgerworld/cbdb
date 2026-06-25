@@ -3,7 +3,7 @@
 // No external deps except 'jose' (for DPoP JWT) and Node built-ins
 
 import { createHmac, randomBytes, createHash } from 'node:crypto';
-import { SignJWT, importJWK, exportJWK, generateKeyPair } from 'jose';
+import { SignJWT, importJWK, exportJWK, generateKeyPair } from 'npm:jose';
 
 // ─── Cookie secret ────────────────────────────────────────────────────────────
 const SECRET = process.env.CBDB_COOKIE_SECRET;
