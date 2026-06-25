@@ -81,10 +81,28 @@ async function dispatch(session, action, payload) {
   }
 }
 
+// ─── Resolve user's actual PDS from their DID document ───────────────────────
+
+async function resolvePDS(did) {
+  try {
+    if (did.startsWith('did:plc:')) {
+      const res = await fetch(`https://plc.directory/${did}`);
+      if (res.ok) {
+        const doc = await res.json();
+        const svc = doc.service?.find(s => s.id === '#atproto_pds' || s.type === 'AtprotoPersonalDataServer');
+        if (svc?.serviceEndpoint) return svc.serviceEndpoint;
+      }
+    } else if (did.startsWith('did:web:')) {
+      return `https://${did.slice('did:web:'.length)}`;
+    }
+  } catch {}
+  return 'https://bsky.social';
+}
+
 // ─── Create a Bluesky post ────────────────────────────────────────────────────
 
 async function doPost(session, payload) {
-  const pds = session.pdsEndpoint || 'https://bsky.social';
+  const pds = await resolvePDS(session.did);
   const endpoint = `${pds}/xrpc/com.atproto.repo.createRecord`;
   const record = {
     $type:     'app.bsky.feed.post',
@@ -111,8 +129,13 @@ async function doUploadBlob(session, payload) {
   const { data, mimeType } = payload;
   if (!data || !mimeType) throw new Error('uploadBlob requires data and mimeType');
 
-  const bytes    = Buffer.from(data, 'base64');
-  const pds = session.pdsEndpoint || 'https://bsky.social';
+  // Convert base64 to Uint8Array without Buffer (Deno-compatible)
+  const binary = atob(data);
+  const bytes  = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+
+  // Use the user's actual PDS for blob uploads
+  const pds = await resolvePDS(session.did);
   const endpoint = `${pds}/xrpc/com.atproto.repo.uploadBlob`;
 
   const result = await bskyRequest(session, 'POST', endpoint, bytes, mimeType);
