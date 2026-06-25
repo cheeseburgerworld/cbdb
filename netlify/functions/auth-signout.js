@@ -10,7 +10,7 @@ import {
   buildDPoPProof,
   SESSION_COOKIE,
   PKCE_COOKIE,
-} from './_auth-utils.js';
+} from '../_auth-utils.js';
 
 export default async function handler(req) {
   const cookies = parseCookies(req.headers.get('cookie'));
