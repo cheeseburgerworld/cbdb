@@ -56,7 +56,7 @@ export default async function handler(req) {
     return redirect('/submit.html?auth_error=session_expired', [clearCookie(PKCE_COOKIE)]);
   }
 
-  const { verifier, privateJwk, publicJwk, tokenEndpoint, did, return: returnPath } = pkceData;
+  const { verifier, privateJwk, publicJwk, tokenEndpoint, pdsEndpoint, did, return: returnPath } = pkceData;
 
   try {
     // 4. Exchange code for tokens
@@ -70,6 +70,7 @@ export default async function handler(req) {
       privateJwk,
       publicJwk,
       tokenEndpoint,
+      pdsEndpoint: pdsEndpoint || 'https://bsky.social',
       iat:           Math.floor(Date.now() / 1000),
     };
     const sessionValue  = signPayload(session);
