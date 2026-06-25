@@ -1,215 +1,153 @@
 /* ============================================================
-   CB⚡DB — shared auth (ATProto / Bluesky OAuth)
-   - Full client-side OAuth 2.0 + PKCE (no server needed for login)
-   - Session persists across pages via the library's own store + a
-     localStorage cache, so "Online · @handle" stays put on nav.
-   - STICKY SESSION: proactively refreshes the access token on load
-     and on every tab-wake (visibility/focus), so an idle desktop tab
-     doesn't return to an expired token and read as "logged out".
+   CB⚡DB — auth.js (BFF version)
+   Session is managed server-side via Netlify functions.
+   This file is now a thin client:
+   - On load: GET /auth/session → paint state
+   - signIn: redirect to /auth/start
+   - signOut: POST /auth/signout
+   - No BrowserOAuthClient, no crypto.subtle, no IndexedDB
+   - Works in every browser including Firefox/DDG on iPhone
    Loaded as: <script type="module" src="auth.js"></script>
    ============================================================ */
 
-import { BrowserOAuthClient } from
-  'https://esm.sh/@atproto/oauth-client-browser@0.3.37?bundle';
-import { Agent } from 'https://esm.sh/@atproto/api@0.13.35?bundle';
-
-const CLIENT_ID = 'https://cheeseburger.world/oauth/client-metadata.json';
-const HANDLE_RESOLVER = 'https://bsky.social';
-
-// Shared session state the rest of the site reads.
+// Shared session state the rest of the site reads via window.__cbdb_state
 const state = (window.__cbdb_state = window.__cbdb_state || {
   signedIn: false, handle: null, displayName: null, did: null, avatar: null
 });
 
-let oauthClient = null;
-let agent = null;
-let initDone = false;          // becomes true after the first full init() round-trip
-let refreshing = false;        // guard so overlapping wake events don't stampede
-
-// KEY FIX: keep a reference to the in-flight initAuth() promise.
-// ensureAgent() awaits this instead of bailing when oauthClient is null,
-// which is the exact race condition that caused "session still connecting" on mobile.
-let initPromise = null;
-
-async function initAuth() {
-  // Paint instantly from the persisted cache BEFORE the async OAuth round-trip,
-  // so a signed-in user never flashes as signed-out when navigating pages.
-  restoreCache();
-  if (state.signedIn) {
-    window.dispatchEvent(new CustomEvent('cbdb-auth', { detail: { ...state } }));
-  }
-
-  oauthClient = await BrowserOAuthClient.load({
-    clientId: CLIENT_ID,
-    handleResolver: HANDLE_RESOLVER,
-  });
-
-  // init() finishes a redirect (if we're on the callback) OR restores
-  // an existing session on a normal page load.
-  // IMPORTANT: a thrown init() (mobile tab wake, flaky network) must NOT be
-  // treated as "logged out" — that would wipe a still-valid session. We only
-  // clear the cache when the library *positively* reports no session.
-  let result, initFailed = false;
-  try {
-    result = await oauthClient.init();
-  } catch (e) {
-    console.warn('CBDB auth: init() failed (likely transient/offline). Keeping cached session.', e);
-    initFailed = true;
-  }
-  let session = result?.session;
-
-  // If init() didn't hand us a session but we have a cached DID, the access
-  // token has very likely just expired while the library still holds a valid
-  // refresh token. Actively restore() that DID — this forces a token refresh
-  // rather than passively reading a possibly-stale token.
-  if (!session && !initFailed) {
-    const cachedDid = cachedDID();
-    if (cachedDid) {
-      try {
-        session = await oauthClient.restore(cachedDid);
-      } catch (e) {
-        console.warn('CBDB auth: restore() could not renew the session.', e);
-        initFailed = true;
-      }
-    }
-  }
-
-  await applySession(session, initFailed);
-  initDone = true;
-  return state;
-}
-
-// Resolve a session object into shared state + dispatch the auth event.
-// `couldNotVerify` means we hit a transient/unknown condition and must NOT
-// log the user out — keep whatever the optimistic cache painted.
-async function applySession(session, couldNotVerify) {
-  if (session) {
-    agent = new Agent(session);
-    state.did = session.did;
-    // resolve handle + display name + avatar via the PUBLIC appview (no auth needed → no 401)
-    try {
-      const pub = await fetch(
-        'https://public.api.bsky.app/xrpc/app.bsky.actor.getProfile?actor=' + encodeURIComponent(session.did)
-      );
-      if (pub.ok) {
-        const d = await pub.json();
-        state.handle = d.handle;
-        state.displayName = d.displayName || d.handle;
-        state.avatar = d.avatar || null;
-      } else if (!state.handle) {
-        state.handle = session.did; state.displayName = session.did;
-      }
-    } catch {
-      if (!state.handle) { state.handle = session.did; state.displayName = session.did; }
-    }
-    state.signedIn = true;
-    cacheSession();
-  } else if (couldNotVerify) {
-    // Could not verify session right now (network/offline/tab-wake/restore miss).
-    // Do NOT log the user out. Keep the optimistic cache and try again next wake.
-    // (state stays as restoreCache() left it.)
-  } else {
-    // Library positively reported no session → genuinely logged out.
-    clearState();
-  }
-
-  window.dispatchEvent(new CustomEvent('cbdb-auth', { detail: { ...state } }));
-}
-
-// Re-validate / refresh the session when the tab wakes from background.
-async function refreshOnWake() {
-  if (!initDone || refreshing) return;
-  if (document.visibilityState === 'hidden') return;
-  const did = state.did || cachedDID();
-  if (!did || !oauthClient) return;
-  refreshing = true;
-  try {
-    const session = await oauthClient.restore(did);
-    await applySession(session, true);
-  } catch (e) {
-    console.warn('CBDB auth: wake refresh skipped (transient).', e);
-  } finally {
-    refreshing = false;
-  }
-}
-
-// ---- session cache (UI paint + did pointer) ----------------------------
-function cacheSession() {
-  try {
-    localStorage.setItem('cbdb_auth', JSON.stringify({
-      signedIn: state.signedIn, handle: state.handle,
-      displayName: state.displayName, did: state.did, avatar: state.avatar
-    }));
-  } catch {}
-}
-function restoreCache() {
+// Paint instantly from localStorage cache before the async session fetch,
+// so signed-in users never flash as signed-out on page navigation.
+(function restoreCache() {
   try {
     const c = JSON.parse(localStorage.getItem('cbdb_auth') || 'null');
     if (c && c.signedIn) Object.assign(state, c);
   } catch {}
-}
-function cachedDID() {
-  if (state.did) return state.did;
-  try {
-    const c = JSON.parse(localStorage.getItem('cbdb_auth') || 'null');
-    return c && c.did ? c.did : null;
-  } catch { return null; }
-}
-function clearState() {
-  state.signedIn = false; state.handle = null; state.displayName = null; state.did = null; state.avatar = null;
-  try { localStorage.removeItem('cbdb_auth'); } catch {}
-}
-
-async function signIn(handle) {
-  if (!oauthClient) await initPromise;
-  await oauthClient.signIn(handle, {
-    scope: 'atproto transition:generic',
-  });
-}
-
-async function signOut() {
-  try { if (oauthClient && state.did) await oauthClient.revoke(state.did); } catch {}
-  clearState();
+})();
+if (state.signedIn) {
   window.dispatchEvent(new CustomEvent('cbdb-auth', { detail: { ...state } }));
 }
 
-function getAgent() { return agent; }
+// initPromise resolves when the server session check is complete.
+// auth-bridge.js and submit.html can await this before acting.
+let initResolve;
+const initPromise = new Promise(res => { initResolve = res; });
 
-// Ensure a live agent is available before performing an authenticated action.
-// FIXED: awaits the in-flight initPromise so we never bail just because
-// oauthClient hasn't loaded yet — the exact race that caused "session still
-// connecting" on mobile after the callback redirect.
-async function ensureAgent() {
-  // If initAuth() is still running, wait for it — agent may already be set
-  // by the time it resolves (happy path on mobile: init completes before user
-  // fills the form and taps Post).
-  if (initPromise) await initPromise;
-
-  // Agent materialized during initAuth? Done.
-  if (agent) return agent;
-
-  // initAuth() completed but agent is still null (e.g. restore() missed
-  // transiently). Try one explicit restore with the cached DID.
-  const did = state.did || cachedDID();
-  if (!did || !oauthClient) return null;
+async function initAuth() {
   try {
-    const session = await oauthClient.restore(did);
-    await applySession(session, true);
-  } catch (e) {
-    console.warn('CBDB auth: ensureAgent restore failed.', e);
+    const res = await fetch('/auth/session', { credentials: 'include' });
+    if (!res.ok) throw new Error(`auth-session ${res.status}`);
+    const data = await res.json();
+
+    if (data.signedIn) {
+      Object.assign(state, {
+        signedIn:    true,
+        did:         data.did,
+        handle:      data.handle,
+        displayName: data.displayName,
+        avatar:      data.avatar,
+      });
+      // Persist for next page load's optimistic paint
+      try {
+        localStorage.setItem('cbdb_auth', JSON.stringify({
+          signedIn: true, did: state.did, handle: state.handle,
+          displayName: state.displayName, avatar: state.avatar,
+        }));
+      } catch {}
+    } else {
+      // Server says not signed in — clear any stale cache
+      Object.assign(state, { signedIn: false, handle: null, displayName: null, did: null, avatar: null });
+      try { localStorage.removeItem('cbdb_auth'); } catch {}
+    }
+  } catch (err) {
+    console.warn('[cbdb-auth] session check failed (keeping cached state):', err.message);
+    // Network error — don't log out, keep the optimistic cache
   }
-  return agent;
+
+  window.dispatchEvent(new CustomEvent('cbdb-auth', { detail: { ...state } }));
+  initResolve();
 }
 
-// expose to non-module page scripts
-window.cbdbAuth = { initAuth, signIn, signOut, getAgent, ensureAgent, state, refreshOnWake };
+// Sign in: store the return path, then redirect to the server-side auth start.
+// The server handles PKCE + DPoP + the Bluesky redirect entirely.
+function signIn(handle) {
+  const clean = (handle || '').trim().replace(/^@/, '');
+  if (!clean) return;
+  try { sessionStorage.setItem('cbdb_return', location.pathname); } catch {}
+  const params = new URLSearchParams({
+    handle,
+    return: location.pathname,
+  });
+  window.location.href = `/auth/start?${params}`;
+}
 
-// ---- wake / focus listeners --------------------------------------------
+// Sign out: call the server function to clear the httpOnly cookie
+async function signOut() {
+  try {
+    await fetch('/auth/signout', { method: 'POST', credentials: 'include' });
+  } catch {}
+  Object.assign(state, { signedIn: false, handle: null, displayName: null, did: null, avatar: null });
+  try { localStorage.removeItem('cbdb_auth'); } catch {}
+  window.dispatchEvent(new CustomEvent('cbdb-auth', { detail: { ...state } }));
+}
+
+// Proxy an authenticated action through the server.
+// action: 'post' | 'uploadBlob'
+// payload: the action-specific data
+async function proxyAction(action, payload) {
+  // Wait for the session to be confirmed before proxying
+  await initPromise;
+
+  if (!state.signedIn) throw new Error('Not signed in');
+
+  const res = await fetch('/auth/proxy', {
+    method:      'POST',
+    credentials: 'include',
+    headers:     { 'Content-Type': 'application/json' },
+    body:        JSON.stringify({ action, payload }),
+  });
+
+  if (res.status === 401) {
+    // Session expired — sign out and prompt re-auth
+    await signOut();
+    throw new Error('Your session expired. Please sign in again.');
+  }
+
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || `Proxy request failed (${res.status})`);
+  return data;
+}
+
+// Expose to non-module page scripts.
+// getAgent() and ensureAgent() are kept as no-ops for backward compatibility —
+// submit.html uses proxyAction() now for all Bluesky API calls.
+window.cbdbAuth = {
+  initPromise,
+  signIn,
+  signOut,
+  proxyAction,
+  state,
+  // Legacy stubs (submit.html has been updated to use proxyAction)
+  getAgent:    () => null,
+  ensureAgent: async () => null,
+};
+
+// Tab-wake: re-check session when user returns to the tab
 document.addEventListener('visibilitychange', () => {
-  if (document.visibilityState === 'visible') refreshOnWake();
+  if (document.visibilityState === 'visible' && state.signedIn) {
+    // Lightweight re-check — just re-fetch session in the background
+    fetch('/auth/session', { credentials: 'include' })
+      .then(r => r.ok ? r.json() : null)
+      .then(data => {
+        if (data && !data.signedIn) {
+          // Server says expired — update state
+          Object.assign(state, { signedIn: false, handle: null, displayName: null, did: null, avatar: null });
+          try { localStorage.removeItem('cbdb_auth'); } catch {}
+          window.dispatchEvent(new CustomEvent('cbdb-auth', { detail: { ...state } }));
+        }
+      })
+      .catch(() => {}); // Network error — keep current state
+  }
 });
-window.addEventListener('focus', refreshOnWake);
-window.addEventListener('pageshow', (e) => { if (e.persisted) refreshOnWake(); });
 
-// auto-init on load — store the promise so ensureAgent() can await it
-initPromise = initAuth().catch(e => console.error('CBDB auth init failed:', e));
+// Auto-init on load
+initAuth().catch(e => console.error('[cbdb-auth] init failed:', e));
