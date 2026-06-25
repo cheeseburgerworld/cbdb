@@ -6,7 +6,7 @@ import { createHmac, randomBytes, createHash } from 'node:crypto';
 import { SignJWT, importJWK, exportJWK, generateKeyPair } from 'npm:jose';
 
 // ─── Cookie secret ────────────────────────────────────────────────────────────
-const SECRET = process.env.CBDB_COOKIE_SECRET;
+const SECRET = (typeof Deno !== 'undefined' ? Deno.env.get('CBDB_COOKIE_SECRET') : process.env.CBDB_COOKIE_SECRET) || '';
 if (!SECRET) throw new Error('CBDB_COOKIE_SECRET env var is not set');
 
 // ─── Cookie names ─────────────────────────────────────────────────────────────
