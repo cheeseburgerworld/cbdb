@@ -6,34 +6,25 @@
   [headers.values]
     Content-Type = "application/json"
 
-# Auth function routes (clean URLs without /.netlify/functions/)
-[[redirects]]
-  from = "/auth/start"
-  to   = "/.netlify/functions/auth-start"
-  status = 200
+[build]
+  edge_functions = "netlify/functions"
 
-[[redirects]]
-  from = "/auth/session"
-  to   = "/.netlify/functions/auth-session"
-  status = 200
+[[edge_functions]]
+  path = "/auth/start"
+  function = "auth-start"
 
-[[redirects]]
-  from = "/auth/proxy"
-  to   = "/.netlify/functions/auth-proxy"
-  status = 200
+[[edge_functions]]
+  path = "/auth/session"
+  function = "auth-session"
 
-[[redirects]]
-  from = "/auth/signout"
-  to   = "/.netlify/functions/auth-signout"
-  status = 200
+[[edge_functions]]
+  path = "/auth/proxy"
+  function = "auth-proxy"
 
-# OAuth callback: Bluesky redirects here after auth.
-# Handled by the auth-callback function (not a static HTML file anymore).
-[[redirects]]
-  from = "/oauth/callback"
-  to   = "/.netlify/functions/auth-callback"
-  status = 200
+[[edge_functions]]
+  path = "/auth/signout"
+  function = "auth-signout"
 
-[functions]
-  directory = "netlify/functions"
-  node_bundler = "esbuild"
+[[edge_functions]]
+  path = "/oauth/callback"
+  function = "auth-callback"
