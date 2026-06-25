@@ -3,7 +3,7 @@
 // No external deps except 'jose' (for DPoP JWT) and Node built-ins
 
 import { createHmac, randomBytes, createHash } from 'node:crypto';
-import { SignJWT, importJWK, exportJWK, generateKeyPair } from 'npm:jose';
+import { SignJWT, importJWK, exportJWK, generateKeyPair } from 'https://esm.sh/jose@6.0.10';
 
 // ─── Cookie secret ────────────────────────────────────────────────────────────
 const SECRET = (typeof Deno !== 'undefined' ? Deno.env.get('CBDB_COOKIE_SECRET') : process.env.CBDB_COOKIE_SECRET) || '';
