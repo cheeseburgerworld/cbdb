@@ -1,0 +1,121 @@
+/* ============================================================
+   cbdb-theme.css — CB⚡DB design tokens
+   Single source of truth for color and type across all pages.
+   Every value below is verified against WCAG 2.1 SC 1.4.3 (text,
+   AA 4.5:1) and SC 1.4.11 (non-text/UI, 3:1) on the three ground
+   surfaces. Do not hardcode hex in page styles — reference a var.
+   ============================================================ */
+
+:root {
+  /* ---- Ground surfaces (backgrounds, darkest to lightest) ---- */
+  --ground:          #1a1815;  /* page background */
+  --surface:         #211e1a;  /* cards, nav, raised panels */
+  --raised:          #2a2620;  /* nested cards, hover rows */
+  --inset:           #16140f;  /* inputs, wells, tiles */
+  --ground-selected: #1d2417;  /* selected/active state (greenish dark) */
+
+  /* ---- Borders ---- */
+  --border:             #38332b;  /* decorative hairlines, dividers (non-text, exempt) */
+  --border-interactive: #8a7d6a;  /* control outlines: inputs, focusable boxes — 3.7:1 min, meets 1.4.11 */
+
+  /* ---- Text (all AA+ on ground/surface/raised) ---- */
+  --text:       #f5f4f2;  /* primary — 15:1+, AAA */
+  --text-2:     #e4e0d8;  /* secondary body — 11:1+, AAA */
+  --text-3:     #b6b0a4;  /* meta, labels, muted — 7:1+, AA (small) / AAA reserved for larger */
+  --text-on-amber: #15130f;  /* text sitting ON an amber fill (buttons, active tabs) */
+
+  /* ---- Brand ---- */
+  --amber:        #ff9d2e;  /* PRIMARY brand action: buttons, links, headings, accents */
+  --amber-hover:  #ffad4e;  /* amber interactive hover */
+  --bsky:         #3b9af8;  /* Bluesky-specific UI only (handles, BSky actions) */
+  --bsky-hover:   #5aabfa;
+
+  /* ---- Greens — strictly governed ---- */
+  --legendary:    #5bd94b;  /* RESERVED: Legendary rating + logo bolt ONLY. Never a button, border, or accent. */
+  --presence:     #4ade52;  /* online dot + sign-in/agree button base. Deliberately ≠ legendary. */
+  --presence-hover: #5ee866;  /* hover for presence-green buttons only */
+
+  /* ---- Rating tiers (also drive badge fills) ---- */
+  --rate-legendary: #5bd94b;  /* === --legendary; tier 4 */
+  --rate-worth:     #ffc72c;  /* Worth A Trip */
+  --rate-solid:     #e8843c;  /* Solid */
+  --rate-skip-fill: #6b4a2f;  /* Skip It — FILL ONLY. Never text (fails contrast at 2.2:1). */
+  --rate-skip-text: #d4a878;  /* Skip It — the text/label color. 8:1, AAA. */
+
+  /* ---- Accent / apex ---- */
+  --apex:  #ff1f8f;  /* badge apex (hot pink). LARGE/display text only on dark — 4.6:1. Never small body. */
+  --error: #ff5a4e;  /* destructive / error state */
+
+  /* ---- Type ---- */
+  --font-display: 'Bebas Neue', sans-serif;       /* headings, ranks, stats, badge names */
+  --font-body:    'IBM Plex Mono', monospace;     /* everything else */
+
+  /* ---- Focus ring (keyboard accessibility, SC 2.4.7) ---- */
+  --focus-ring: #ff9d2e;
+}
+
+/* ------------------------------------------------------------
+   Base resets + element defaults shared by every page.
+   ------------------------------------------------------------ */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+
+body {
+  background: var(--ground);
+  color: var(--text);
+  font-family: var(--font-body);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: var(--amber); text-decoration: none; }
+a:hover { color: var(--amber-hover); }
+
+/* Visible keyboard focus everywhere — never remove without a replacement (SC 2.4.7). */
+:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* ------------------------------------------------------------
+   Shared nav (identical markup across pages).
+   ------------------------------------------------------------ */
+.nav {
+  position: sticky; top: 0; z-index: 50;
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--surface);
+  border-bottom: 2px solid var(--amber);
+  padding: 12px 20px;
+}
+.nav-left { display: flex; align-items: center; gap: 22px; }
+.logo {
+  font-family: var(--font-display);
+  font-size: 30px; letter-spacing: 2px;
+  color: var(--text); line-height: 1;
+}
+.logo .bolt { color: var(--legendary); }  /* the one sanctioned legendary-green outside a rating */
+.tabs { display: flex; gap: 4px; }
+.tab {
+  font-family: var(--font-body);
+  font-size: 12px; letter-spacing: .5px; text-transform: uppercase;
+  color: var(--text);
+  background: none; border: 1px solid transparent;
+  padding: 8px 14px; cursor: pointer;
+}
+.tab.active {
+  color: var(--text-on-amber);
+  background: var(--amber);
+  font-weight: 600;
+}
+.nav-id { font-size: 12px; color: var(--text-2); display: flex; align-items: center; gap: 8px; cursor: pointer; }
+.nav-id .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--presence); flex-shrink: 0; }
+.nav-id .dot.out { background: var(--text-3); }
+
+/* ------------------------------------------------------------
+   Rating tier helpers (consistent everywhere).
+   ------------------------------------------------------------ */
+.tier-legendary { color: var(--rate-legendary); }
+.tier-worth     { color: var(--rate-worth); }
+.tier-solid     { color: var(--rate-solid); }
+.tier-skip      { color: var(--rate-skip-text); }       /* text */
+.chip-skip      { background: var(--rate-skip-fill); color: var(--rate-skip-text); }  /* fill + readable label */
