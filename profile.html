@@ -90,12 +90,14 @@
   .pf-rv:hover { border-color:var(--amber); background:var(--surface); transform:translateX(2px); }
   .pf-rv.leg { border-color:rgba(91,217,75,0.35); }
   .pf-rv.leg:hover { border-color:var(--legendary); }
-  .pf-rv-chip { font-size:17px; flex-shrink:0; width:42px; text-align:center; font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif; }
+  .pf-rv-date { flex-shrink:0; width:58px; text-align:center; font-size:10px; letter-spacing:0.5px; text-transform:uppercase; color:var(--text-3); line-height:1.35; }
   .pf-rv-body { flex:1; min-width:0; }
   .pf-rv-name { font-size:14px; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .pf-rv-name.legendary { color:var(--legendary); }
   .pf-rv-meta { font-size:11px; color:var(--text-3); margin-top:2px; }
-  .pf-rv-arrow { color:var(--text-3); flex-shrink:0; font-size:13px; transition:color .12s; }
+  .pf-rv-right { display:flex; align-items:center; gap:10px; flex-shrink:0; }
+  .pf-rv-chip { font-size:16px; font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif; }
+  .pf-rv-arrow { color:var(--text-3); font-size:13px; transition:color .12s; }
   .pf-rv:hover .pf-rv-arrow { color:var(--amber); }
   .pf-rv-empty { text-align:center; padding:34px 20px; color:var(--text-3); font-size:13px; line-height:1.7; }
   .pf-rv-empty a { color:var(--amber); text-decoration:none; }
@@ -218,7 +220,7 @@
   const TIER_COLORS = ['var(--rate-skip-fill)','var(--rate-worth)','var(--amber)','var(--apex)'];
   const LABELS = {
     // Mastery of one thing: styles, price habits, honesty.
-    expertise: ['Tried it','Knows it','Expert','Authority'],
+    expertise: ['Rookie','Regular','Seasoned','Expert'],
     // Breadth of ground covered: cities (and Cartographer later).
     range:     ['Local','Traveler','Voyager','Worldly']
   };
@@ -269,7 +271,7 @@
 
     // ---- Big on Value: reviews at $ spots ----
     const bigValue = mine.filter(r=>(r.tier||'')==='$').length;
-    badges.push({ key:'bigvalue', name:'Big on Value', glyph:'🪙',
+    badges.push({ key:'bigvalue', name:'Big on Value', glyph:'🏷️',
       count:bigValue, tier:tierFor(bigValue, LADDERS.count, LABELS.expertise), unit:'$ spots' });
 
     // ---- The Honest: "Skip It" reviews — rewards editorial integrity ----
@@ -362,7 +364,7 @@
 
     // Reviews — paginated at 6, "Show more" reveals the next batch.
     document.getElementById('pfRvNote').textContent = mine.length ? mine.length+(mine.length===1?' review':' reviews') : '';
-    rvShown = 10;            // reset the window on each full render
+    rvShown = PER_PAGE;      // reset the window on each full render
     renderReviews(mine);
   }
 
@@ -375,13 +377,18 @@
     const url = (typeof bskyWebUrl==='function') ? bskyWebUrl(r.bskyUri, r.by) : '';
     const glyphColor = r.rating==='skip' ? 'var(--rate-skip-text)' : rt.color;
     const meta = [r.loc, r.style].filter(Boolean).join(' · ');
+    const dateStr = (typeof shortDate==='function' && r.createdAt) ? shortDate(r.createdAt) : '';
+    const dateHtml = dateStr ? dateStr.replace(' ', '<br>') : '';
     const tag = url ? 'a href="'+url+'" target="_blank" rel="noopener"' : 'div';
     const close = url ? 'a' : 'div';
     return '<'+tag+' class="pf-rv'+(leg?' leg':'')+'">'+
-      '<span class="pf-rv-chip" style="color:'+glyphColor+'">'+rt.glyph+'</span>'+
+      '<div class="pf-rv-date">'+dateHtml+'</div>'+
       '<div class="pf-rv-body"><div class="pf-rv-name'+(leg?' legendary':'')+'">'+r.name+'</div>'+
       '<div class="pf-rv-meta">'+meta+'</div></div>'+
-      (url?'<span class="pf-rv-arrow">↗</span>':'')+
+      '<div class="pf-rv-right">'+
+        '<span class="pf-rv-chip" style="color:'+glyphColor+'">'+rt.glyph+'</span>'+
+        (url?'<span class="pf-rv-arrow">↗</span>':'')+
+      '</div>'+
     '</'+close+'>';
   }
 
