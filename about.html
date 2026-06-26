@@ -10,10 +10,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="cbdb-theme.css">
 <style>
-/* ── CONTRAST TOKENS (Anthropic-style dark, all solid hex) ──
-ground var(--ground) · surface var(--surface) · raised var(--raised) · border var(--border)
-text var(--text) (AAA) · text-2 var(--text-2) (AA) · text-3 var(--text-3) (meta only)
-amber var(--amber) · green var(--presence) · bsky var(--bsky) — accents, not body text */
+/* Color and type tokens are defined in cbdb-theme.css.
+   This block holds page-specific layout only. */
 * { box-sizing:border-box; margin:0; padding:0; }
 html, body { height:100%; }
 body { background:var(--ground); color:var(--text); font-family:'IBM Plex Mono',monospace; line-height:1.6; -webkit-font-smoothing:antialiased; }
@@ -71,7 +69,7 @@ color:var(--text); background:none; border:1px solid transparent; padding:8px 14
 .submit-wrap { max-width:680px; margin:0 auto; padding:34px 20px 90px; }
 h1 { font-family:'Bebas Neue',sans-serif; font-size:42px; letter-spacing:1.5px; color:var(--amber); line-height:1; margin-bottom:8px; }
 .intro { font-size:13px; color:var(--text-2); margin-bottom:30px; }
-/* Signed-out gate — crisp, never dimmed */
+/* Signed-out gate */
 .gate { display:flex; flex-direction:column; align-items:center; text-align:center; gap:18px;
 border:1px solid var(--border); background:var(--surface); padding:48px 30px; }
 .gate-title { font-family:'Bebas Neue',sans-serif; font-size:28px; letter-spacing:1px; color:var(--amber); }
@@ -123,7 +121,7 @@ input[type=file]::file-selector-button { background:var(--border); color:var(--t
 .preview.show { display:block; }
 .preview-tag { display:flex; justify-content:space-between; align-items:center; font-size:10px; letter-spacing:1px; text-transform:uppercase; color:var(--bsky); margin-bottom:10px; }
 .cc { color:var(--text-3); } .cc.over { color:var(--error); font-weight:600; }
-/* The post card — solid dark, full-strength text, no haze */
+/* Bluesky post preview card */
 .bsky-card { background:var(--inset); border:1px solid var(--border); border-radius:8px; padding:14px 16px; }
 .bsky-top { display:flex; align-items:center; gap:9px; margin-bottom:10px; }
 .bsky-av { width:34px; height:34px; border-radius:50%; background:var(--raised); border:1px solid var(--bsky); display:flex; align-items:center; justify-content:center; font-family:'Bebas Neue',sans-serif; font-size:17px; color:var(--bsky); }
@@ -294,35 +292,13 @@ a.tab { text-decoration:none; display:inline-block; }
 <h1>About CBDB</h1>
 <div class="doc-section">
 <div class="doc-head">The idea</div>
-<p class="doc-text">A record of the world's burgers, written by people who actually ate them. Find what's worth your time near you — and places worth seeking out when you're somewhere new.</p>
 <p class="doc-pull">No ads. No algorithms. Just burgers.</p>
+<p class="doc-text">Every other review site sells your attention and rents you your own words. Restaurants pay to climb or hide bad ratings. Ratings inflate until five stars mean nothing. They aren't built as a tool to help you — they're feeds built to collect your data and sell you ads you're more likely to buy.</p>
 </div>
 <div class="doc-section">
 <div class="doc-head">The inverse of every review site</div>
-<p class="doc-text">The review-site model sells your attention and rents you your own words. Restaurants pay to climb. Ratings inflate until five stars mean nothing. The feed isn't built for you — it's built to keep you scrolling.</p>
-<p class="doc-pull">We flipped every part of that.</p>
-<p class="doc-text">You own your words. Nobody buys their way up. A rating means something because the standard never bends. There's no feed to game — just a database that answers one question: where's a great burger?</p>
-</div>
-<div class="doc-section">
-<div class="doc-head">Built on the open network</div>
-<p class="doc-pull">You write. We point. We never own.</p>
-<p class="doc-text">Your reviews aren't stored in our database and rented back to you. They live in <b>your</b> account on the open network — we just keep an index that points at them. Delete one and it's gone everywhere; we have nothing to hold onto.</p>
-<p class="doc-text">We can't profile you, because we don't track you. There's no ad tech here, no behavioral graph, no data to sell — not as a promise, but because the architecture gives us no place to put it. <b>Don't trust our privacy policy. Read our code.</b></p>
-<p class="doc-text">Want to review without it touching your real name? Use a handle that's just for burgers. One person can hold as many identities as they like, all portable, none linked. We never connect them — we have no way to.</p>
-<details class="doc-nerd">
-<summary>The technical part — for the curious</summary>
-<p class="doc-text">Every review is a record on the <span class="mono-tag">AT Protocol</span> — the open network behind Bluesky, called the <span class="mono-tag">Atmosphere</span>. It's signed by your identity and lives in your own data repository, readable by any app on the network. We don't host your words. We index them and point back at the source.</p>
-<p class="doc-text">These records are <b>public by design</b> — that's what makes them portable and verifiable, not private. The privacy guarantee here isn't secrecy; it's the absence of surveillance. We see the same public data any other client sees, and nothing more. No login is required to read; no tracking happens when you do.</p>
-<p class="doc-text">Your identity is a <span class="mono-tag">DID</span> — a stable identifier that stays yours even when your handle changes. The handle is the name people read; the DID is what actually persists across the entire Atmosphere. One person can own many DIDs, so a pseudonymous review is just a second identity — fully supported, never cross-linked by us.</p>
-<p class="doc-text doc-fine">Today a review is cross-posted to your Bluesky profile. Storing each review as its own record type (<span class="mono-tag">world.cheeseburger.review</span>) in your <span class="mono-tag">PDS</span> — independent of any single app, with the cross-post made optional — is on the near-term roadmap.</p>
-<p class="doc-kicker">This is the part most sites can't claim. It isn't a privacy policy you have to trust — <b>it's an architecture you can verify.</b> The code is open on <a href="https://github.com/cheeseburgerworld/cbdb" target="_blank" rel="noopener" class="mono-tag">GitHub</a>, so you can see exactly what we do with your reviews — index them, nothing more.</p>
-</details>
-</div>
-<div class="doc-section">
-<div class="doc-head">What we promise</div>
-<div class="principle"><span class="pn">01</span><div><b>You own your reviews.</b> They live on your Bluesky profile. Only you can delete your content.</div></div>
-<div class="principle"><span class="pn">02</span><div><b>No ads. No tracking. No data brokers.</b> You're not the product here — there is no product. There's just a database. No restaurant can pay to be listed, boosted, or buried.</div></div>
-<div class="principle"><span class="pn">03</span><div><b>Honest ratings.</b> A Skip It is worth as much as a Legendary. The truth is the value.</div></div>
+<p class="doc-text">Here, you own your words. Nobody buys their way up. We're not participating in the online advertising economy.</p>
+<p class="doc-text">This is an official record of the world's burgers, written by people who actually ate them. Find what's worth your time near you — and places worth seeking out when you're somewhere new.</p>
 </div>
 <div class="doc-section">
 <div class="doc-head">Different by design</div>
@@ -344,12 +320,33 @@ a.tab { text-decoration:none; display:inline-block; }
 </div>
 <div class="vs">
 <div class="vs-them">Trackers follow you to sell what you browse.</div>
-<div class="vs-us">No trackers. We don't sell your data — we don't collect it.</div>
+<div class="vs-us">No trackers. We don't sell your data — we don't collect it. Never will.</div>
 </div>
 <div class="vs">
 <div class="vs-them">A feed built to keep you scrolling.</div>
 <div class="vs-us">A database built to answer one question: where's a great burger?</div>
 </div>
+</div>
+<div class="doc-section">
+<div class="doc-head">Built on the open network</div>
+<p class="doc-pull">You write. We point, we don't own.</p>
+<p class="doc-text">Your reviews aren't locked in our database and rented back to you. Each one is posted to your own account on the open network, and all we keep is an index that points back at it. Delete it at the source and the index has nothing left to show — we have nothing to hold onto.</p>
+<p class="doc-text">We don't profile or track you. There's no ad tech here, no behavioral graph, no data to sell — not just as a promise, but because the architecture gives us no place to put it. By design. <b>Don't trust our privacy policy. Read our code.</b></p>
+<p class="doc-text">Want to review without it touching your real name? Use a handle that's just for burgers. One person can hold as many identities as they like, all portable, none linked. We never connect them — we just keep a record of the world's cheeseburgers, as a service to humanity.</p>
+<details class="doc-nerd">
+<summary>The technical part — for the curious</summary>
+<p class="doc-text">Every review is a record on the <span class="mono-tag">AT Protocol</span> — the open network behind Bluesky, called the <span class="mono-tag">Atmosphere</span>. It's signed by your identity and lives in your own data repository, readable by any app on the network. We don't host your words. We index them and point back at the source.</p>
+<p class="doc-text">These records are <b>public by design</b> — that's what makes them portable and verifiable, not private. The privacy guarantee here isn't secrecy; it's the absence of surveillance. We see the same public data any other client sees, and nothing more. No login is required to read; no tracking happens when you do.</p>
+<p class="doc-text">Your identity is a <span class="mono-tag">DID</span> — a stable identifier that stays yours even when your handle changes. The handle is the name people read; the DID is what actually persists across the entire Atmosphere. One person can own many DIDs, so a pseudonymous review is just a second identity — fully supported, never cross-linked by us.</p>
+<p class="doc-text doc-fine">Today a review is cross-posted to your Bluesky profile. Storing each review as its own record type (<span class="mono-tag">world.cheeseburger.review</span>) in your <span class="mono-tag">PDS</span> — independent of any single app, with the cross-post made optional — is on the near-term roadmap.</p>
+<p class="doc-kicker">This is the part most sites can't claim. It isn't a privacy policy you have to trust — <b>it's an architecture you can verify.</b> The code is open on <a href="https://github.com/cheeseburgerworld/cbdb" target="_blank" rel="noopener" class="mono-tag">GitHub</a>, so you can see exactly what we do with your reviews — index them, nothing more.</p>
+</details>
+</div>
+<div class="doc-section">
+<div class="doc-head">What we promise</div>
+<div class="principle"><span class="pn">01</span><div><b>You own your reviews.</b> They live on your own account, not ours. Only you can delete your content.</div></div>
+<div class="principle"><span class="pn">02</span><div><b>No ads. No tracking. No data brokers.</b> You're not the product here — just a database. No restaurant can pay to be listed, boosted, or buried.</div></div>
+<div class="principle"><span class="pn">03</span><div><b>Honest ratings.</b> A Skip It is worth as much as a Legendary. The truth is the value.</div></div>
 </div>
 <div class="doc-section">
 <div class="doc-head">How it works</div>
