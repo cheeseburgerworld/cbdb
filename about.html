@@ -298,19 +298,23 @@ a.tab { text-decoration:none; display:inline-block; }
 <p class="doc-pull">No ads. No algorithms. Just burgers.</p>
 </div>
 <div class="doc-section">
-<div class="doc-head">How it works</div>
-<p class="doc-text">Sign in, fill out a short form, add a photo of the burger you ate. A review has two parts: the build — what's on it, how it's made — and your take on the value and the visit. It posts to your Bluesky profile and shows up here, on the map and in the database.</p>
-<p class="doc-text">The scale has four levels and every one counts. It works like the Michelin guide: the standard never bends to commercial pressure, so the rating means something. <b>⚡ Legendary</b> is rare by design — overuse kills it. A <b>ㄨ Skip It</b> is just as helpful. A list that only surfaces praise isn't a guide. It's a marketing channel.</p>
+<div class="doc-head">The inverse of every review site</div>
+<p class="doc-text">The review-site model sells your attention and rents you your own words. Restaurants pay to climb. Ratings inflate until five stars mean nothing. The feed isn't built for you — it's built to keep you scrolling.</p>
+<p class="doc-pull">We flipped every part of that.</p>
+<p class="doc-text">You own your words. Nobody buys their way up. A rating means something because the standard never bends. There's no feed to game — just a database that answers one question: where's a great burger?</p>
 </div>
 <div class="doc-section">
 <div class="doc-head">Built on the open network</div>
-<p class="doc-pull">Your reviews aren't trapped here. They live on the open social web.</p>
-<p class="doc-text">That's the whole thing in one line: <b>you write, we index.</b> Your voice is portable, permanent, and yours alone — not locked in our platform.</p>
+<p class="doc-pull">You write. We point. We never own.</p>
+<p class="doc-text">Your reviews aren't stored in our database and rented back to you. They live in <b>your</b> account on the open network — we just keep an index that points at them. Delete one and it's gone everywhere; we have nothing to hold onto.</p>
+<p class="doc-text">We can't profile you, because we don't track you. There's no ad tech here, no behavioral graph, no data to sell — not as a promise, but because the architecture gives us no place to put it. <b>Don't trust our privacy policy. Read our code.</b></p>
+<p class="doc-text">Want to review without it touching your real name? Use a handle that's just for burgers. One person can hold as many identities as they like, all portable, none linked. We never connect them — we have no way to.</p>
 <details class="doc-nerd">
-<summary>The technical part - for the curious</summary>
-<p class="doc-text">Every review is a real record on <span class="mono-tag">AT Protocol</span> — the open network behind Bluesky, known as the <span class="mono-tag">Atmosphere</span>. It's signed by your identity, stored on your account, and readable by any app on the network. We don't host your words, we just point at them.</p>
-<p class="doc-text">Your identity is a <span class="mono-tag">DID</span> — a stable identifier that stays yours even when your handle changes. The handle is the name people read; the DID is what actually follows you across the entire Atmosphere. One identity, every app, no lock-in.</p>
-<p class="doc-text doc-fine">Today a review is cross-posted to your Bluesky profile. Storing each review as its own record type in your <span class="mono-tag">PDS</span> — independent of any single app — is on the near-term roadmap.</p>
+<summary>The technical part — for the curious</summary>
+<p class="doc-text">Every review is a record on the <span class="mono-tag">AT Protocol</span> — the open network behind Bluesky, called the <span class="mono-tag">Atmosphere</span>. It's signed by your identity and lives in your own data repository, readable by any app on the network. We don't host your words. We index them and point back at the source.</p>
+<p class="doc-text">These records are <b>public by design</b> — that's what makes them portable and verifiable, not private. The privacy guarantee here isn't secrecy; it's the absence of surveillance. We see the same public data any other client sees, and nothing more. No login is required to read; no tracking happens when you do.</p>
+<p class="doc-text">Your identity is a <span class="mono-tag">DID</span> — a stable identifier that stays yours even when your handle changes. The handle is the name people read; the DID is what actually persists across the entire Atmosphere. One person can own many DIDs, so a pseudonymous review is just a second identity — fully supported, never cross-linked by us.</p>
+<p class="doc-text doc-fine">Today a review is cross-posted to your Bluesky profile. Storing each review as its own record type (<span class="mono-tag">world.cheeseburger.review</span>) in your <span class="mono-tag">PDS</span> — independent of any single app, with the cross-post made optional — is on the near-term roadmap.</p>
 <p class="doc-kicker">This is the part most sites can't claim. It isn't a privacy policy you have to trust — <b>it's an architecture you can verify.</b> The code is open on <a href="https://github.com/cheeseburgerworld/cbdb" target="_blank" rel="noopener" class="mono-tag">GitHub</a>, so you can see exactly what we do with your reviews — index them, nothing more.</p>
 </details>
 </div>
@@ -323,33 +327,34 @@ a.tab { text-decoration:none; display:inline-block; }
 <div class="doc-section">
 <div class="doc-head">Different by design</div>
 <div class="vs">
-<div class="vs-them">Platforms own your reviews. They can delete them.</div>
-<div class="vs-us">Your reviews live on your Bluesky profile. Only you can delete them.</div>
+<div class="vs-them">They own your reviews. They can delete them.</div>
+<div class="vs-us">You own yours. Only you can delete them.</div>
 </div>
 <div class="vs">
-<div class="vs-them">Restaurants pay to bury bad reviews or boost their listing.</div>
-<div class="vs-us">No paid placement. No suppression. Every rating is public.</div>
+<div class="vs-them">Pay to bury the bad, boost the rest.</div>
+<div class="vs-us">No paid placement. No suppression. Every rating public.</div>
 </div>
 <div class="vs">
-<div class="vs-them">Anyone posts, ratings inflate, five stars means nothing.</div>
-<div class="vs-us">Real people, calibrated ratings. Legendary means legendary.</div>
+<div class="vs-them">Anyone posts, ratings inflate, five stars mean nothing.</div>
+<div class="vs-us">Calibrated by real people. Legendary means legendary.</div>
 </div>
 <div class="vs">
-<div class="vs-them">An app-install wall just to read a review.</div>
-<div class="vs-us">Read everything in your browser. No app, no login to look.</div>
+<div class="vs-them">Install the app just to read one review.</div>
+<div class="vs-us">Read everything in your browser. No app, no login.</div>
 </div>
 <div class="vs">
-<div class="vs-them">Trackers follow you around to sell what you browse.</div>
+<div class="vs-them">Trackers follow you to sell what you browse.</div>
 <div class="vs-us">No trackers. We don't sell your data — we don't collect it.</div>
 </div>
 <div class="vs">
-<div class="vs-them">Built to feed the online ad machine.</div>
-<div class="vs-us">We opted out of the ad ecosystem. Entirely.</div>
+<div class="vs-them">A feed built to keep you scrolling.</div>
+<div class="vs-us">A database built to answer one question: where's a great burger?</div>
 </div>
-<div class="vs">
-<div class="vs-them">A feed tuned to keep you scrolling — not for your benefit.</div>
-<div class="vs-us">A database built to answer one question: where can I get a great burger?</div>
 </div>
+<div class="doc-section">
+<div class="doc-head">How it works</div>
+<p class="doc-text">Sign in, fill out a short form, add a photo of the burger you ate. A review has two parts: the build — what's on it, how it's made — and your take on the value and the visit. It shows up here, on the map and in the database.</p>
+<p class="doc-text">The scale has four levels and every one counts. It works like the Michelin guide: the standard never bends to commercial pressure, so the rating means something. <b>⚡ Legendary</b> is rare by design — overuse kills it. A <b>ㄨ Skip It</b> is just as helpful. A list that only surfaces praise isn't a guide. It's a marketing channel.</p>
 </div>
 </div>
 </div>
