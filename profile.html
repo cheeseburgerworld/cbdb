@@ -8,22 +8,23 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="cbdb-theme.css">
 <style>
   * { box-sizing:border-box; margin:0; padding:0; }
   html, body { height:100%; }
-  body { background:#1a1815; color:#F5F4F2; font-family:'IBM Plex Mono',monospace; line-height:1.6; -webkit-font-smoothing:antialiased; }
+  body { background:var(--ground); color:var(--text); font-family:'IBM Plex Mono',monospace; line-height:1.6; -webkit-font-smoothing:antialiased; }
 
   /* ── Shared nav (identical to every page) ── */
-  .nav { position:sticky; top:0; z-index:50; display:flex; align-items:center; justify-content:space-between; background:#211e1a; border-bottom:2px solid #FF9D2E; padding:12px 20px; }
+  .nav { position:sticky; top:0; z-index:50; display:flex; align-items:center; justify-content:space-between; background:var(--surface); border-bottom:2px solid var(--amber); padding:12px 20px; }
   .nav-left { display:flex; align-items:center; gap:22px; }
-  .logo { font-family:'Bebas Neue',sans-serif; font-size:30px; letter-spacing:2px; color:#F5F4F2; line-height:1; }
-  .logo .bolt { color:#4ADE52; }
+  .logo { font-family:'Bebas Neue',sans-serif; font-size:30px; letter-spacing:2px; color:var(--text); line-height:1; }
+  .logo .bolt { color:var(--legendary); }
   .tabs { display:flex; gap:4px; }
-  .tab { font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:0.5px; text-transform:uppercase; color:#F5F4F2; background:none; border:1px solid transparent; padding:8px 14px; cursor:pointer; }
-  .tab.active { color:#15130f; background:#FF9D2E; font-weight:600; }
-  .nav-id { font-size:12px; color:#E4E0D8; display:flex; align-items:center; gap:8px; cursor:pointer; }
-  .nav-id .dot { width:8px; height:8px; border-radius:50%; background:#4ADE52; flex-shrink:0; }
-  .nav-id .dot.out { background:#B6B0A4; }
+  .tab { font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:0.5px; text-transform:uppercase; color:var(--text); background:none; border:1px solid transparent; padding:8px 14px; cursor:pointer; }
+  .tab.active { color:var(--inset); background:var(--amber); font-weight:600; }
+  .nav-id { font-size:12px; color:var(--text-2); display:flex; align-items:center; gap:8px; cursor:pointer; }
+  .nav-id .dot { width:8px; height:8px; border-radius:50%; background:var(--presence); flex-shrink:0; }
+  .nav-id .dot.out { background:var(--text-3); }
   a.logo { text-decoration:none; }
   a.tab { text-decoration:none; display:inline-block; }
 
@@ -33,10 +34,10 @@
   /* Signed-out gate */
   .pf-gate { display:none; text-align:center; padding:80px 20px; }
   .pf-gate.show { display:block; }
-  .pf-gate-title { font-family:'Bebas Neue',sans-serif; font-size:42px; letter-spacing:1.5px; color:#FF9D2E; line-height:1; margin-bottom:14px; }
-  .pf-gate-text { font-size:15px; color:#E4E0D8; line-height:1.7; max-width:440px; margin:0 auto 26px; }
-  .pf-gate-cta { display:inline-block; background:#FF9D2E; color:#15130f; font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:14px; letter-spacing:0.5px; text-decoration:none; padding:13px 24px; cursor:pointer; border:none; }
-  .pf-gate-cta:hover { background:#ffad4e; }
+  .pf-gate-title { font-family:'Bebas Neue',sans-serif; font-size:42px; letter-spacing:1.5px; color:var(--amber); line-height:1; margin-bottom:14px; }
+  .pf-gate-text { font-size:15px; color:var(--text-2); line-height:1.7; max-width:440px; margin:0 auto 26px; }
+  .pf-gate-cta { display:inline-block; background:var(--amber); color:var(--inset); font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:14px; letter-spacing:0.5px; text-decoration:none; padding:13px 24px; cursor:pointer; border:none; }
+  .pf-gate-cta:hover { background:var(--amber-hover); }
 
   /* Body (signed in) */
   .pf-body { display:none; }
@@ -44,73 +45,73 @@
 
   /* Identity header */
   .pf-id { display:flex; align-items:center; gap:18px; margin-bottom:30px; }
-  .pf-avatar { width:72px; height:72px; border-radius:50%; flex-shrink:0; background:#2a2620; border:1px solid #38332b; object-fit:cover; display:flex; align-items:center; justify-content:center; font-family:'Bebas Neue',sans-serif; font-size:34px; color:#FF9D2E; }
+  .pf-avatar { width:72px; height:72px; border-radius:50%; flex-shrink:0; background:var(--raised); border:1px solid var(--border); object-fit:cover; display:flex; align-items:center; justify-content:center; font-family:'Bebas Neue',sans-serif; font-size:34px; color:var(--amber); }
   .pf-id-text { min-width:0; }
-  .pf-name { font-family:'Bebas Neue',sans-serif; font-size:40px; letter-spacing:0.5px; color:#F5F4F2; line-height:1; }
-  .pf-handle { font-size:13px; color:#3B9AF8; margin-top:5px; word-break:break-all; }
-  .pf-rank { display:inline-flex; align-items:center; gap:8px; margin-top:9px; font-size:12px; letter-spacing:1px; text-transform:uppercase; color:#B6B0A4; text-decoration:none; transition:color .12s; }
-  .pf-rank:hover { color:#E4E0D8; }
-  .pf-rank:hover b { color:#ffad4e; }
+  .pf-name { font-family:'Bebas Neue',sans-serif; font-size:40px; letter-spacing:0.5px; color:var(--text); line-height:1; }
+  .pf-handle { font-size:13px; color:var(--bsky); margin-top:5px; word-break:break-all; }
+  .pf-rank { display:inline-flex; align-items:center; gap:8px; margin-top:9px; font-size:12px; letter-spacing:1px; text-transform:uppercase; color:var(--text-3); text-decoration:none; transition:color .12s; }
+  .pf-rank:hover { color:var(--text-2); }
+  .pf-rank:hover b { color:var(--amber-hover); }
   .pf-rank-emoji { font-size:15px; font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif; }
-  .pf-rank b { color:#FF9D2E; font-weight:400; }
+  .pf-rank b { color:var(--amber); font-weight:400; }
 
   /* Stats */
   .pf-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:42px; }
-  .pf-stat { background:#211e1a; border:1px solid #38332b; padding:18px 10px; text-align:center; }
-  .pf-num { font-family:'Bebas Neue',sans-serif; font-size:40px; line-height:1; color:#F5F4F2; }
-  .pf-lab { font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:#B6B0A4; margin-top:7px; }
+  .pf-stat { background:var(--surface); border:1px solid var(--border); padding:18px 10px; text-align:center; }
+  .pf-num { font-family:'Bebas Neue',sans-serif; font-size:40px; line-height:1; color:var(--text); }
+  .pf-lab { font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-3); margin-top:7px; }
 
   /* Section heading shared */
   .pf-sec { margin-bottom:42px; }
   .pf-sec-head { display:flex; align-items:baseline; justify-content:space-between; margin-bottom:18px; }
-  .pf-eyebrow { font-family:'Bebas Neue',sans-serif; font-size:26px; letter-spacing:1.5px; color:#FF9D2E; }
-  .pf-sec-note { font-size:11px; letter-spacing:1px; text-transform:uppercase; color:#B6B0A4; }
+  .pf-eyebrow { font-family:'Bebas Neue',sans-serif; font-size:26px; letter-spacing:1.5px; color:var(--amber); }
+  .pf-sec-note { font-size:11px; letter-spacing:1px; text-transform:uppercase; color:var(--text-3); }
 
   /* ── BADGE CASE (signature element) ── */
   .pf-badges { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:12px; }
-  .badge { background:#211e1a; border:1px solid #38332b; padding:18px 16px; display:flex; flex-direction:column; align-items:center; text-align:center; position:relative; }
+  .badge { background:var(--surface); border:1px solid var(--border); padding:18px 16px; display:flex; flex-direction:column; align-items:center; text-align:center; position:relative; }
   /* The frame: a top accent bar whose color = current tier. */
-  .badge::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:var(--tier,#38332b); }
+  .badge::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:var(--tier,var(--border)); }
   .badge.locked { opacity:0.55; }
-  .badge-tile { width:56px; height:56px; border-radius:10px; background:#16140f; border:2px solid var(--tier,#38332b); display:flex; align-items:center; justify-content:center; font-size:30px; line-height:1; margin-bottom:12px; font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif; }
-  .badge.locked .badge-tile { filter:grayscale(1) brightness(0.7); border-color:#38332b; }
-  .badge-name { font-family:'Bebas Neue',sans-serif; font-size:18px; letter-spacing:0.8px; color:#F5F4F2; line-height:1.1; }
-  .badge-tier { font-size:10px; letter-spacing:1.5px; text-transform:uppercase; margin-top:5px; color:var(--tier,#B6B0A4); font-weight:600; }
-  .badge.locked .badge-tier { color:#B6B0A4; }
-  .badge-prog { font-size:11px; color:#B6B0A4; margin-top:8px; line-height:1.4; }
-  .badge-count { color:#F5F4F2; }
+  .badge-tile { width:56px; height:56px; border-radius:10px; background:var(--inset); border:2px solid var(--tier,var(--border)); display:flex; align-items:center; justify-content:center; font-size:30px; line-height:1; margin-bottom:12px; font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif; }
+  .badge.locked .badge-tile { filter:grayscale(1) brightness(0.7); border-color:var(--border); }
+  .badge-name { font-family:'Bebas Neue',sans-serif; font-size:18px; letter-spacing:0.8px; color:var(--text); line-height:1.1; }
+  .badge-tier { font-size:10px; letter-spacing:1.5px; text-transform:uppercase; margin-top:5px; color:var(--tier,var(--text-3)); font-weight:600; }
+  .badge.locked .badge-tier { color:var(--text-3); }
+  .badge-prog { font-size:11px; color:var(--text-3); margin-top:8px; line-height:1.4; }
+  .badge-count { color:var(--text); }
 
-  .pf-badges-empty { grid-column:1/-1; text-align:center; padding:30px 20px; color:#B6B0A4; font-size:13px; line-height:1.6; }
-  .pf-badge-divider { grid-column:1/-1; font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:#6B6258; margin:14px 0 2px; padding-top:14px; border-top:1px solid #2a2620; }
+  .pf-badges-empty { grid-column:1/-1; text-align:center; padding:30px 20px; color:var(--text-3); font-size:13px; line-height:1.6; }
+  .pf-badge-divider { grid-column:1/-1; font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:var(--border-interactive); margin:14px 0 2px; padding-top:14px; border-top:1px solid var(--raised); }
 
   /* ── Review list (mirrors drawer ph-item) ── */
   .pf-reviews { display:flex; flex-direction:column; gap:8px; }
-  .pf-rv { display:flex; align-items:center; gap:13px; padding:14px 15px; background:#211e1a; border:1px solid #2a2620; border-radius:9px; cursor:pointer; transition:border-color .12s, background .12s, transform .12s; text-decoration:none; }
-  .pf-rv:hover { border-color:#FF9D2E; background:#1b1813; transform:translateX(2px); }
+  .pf-rv { display:flex; align-items:center; gap:13px; padding:14px 15px; background:var(--surface); border:1px solid var(--raised); border-radius:9px; cursor:pointer; transition:border-color .12s, background .12s, transform .12s; text-decoration:none; }
+  .pf-rv:hover { border-color:var(--amber); background:var(--surface); transform:translateX(2px); }
   .pf-rv.leg { border-color:rgba(91,217,75,0.35); }
-  .pf-rv.leg:hover { border-color:#5BD94B; }
+  .pf-rv.leg:hover { border-color:var(--legendary); }
   .pf-rv-chip { font-size:17px; flex-shrink:0; width:42px; text-align:center; font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif; }
   .pf-rv-body { flex:1; min-width:0; }
-  .pf-rv-name { font-size:14px; color:#F5F4F2; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .pf-rv-name.legendary { color:#5BD94B; }
-  .pf-rv-meta { font-size:11px; color:#B6B0A4; margin-top:2px; }
-  .pf-rv-arrow { color:#B6B0A4; flex-shrink:0; font-size:13px; transition:color .12s; }
-  .pf-rv:hover .pf-rv-arrow { color:#FF9D2E; }
-  .pf-rv-empty { text-align:center; padding:34px 20px; color:#B6B0A4; font-size:13px; line-height:1.7; }
-  .pf-rv-empty a { color:#FF9D2E; text-decoration:none; }
-  .pf-more { width:100%; margin-top:4px; background:none; border:1px solid #38332b; color:#E4E0D8; font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:0.5px; padding:12px; cursor:pointer; transition:border-color .12s, color .12s; }
-  .pf-more:hover { border-color:#FF9D2E; color:#FF9D2E; }
+  .pf-rv-name { font-size:14px; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .pf-rv-name.legendary { color:var(--legendary); }
+  .pf-rv-meta { font-size:11px; color:var(--text-3); margin-top:2px; }
+  .pf-rv-arrow { color:var(--text-3); flex-shrink:0; font-size:13px; transition:color .12s; }
+  .pf-rv:hover .pf-rv-arrow { color:var(--amber); }
+  .pf-rv-empty { text-align:center; padding:34px 20px; color:var(--text-3); font-size:13px; line-height:1.7; }
+  .pf-rv-empty a { color:var(--amber); text-decoration:none; }
+  .pf-more { width:100%; margin-top:4px; background:none; border:1px solid var(--border); color:var(--text-2); font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:0.5px; padding:12px; cursor:pointer; transition:border-color .12s, color .12s; }
+  .pf-more:hover { border-color:var(--amber); color:var(--amber); }
 
   .pf-signout { margin-top:10px; text-align:center; }
-  .signout-link { background:none; border:1px solid #38332b; color:#B6B0A4; font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:0.5px; padding:9px 18px; cursor:pointer; }
-  .signout-link:hover { border-color:#FF5A4E; color:#FF5A4E; }
+  .signout-link { background:none; border:1px solid var(--border); color:var(--text-3); font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:0.5px; padding:9px 18px; cursor:pointer; }
+  .signout-link:hover { border-color:var(--error); color:var(--error); }
 
-  .site-footer { border-top:1px solid #38332b; background:#211e1a; margin-top:40px; padding:22px 20px; }
+  .site-footer { border-top:1px solid var(--border); background:var(--surface); margin-top:40px; padding:22px 20px; }
   .footer-inner { max-width:1100px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; }
   .footer-links { display:flex; align-items:center; gap:20px; flex-wrap:wrap; }
-  .footer-links a { font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:0.5px; color:#E4E0D8; text-decoration:none; }
-  .footer-links a:hover { color:#FF9D2E; }
-  .footer-copy { font-size:11px; color:#B6B0A4; }
+  .footer-links a { font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:0.5px; color:var(--text-2); text-decoration:none; }
+  .footer-links a:hover { color:var(--amber); }
+  .footer-copy { font-size:11px; color:var(--text-3); }
 
   @media (max-width:760px) {
     .nav { gap:12px; }
@@ -213,8 +214,8 @@
   // Tier colors climb brown -> yellow -> amber -> pink (universal "how rare").
   // The LABELS come in two flavors so the words fit what each badge measures —
   // depth (expertise) vs. reach (range) — without ever colliding with the
-  // rating words. Green (#5BD94B) stays reserved for the Legendary RATING.
-  const TIER_COLORS = ['#6B4A2F','#FFC72C','#FF9D2E','#FF1F8F'];
+  // rating words. Green (var(--legendary)) stays reserved for the Legendary RATING.
+  const TIER_COLORS = ['var(--rate-skip-fill)','var(--rate-worth)','var(--amber)','var(--apex)'];
   const LABELS = {
     // Mastery of one thing: styles, price habits, honesty.
     expertise: ['Tried it','Knows it','Expert','Authority'],
@@ -299,7 +300,7 @@
 
   function renderBadge(b){
     const earned = !!b.tier;
-    const tierColor = earned ? b.tier.color : '#38332b';
+    const tierColor = earned ? b.tier.color : 'var(--border)';
     const tierLabel = earned ? b.tier.label : 'Locked';
     // Single achievements (Burger Explorer) show "N / target styles".
     // Tiered badges just show the bare count + unit — no next-threshold hint.
@@ -369,10 +370,10 @@
   let rvShown = PER_PAGE;
 
   function reviewRow(r){
-    const rt = RATING[r.rating] || { glyph:'•', color:'#B6B0A4' };
+    const rt = RATING[r.rating] || { glyph:'•', color:'var(--text-3)' };
     const leg = r.legendaryCanonical === true;
     const url = (typeof bskyWebUrl==='function') ? bskyWebUrl(r.bskyUri, r.by) : '';
-    const glyphColor = r.rating==='skip' ? '#D4A878' : rt.color;
+    const glyphColor = r.rating==='skip' ? 'var(--rate-skip-text)' : rt.color;
     const meta = [r.loc, r.style].filter(Boolean).join(' · ');
     const tag = url ? 'a href="'+url+'" target="_blank" rel="noopener"' : 'div';
     const close = url ? 'a' : 'div';
