@@ -148,7 +148,7 @@
   <!-- Signed-out gate -->
   <div class="pf-gate" id="pfGate">
     <div class="pf-gate-title">Your profile</div>
-    <p class="pf-gate-text">Sign in with Bluesky to see your stats, your badge case, and every review you've put on the board.</p>
+    <p class="pf-gate-text">Sign in with Bluesky to see your stats, your badge case, and every review you've submitted.</p>
     <button class="pf-gate-cta" onclick="cbdbSignInPrompt()">Sign in →</button>
   </div>
 
@@ -360,13 +360,13 @@
       bWrap.innerHTML = html;
     }
 
-    // Reviews — paginated at 10, "Show more" reveals the next batch.
+    // Reviews — paginated at 6, "Show more" reveals the next batch.
     document.getElementById('pfRvNote').textContent = mine.length ? mine.length+(mine.length===1?' review':' reviews') : '';
     rvShown = 10;            // reset the window on each full render
     renderReviews(mine);
   }
 
-  const PER_PAGE = 10;
+  const PER_PAGE = 6;
   let rvShown = PER_PAGE;
 
   function reviewRow(r){
