@@ -8,67 +8,68 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="cbdb-theme.css">
 <style>
   * { box-sizing:border-box; margin:0; padding:0; }
   html, body { height:100%; }
-  body { background:#1a1815; color:#F5F4F2; font-family:'IBM Plex Mono',monospace; line-height:1.6; -webkit-font-smoothing:antialiased; }
-  .nav { position:sticky; top:0; z-index:50; display:flex; align-items:center; justify-content:space-between; background:#211e1a; border-bottom:2px solid #FF9D2E; padding:12px 20px; }
+  body { background:var(--ground); color:var(--text); font-family:'IBM Plex Mono',monospace; line-height:1.6; -webkit-font-smoothing:antialiased; }
+  .nav { position:sticky; top:0; z-index:50; display:flex; align-items:center; justify-content:space-between; background:var(--surface); border-bottom:2px solid var(--amber); padding:12px 20px; }
   .nav-left { display:flex; align-items:center; gap:22px; }
-  .logo { font-family:'Bebas Neue',sans-serif; font-size:30px; letter-spacing:2px; color:#F5F4F2; line-height:1; }
-  .logo .bolt { color:#4ADE52; }
+  .logo { font-family:'Bebas Neue',sans-serif; font-size:30px; letter-spacing:2px; color:var(--text); line-height:1; }
+  .logo .bolt { color:var(--legendary); }
   .tabs { display:flex; gap:4px; }
-  .tab { font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:0.5px; text-transform:uppercase; color:#F5F4F2; background:none; border:1px solid transparent; padding:8px 14px; cursor:pointer; }
-  .tab:hover { color:#F5F4F2; }
-  .tab.active { color:#15130f; background:#FF9D2E; font-weight:600; }
-  .nav-id { font-size:12px; color:#E4E0D8; display:flex; align-items:center; gap:8px; cursor:pointer; }
-  .nav-id .dot { width:8px; height:8px; border-radius:50%; background:#4ADE52; flex-shrink:0; }
-  .nav-id .dot.out { background:#B6B0A4; }
+  .tab { font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:0.5px; text-transform:uppercase; color:var(--text); background:none; border:1px solid transparent; padding:8px 14px; cursor:pointer; }
+  .tab:hover { color:var(--text); }
+  .tab.active { color:var(--inset); background:var(--amber); font-weight:600; }
+  .nav-id { font-size:12px; color:var(--text-2); display:flex; align-items:center; gap:8px; cursor:pointer; }
+  .nav-id .dot { width:8px; height:8px; border-radius:50%; background:var(--presence); flex-shrink:0; }
+  .nav-id .dot.out { background:var(--text-3); }
   a.logo { text-decoration:none; }
   a.tab { text-decoration:none; display:inline-block; }
 
   /* ── RANKS PAGE ── */
   .rk-wrap { max-width:720px; margin:0 auto; padding:40px 20px 90px; }
-  .eyebrow { font-size:12px; letter-spacing:2px; text-transform:uppercase; color:#4ADE52; margin-bottom:12px; }
-  .rk-title { font-family:'Bebas Neue',sans-serif; font-size:48px; letter-spacing:1.5px; color:#FF9D2E; line-height:1; margin-bottom:14px; }
-  .rk-lead { font-size:15px; color:#E4E0D8; line-height:1.7; max-width:600px; margin-bottom:8px; }
-  .rk-lead b { color:#F5F4F2; }
+  .eyebrow { font-size:12px; letter-spacing:2px; text-transform:uppercase; color:var(--presence); margin-bottom:12px; }
+  .rk-title { font-family:'Bebas Neue',sans-serif; font-size:48px; letter-spacing:1.5px; color:var(--amber); line-height:1; margin-bottom:14px; }
+  .rk-lead { font-size:15px; color:var(--text-2); line-height:1.7; max-width:600px; margin-bottom:8px; }
+  .rk-lead b { color:var(--text); }
 
   /* "You are here" banner (only shown when signed in) */
-  .rk-you { display:none; margin:30px 0 0; background:#1d2417; border:1px solid #38332b; border-left:3px solid #4ADE52; padding:16px 18px; }
+  .rk-you { display:none; margin:30px 0 0; background:var(--ground-selected); border:1px solid var(--border); border-left:3px solid var(--presence); padding:16px 18px; }
   .rk-you.show { display:flex; align-items:center; gap:14px; }
-  .rk-you-badge { width:42px; height:42px; border-radius:8px; background:#16140f; border:1px solid #38332b; display:flex; align-items:center; justify-content:center; font-size:22px; line-height:1; flex-shrink:0; font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif; }
-  .rk-you-text { font-size:13px; color:#E4E0D8; line-height:1.5; }
-  .rk-you-text b { color:#F5F4F2; }
-  .rk-you-next { color:#4ADE52; }
+  .rk-you-badge { width:42px; height:42px; border-radius:8px; background:var(--inset); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:22px; line-height:1; flex-shrink:0; font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif; }
+  .rk-you-text { font-size:13px; color:var(--text-2); line-height:1.5; }
+  .rk-you-text b { color:var(--text); }
+  .rk-you-next { color:var(--presence); }
 
-  .rk-ladder { margin-top:40px; display:flex; flex-direction:column; gap:1px; background:#38332b; border:1px solid #38332b; }
-  .rk-row { display:flex; align-items:center; gap:18px; background:#211e1a; padding:20px 22px; position:relative; }
-  .rk-row.here { background:#1d2417; }
-  .rk-badge { width:48px; height:48px; border-radius:8px; background:#16140f; border:1px solid #38332b; display:flex; align-items:center; justify-content:center; font-size:26px; line-height:1; flex-shrink:0; font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif; }
-  .rk-badge.none { font-family:'Bebas Neue',sans-serif; font-size:22px; color:#B6B0A4; }
+  .rk-ladder { margin-top:40px; display:flex; flex-direction:column; gap:1px; background:var(--border); border:1px solid var(--border); }
+  .rk-row { display:flex; align-items:center; gap:18px; background:var(--surface); padding:20px 22px; position:relative; }
+  .rk-row.here { background:var(--ground-selected); }
+  .rk-badge { width:48px; height:48px; border-radius:8px; background:var(--inset); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:26px; line-height:1; flex-shrink:0; font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif; }
+  .rk-badge.none { font-family:'Bebas Neue',sans-serif; font-size:22px; color:var(--text-3); }
   .rk-info { flex:1; min-width:0; }
-  .rk-name { font-family:'Bebas Neue',sans-serif; font-size:24px; letter-spacing:1px; color:#F5F4F2; line-height:1; }
-  .rk-row.here .rk-name { color:#4ADE52; }
-  .rk-desc { font-size:13px; color:#E4E0D8; line-height:1.55; margin-top:4px; }
-  .rk-thresh { font-family:'Bebas Neue',sans-serif; font-size:18px; letter-spacing:1px; color:#FF9D2E; flex-shrink:0; text-align:right; }
-  .rk-thresh span { display:block; font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:1px; text-transform:uppercase; color:#B6B0A4; margin-top:2px; }
-  .rk-here-tag { position:absolute; top:10px; right:14px; font-size:9px; letter-spacing:1.5px; text-transform:uppercase; color:#4ADE52; }
+  .rk-name { font-family:'Bebas Neue',sans-serif; font-size:24px; letter-spacing:1px; color:var(--text); line-height:1; }
+  .rk-row.here .rk-name { color:var(--presence); }
+  .rk-desc { font-size:13px; color:var(--text-2); line-height:1.55; margin-top:4px; }
+  .rk-thresh { font-family:'Bebas Neue',sans-serif; font-size:18px; letter-spacing:1px; color:var(--amber); flex-shrink:0; text-align:right; }
+  .rk-thresh span { display:block; font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:1px; text-transform:uppercase; color:var(--text-3); margin-top:2px; }
+  .rk-here-tag { position:absolute; top:10px; right:14px; font-size:9px; letter-spacing:1.5px; text-transform:uppercase; color:var(--presence); }
 
-  .rk-section { margin-top:42px; padding-top:28px; border-top:1px solid #38332b; }
-  .rk-head { font-family:'Bebas Neue',sans-serif; font-size:24px; letter-spacing:1.5px; color:#FF9D2E; margin-bottom:16px; }
-  .rk-text { font-size:14px; color:#E4DFD6; line-height:1.75; margin-bottom:16px; }
-  .rk-text b { color:#F5F4F2; }
-  .rk-cta { display:inline-block; margin-top:6px; background:#FF9D2E; color:#15130f; font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:14px; letter-spacing:0.5px; text-decoration:none; padding:13px 24px; }
-  .rk-cta:hover { background:#ffad4e; }
+  .rk-section { margin-top:42px; padding-top:28px; border-top:1px solid var(--border); }
+  .rk-head { font-family:'Bebas Neue',sans-serif; font-size:24px; letter-spacing:1.5px; color:var(--amber); margin-bottom:16px; }
+  .rk-text { font-size:14px; color:var(--text-2); line-height:1.75; margin-bottom:16px; }
+  .rk-text b { color:var(--text); }
+  .rk-cta { display:inline-block; margin-top:6px; background:var(--amber); color:var(--inset); font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:14px; letter-spacing:0.5px; text-decoration:none; padding:13px 24px; }
+  .rk-cta:hover { background:var(--amber-hover); }
 
   /* shared drawer (so the profile works from this page too) */
 
-  .site-footer { border-top:1px solid #38332b; background:#211e1a; margin-top:40px; padding:22px 20px; }
+  .site-footer { border-top:1px solid var(--border); background:var(--surface); margin-top:40px; padding:22px 20px; }
   .footer-inner { max-width:1100px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; }
   .footer-links { display:flex; align-items:center; gap:20px; flex-wrap:wrap; }
-  .footer-links a { font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:0.5px; color:#E4E0D8; text-decoration:none; }
-  .footer-links a:hover { color:#FF9D2E; }
-  .footer-copy { font-size:11px; color:#B6B0A4; }
+  .footer-links a { font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:0.5px; color:var(--text-2); text-decoration:none; }
+  .footer-links a:hover { color:var(--amber); }
+  .footer-copy { font-size:11px; color:var(--text-3); }
 
   @media (max-width:760px) {
     .nav { gap:12px; }
