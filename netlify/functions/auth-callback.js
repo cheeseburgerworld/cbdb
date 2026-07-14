@@ -3,23 +3,24 @@
 //
 // 1. Read + verify the PKCE cookie
 // 2. Validate state parameter (CSRF check)
-// 3. Exchange code for tokens at Bluesky token endpoint
-// 4. Store session (tokens + DPoP keys + DID) in a signed httpOnly cookie
-// 5. Redirect to the original return path
+// 3. Exchange code for tokens at Bluesky's token endpoint (DPoP-bound,
+//    confidential-client-authenticated)
+// 4. Verify the returned account (sub) matches who we started the flow
+//    with — atproto spec calls this "critical."
+// 5. Store the session server-side (Supabase), keyed by a random id
+// 6. Set a cookie holding ONLY that id — never tokens, never keys
+// 7. Redirect to the original return path
 
 import {
-  buildDPoPProof,
-  signPayload,
   verifyPayload,
   parseCookies,
   setCookie,
   clearCookie,
+  createSession,
+  exchangeCode,
   PKCE_COOKIE,
   SESSION_COOKIE,
 } from '../_auth-utils.js';
-
-const CLIENT_ID    = 'https://cheeseburger.world/oauth/client-metadata.json';
-const REDIRECT_URI = 'https://cheeseburger.world/oauth/callback';
 
 export default async function handler(req) {
   const url   = new URL(req.url);
@@ -56,25 +57,36 @@ export default async function handler(req) {
     return redirect('/submit.html?auth_error=session_expired', [clearCookie(PKCE_COOKIE)]);
   }
 
-  const { verifier, privateJwk, publicJwk, tokenEndpoint, pdsEndpoint, did, return: returnPath } = pkceData;
+  const { verifier, privateJwk, publicJwk, tokenEndpoint, revocationEndpoint, issuer, pds, did, return: returnPath } = pkceData;
 
   try {
-    // 4. Exchange code for tokens
-    const tokens = await exchangeCode({ code, verifier, privateJwk, publicJwk, tokenEndpoint });
+    // 4. Exchange code for tokens (DPoP-bound + client-assertion authenticated)
+    const tokens = await exchangeCode({ code, verifier, privateJwk, publicJwk, tokenEndpoint, issuer });
 
-    // 5. Build session payload — stored in httpOnly cookie, never exposed to JS
-    const session = {
-      did:           tokens.did || did,
-      access_token:  tokens.access_token,
-      refresh_token: tokens.refresh_token,
-      privateJwk,
-      publicJwk,
-      tokenEndpoint,
-      pdsEndpoint: pdsEndpoint || 'https://bsky.social',
-      iat:           Math.floor(Date.now() / 1000),
-    };
-    const sessionValue  = signPayload(session);
-    const sessionCookie = setCookie(SESSION_COOKIE, sessionValue, {
+    // 5. Mandatory per atproto spec: verify the account in the token
+    //    response matches who we started the flow with. Without this, a
+    //    misbehaving or compromised auth server could hand back tokens
+    //    for a different account than the one the user picked.
+    if (tokens.sub && tokens.sub !== did) {
+      throw new Error('Account mismatch — token response did not match the expected account');
+    }
+
+    // 6. Store the session server-side. The cookie the browser gets back
+    //    is just a random lookup key — the tokens and DPoP private key
+    //    never leave this server.
+    const sessionId = await createSession({
+      did:                 tokens.did || tokens.sub || did,
+      access_token:        tokens.access_token,
+      refresh_token:       tokens.refresh_token,
+      private_jwk:         privateJwk,
+      public_jwk:          publicJwk,
+      token_endpoint:      tokenEndpoint,
+      revocation_endpoint: revocationEndpoint || null,
+      issuer:              issuer,
+      pds_endpoint:        pds || 'https://bsky.social',
+    });
+
+    const sessionCookie = setCookie(SESSION_COOKIE, sessionId, {
       maxAge:   60 * 60 * 24 * 7,  // 7 days
       path:     '/',
       httpOnly: true,
@@ -89,54 +101,10 @@ export default async function handler(req) {
     return redirect(dest, [sessionCookie, clearCookie(PKCE_COOKIE)]);
 
   } catch (err) {
-    console.error('[auth-callback] token exchange failed:', err);
-    const msg = encodeURIComponent(err.message || 'Token exchange failed');
+    console.error('[auth-callback] login failed:', err);
+    const msg = encodeURIComponent(err.message || 'Sign-in failed');
     return redirect(`/submit.html?auth_error=${msg}`, [clearCookie(PKCE_COOKIE)]);
   }
-}
-
-// Exchange the authorization code for access + refresh tokens.
-// Handles DPoP nonce challenges automatically.
-async function exchangeCode({ code, verifier, privateJwk, publicJwk, tokenEndpoint }) {
-  const body = new URLSearchParams({
-    grant_type:    'authorization_code',
-    code,
-    redirect_uri:  REDIRECT_URI,
-    client_id:     CLIENT_ID,
-    code_verifier: verifier,
-  });
-
-  async function attempt(nonce) {
-    const dpopProof = await buildDPoPProof({
-      privateJwk, publicJwk,
-      method: 'POST',
-      url:    tokenEndpoint,
-      nonce,
-    });
-    return fetch(tokenEndpoint, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'DPoP':         dpopProof,
-      },
-      body,
-    });
-  }
-
-  let res = await attempt(null);
-
-  // Bluesky may return a nonce on the first attempt — retry with it
-  if ((res.status === 400 || res.status === 401) && res.headers.get('DPoP-Nonce')) {
-    const nonce = res.headers.get('DPoP-Nonce');
-    res = await attempt(nonce);
-  }
-
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(`Token exchange failed (${res.status}): ${text}`);
-  }
-
-  return res.json();
 }
 
 function redirect(location, cookies = []) {
