@@ -3,17 +3,17 @@
 // Body: { action: 'post' | 'uploadBlob', payload: { ... } }
 //
 // The browser can't make DPoP-authenticated Bluesky API calls directly
-// (requires crypto.subtle + stored DPoP keys). This function does it server-side.
+// (requires crypto.subtle + stored DPoP keys). This function does it
+// server-side, looking the session up from Supabase by the id in the cookie.
 //
 // Supported actions:
 //   post:       Create a Bluesky post record. payload = { text, facets?, embed?, createdAt }
 //   uploadBlob: Upload an image blob.          payload = { data (base64), mimeType }
 
 import {
-  verifyPayload,
-  signPayload,
+  getSession,
+  updateSession,
   parseCookies,
-  setCookie,
   buildDPoPProof,
   refreshAccessToken,
   SESSION_COOKIE,
@@ -24,13 +24,13 @@ export default async function handler(req) {
     return json({ error: 'POST required' }, 405);
   }
 
-  // 1. Read + verify session cookie
-  const cookies = parseCookies(req.headers.get('cookie'));
-  const session = verifyPayload(cookies[SESSION_COOKIE]);
+  // 1. Read the session id cookie and look up the session
+  const cookies   = parseCookies(req.headers.get('cookie'));
+  const sessionId = cookies[SESSION_COOKIE];
+  if (!sessionId) return json({ error: 'Not authenticated' }, 401);
 
-  if (!session || !session.did || !session.access_token) {
-    return json({ error: 'Not authenticated' }, 401);
-  }
+  const session = await getSession(sessionId);
+  if (!session) return json({ error: 'Not authenticated' }, 401);
 
   // 2. Parse request body
   let body;
@@ -47,23 +47,7 @@ export default async function handler(req) {
 
   // 3. Dispatch to the appropriate handler, with auto-refresh on 401
   try {
-    const result = await dispatch(session, action, payload);
-    // If dispatch updated the session (token refresh), write new cookie
-    if (result._updatedSession) {
-      const newSession = result._updatedSession;
-      delete result._updatedSession;
-      const sessionCookie = setCookie(SESSION_COOKIE, signPayload(newSession), {
-        maxAge:   60 * 60 * 24 * 7,
-        path:     '/',
-        httpOnly: true,
-        secure:   true,
-        sameSite: 'Lax',
-      });
-      return new Response(JSON.stringify(result), {
-        status: 200,
-        headers: { 'Content-Type': 'application/json', 'Set-Cookie': sessionCookie },
-      });
-    }
+    const result = await dispatch(sessionId, session, action, payload);
     return json(result, 200);
   } catch (err) {
     console.error('[auth-proxy] error:', err);
@@ -73,10 +57,10 @@ export default async function handler(req) {
 
 // ─── Action dispatcher ────────────────────────────────────────────────────────
 
-async function dispatch(session, action, payload) {
+async function dispatch(sessionId, session, action, payload) {
   switch (action) {
-    case 'post':       return doPost(session, payload);
-    case 'uploadBlob': return doUploadBlob(session, payload);
+    case 'post':       return doPost(sessionId, session, payload);
+    case 'uploadBlob': return doUploadBlob(sessionId, session, payload);
     default:           throw new Error(`Unknown action: ${action}`);
   }
 }
@@ -101,7 +85,7 @@ async function resolvePDS(did) {
 
 // ─── Create a Bluesky post ────────────────────────────────────────────────────
 
-async function doPost(session, payload) {
+async function doPost(sessionId, session, payload) {
   const pds = await resolvePDS(session.did);
   const endpoint = `${pds}/xrpc/com.atproto.repo.createRecord`;
   const record = {
@@ -118,37 +102,32 @@ async function doPost(session, payload) {
     record,
   });
 
-  const result = await bskyRequest(session, 'POST', endpoint, requestBody, 'application/json');
-  return result;
+  return bskyRequest(sessionId, session, 'POST', endpoint, requestBody, 'application/json');
 }
 
 // ─── Upload an image blob ─────────────────────────────────────────────────────
 
-async function doUploadBlob(session, payload) {
-  // payload.data is a base64-encoded image
+async function doUploadBlob(sessionId, session, payload) {
   const { data, mimeType } = payload;
   if (!data || !mimeType) throw new Error('uploadBlob requires data and mimeType');
 
-  // Convert base64 to Uint8Array without Buffer (Deno-compatible)
   const binary = atob(data);
   const bytes  = new Uint8Array(binary.length);
   for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
 
-  // Use the user's actual PDS for blob uploads
   const pds = await resolvePDS(session.did);
   const endpoint = `${pds}/xrpc/com.atproto.repo.uploadBlob`;
 
-  const result = await bskyRequest(session, 'POST', endpoint, bytes, mimeType);
-  return result;
+  return bskyRequest(sessionId, session, 'POST', endpoint, bytes, mimeType);
 }
 
 // ─── Authenticated Bluesky request with DPoP + auto-refresh ──────────────────
 
-async function bskyRequest(session, method, endpoint, body, contentType) {
+async function bskyRequest(sessionId, session, method, endpoint, body, contentType) {
   const attempt = async (sess, nonce) => {
     const dpopProof = await buildDPoPProof({
-      privateJwk:  sess.privateJwk,
-      publicJwk:   sess.publicJwk,
+      privateJwk:  sess.private_jwk,
+      publicJwk:   sess.public_jwk,
       method,
       url:         endpoint,
       nonce,
@@ -173,12 +152,18 @@ async function bskyRequest(session, method, endpoint, body, contentType) {
     res = await attempt(session, nonce);
   }
 
-  // Token expired — refresh and retry once
+  // Token expired — refresh, persist, and retry once
   if (res.status === 401) {
     let newTokens;
     try {
-      newTokens = await refreshAccessToken(session);
-    } catch (refreshErr) {
+      newTokens = await refreshAccessToken({
+        refresh_token: session.refresh_token,
+        privateJwk:    session.private_jwk,
+        publicJwk:     session.public_jwk,
+        tokenEndpoint: session.token_endpoint,
+        issuer:        session.issuer,
+      });
+    } catch {
       throw new Error('Session expired. Please sign in again.');
     }
 
@@ -186,10 +171,12 @@ async function bskyRequest(session, method, endpoint, body, contentType) {
       ...session,
       access_token:  newTokens.access_token,
       refresh_token: newTokens.refresh_token,
-      iat:           Math.floor(Date.now() / 1000),
     };
+    await updateSession(sessionId, {
+      access_token:  newTokens.access_token,
+      refresh_token: newTokens.refresh_token,
+    });
 
-    // Retry the original request with the new token
     res = await attempt(refreshedSession, null);
     if ((res.status === 400 || res.status === 401) && res.headers.get('DPoP-Nonce')) {
       res = await attempt(refreshedSession, res.headers.get('DPoP-Nonce'));
@@ -200,10 +187,7 @@ async function bskyRequest(session, method, endpoint, body, contentType) {
       throw new Error(`Bluesky API error after refresh (${res.status}): ${text}`);
     }
 
-    const data = await res.json();
-    // Signal to caller that the session was updated
-    data._updatedSession = refreshedSession;
-    return data;
+    return res.json();
   }
 
   if (!res.ok) {
