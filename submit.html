@@ -270,6 +270,17 @@
   const seg = (typeof Intl!=='undefined'&&Intl.Segmenter)?new Intl.Segmenter('en',{granularity:'grapheme'}):null;
   function graphemes(str){ if(seg){let n=0;for(const _ of seg.segment(str))n++;return n;} return [...str].length; }
   function onPhoto(e){ const f=e.target.files[0]; if(!f)return; state.photoURL=URL.createObjectURL(f); renderPreview(); }
+  // Convert Uint8Array to base64 in chunks. Spreading a large array directly into
+  // String.fromCharCode(...bytes) blows past the JS engine's max-argument limit
+  // (~65,536) for any real photo — this was silently failing every upload.
+  function bytesToBase64(bytes){
+    const CHUNK = 0x8000; // 32768
+    let binary = '';
+    for(let i=0; i<bytes.length; i+=CHUNK){
+      binary += String.fromCharCode.apply(null, bytes.subarray(i, i+CHUNK));
+    }
+    return btoa(binary);
+  }
   async function prepareImage(file){
     const MAX_DIM=1600;
     const TARGET_BYTES=950000;
@@ -406,7 +417,7 @@
         try{
           const prepared=await prepareImage(file);
           // Convert Uint8Array to base64 for transport to the proxy function
-          const base64 = btoa(String.fromCharCode(...prepared.bytes));
+          const base64 = bytesToBase64(prepared.bytes);
           const up = await window.cbdbAuth.proxyAction('uploadBlob', {
             data: base64,
             mimeType: 'image/jpeg',
