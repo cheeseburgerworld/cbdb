@@ -11,7 +11,21 @@
   "grant_types": ["authorization_code", "refresh_token"],
   "response_types": ["code"],
   "scope": "atproto transition:generic",
-  "token_endpoint_auth_method": "none",
+  "token_endpoint_auth_method": "private_key_jwt",
+  "token_endpoint_auth_signing_alg": "ES256",
   "application_type": "web",
-  "dpop_bound_access_tokens": true
+  "dpop_bound_access_tokens": true,
+  "jwks": {
+    "keys": [
+      {
+        "kty": "EC",
+        "crv": "P-256",
+        "x": "xH9Mz3EqyJv-F3u0k999IBqQ5PwHKUhcNz-cecj7ZYU",
+        "y": "tOC0C7L_H_UDkJm16mf2dK6Pasd_6Bm7yv2LpA9Cfxw",
+        "kid": "cbdb-mrjnk87f",
+        "use": "sig",
+        "alg": "ES256"
+      }
+    ]
+  }
 }
