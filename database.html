@@ -340,6 +340,16 @@
   .db-empty { grid-column:1/-1; text-align:center; padding:60px 20px; color:var(--text-3); font-size:14px; }
   .db-empty a { color:var(--amber); text-decoration:none; }
 
+  /* Loading skeleton — shown the instant the page paints, replaced once
+     loadReviews()/verifyLivePosts() resolve, so a slow network never
+     reads as a frozen page. */
+  .card.skel { cursor:default; }
+  .card.skel:hover { transform:none; border-color:var(--border); }
+  .skel-block, .skel-line { background:var(--raised); animation:skel-pulse 1.3s ease-in-out infinite; }
+  .skel-line { height:11px; border-radius:3px; margin-bottom:10px; }
+  .skel-line.w40 { width:40%; } .skel-line.w60 { width:60%; } .skel-line.w80 { width:80%; }
+  @keyframes skel-pulse { 0%,100% { opacity:.5; } 50% { opacity:1; } }
+
   @media (min-width:761px) and (max-width:1100px){
     .card-grid { grid-template-columns:repeat(2,1fr); }
   }
@@ -525,7 +535,23 @@ function filterDb(f, btn){
     const c = rt ? rt.color : 'var(--rate-skip-fill)';
     return 'linear-gradient(135deg, '+c+'55, '+c+'22)';
   }
-  (async()=>{ await loadReviews(); buildStyleOptions(); renderCards(); })();
+  // Fills the grid with pulsing placeholder cards so there's never a blank
+  // screen while Supabase + Bluesky verification are in flight.
+  function showLoadingSkeleton(){
+    const grid=document.getElementById('cardGrid');
+    if(!grid) return;
+    grid.innerHTML = Array.from({length:6}).map(()=>
+      '<div class="card skel">'+
+        '<div class="card-img skel-block"></div>'+
+        '<div class="card-body">'+
+          '<div class="skel-line w60"></div>'+
+          '<div class="skel-line w40"></div>'+
+          '<div class="skel-line w80"></div>'+
+        '</div>'+
+      '</div>'
+    ).join('');
+  }
+  (async()=>{ showLoadingSkeleton(); await loadReviews(); buildStyleOptions(); renderCards(); })();
 </script>
 
 <!-- FOOTER -->
