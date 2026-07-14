@@ -359,8 +359,8 @@ a.tab { text-decoration:none; display:inline-block; }
 <div class="panel" id="panel">
 <div class="panel-empty" id="panelEmpty">
   <div class="pe-bolt">⚡️</div>
-  <div class="pe-title">Explore the map</div>
-  <div class="pe-sub">Tap any pin to read its review. Bigger pins are better burgers — the green one is Legendary.</div>
+  <div class="pe-title" id="peTitle">Loading burgers…</div>
+  <div class="pe-sub" id="peSub">Pulling the latest reviews.</div>
 </div>
 <div class="review" id="review">
 <div class="rv-header"><button class="rv-close" onclick="closeReview()" aria-label="Close">×</button></div>
@@ -547,6 +547,10 @@ map.fitBounds(grp.getBounds().pad(shown.length===1?2:0.25));
 await loadReviews();
 buildMarkers();
 buildCityDropdown();
+// Loading is done one way or another past this point — restore the normal copy.
+const peTitle=document.getElementById('peTitle'), peSub=document.getElementById('peSub');
+if(peTitle) peTitle.textContent='Explore the map';
+if(peSub) peSub.textContent='Tap any pin to read its review. Bigger pins are better burgers — the green one is Legendary.';
 if(!reviews.length){
 // empty database: center on Portland
 map.setView([45.535,-122.66],12);
