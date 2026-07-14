@@ -97,25 +97,34 @@ async function verifyLivePosts(rows){
   const existing = new Set();   // at:// URIs confirmed to still exist
   let verificationFailed = false;
   const API = 'https://public.api.bsky.app/xrpc/app.bsky.feed.getPosts';
+  const TIMEOUT_MS = 4000; // hard cap — a slow/unreachable AppView must never freeze the page
 
-  for(let i=0; i<checkable.length; i+=25){
-    const batch = checkable.slice(i, i+25);
+  const batches = [];
+  for(let i=0; i<checkable.length; i+=25) batches.push(checkable.slice(i, i+25));
+
+  // Batches run IN PARALLEL (was: serial for-loop with await), each capped at
+  // TIMEOUT_MS via AbortController. Worst case is now ~4s total regardless of
+  // how many batches there are, instead of 4s+ PER batch with no ceiling at all.
+  await Promise.all(batches.map(async batch => {
     const qs = batch.map(r => 'uris=' + encodeURIComponent(r.bskyUri)).join('&');
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
     try{
-      const res = await fetch(API + '?' + qs);
-      if(!res.ok){ verificationFailed = true; break; }
+      const res = await fetch(API + '?' + qs, { signal: controller.signal });
+      if(!res.ok){ verificationFailed = true; return; }
       const data = await res.json();
       // getPosts only returns posts that exist; deleted ones are simply absent.
       (data.posts || []).forEach(p => { if(p && p.uri) existing.add(p.uri); });
     }catch(e){
       verificationFailed = true;
-      break;
+    }finally{
+      clearTimeout(timer);
     }
-  }
+  }));
 
-  // If we couldn't verify (offline / AppView down), keep everything.
+  // If any batch couldn't verify (offline / AppView down / timed out), fail open.
   if(verificationFailed){
-    console.warn('CBDB: post verification skipped (AppView unreachable). Showing all indexed rows.');
+    console.warn('CBDB: post verification incomplete (AppView slow/unreachable). Showing all indexed rows.');
     return { live: rows, orphans: [] };
   }
 
