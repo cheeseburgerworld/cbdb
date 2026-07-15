@@ -1,0 +1,180 @@
+{
+  "lexicon": 1,
+  "id": "world.cheeseburger.review",
+  "defs": {
+    "main": {
+      "type": "record",
+      "description": "A cheeseburger review. Authored and owned by the reviewer, stored on their own PDS. CB⚡DB indexes these records; it does not own them.",
+      "key": "tid",
+      "record": {
+        "type": "object",
+        "required": [
+          "restaurant",
+          "location",
+          "style",
+          "rating",
+          "price",
+          "burger",
+          "take",
+          "photo",
+          "photoAlt",
+          "createdAt"
+        ],
+        "properties": {
+          "restaurant": {
+            "type": "string",
+            "maxGraphemes": 200,
+            "maxLength": 800,
+            "description": "Official name of the restaurant, e.g. 'Tulip Shop Tavern'.",
+            "minGraphemes": 1,
+            "minLength": 1
+          },
+          "location": {
+            "type": "string",
+            "maxGraphemes": 100,
+            "maxLength": 400,
+            "description": "Human-readable city and region as written by the reviewer, e.g. 'Portland, OR'.",
+            "minGraphemes": 1,
+            "minLength": 1
+          },
+          "geo": {
+            "type": "ref",
+            "ref": "#geo",
+            "description": "Optional coordinates supplied by the reviewer. Indexers may prefer their own geocoding."
+          },
+          "address": {
+            "type": "ref",
+            "ref": "#address",
+            "description": "Optional structured address."
+          },
+          "style": {
+            "type": "string",
+            "enum": [
+              "classic",
+              "smash",
+              "bistro",
+              "fastFood",
+              "veggie"
+            ],
+            "description": "Burger style. Closed set."
+          },
+          "rating": {
+            "type": "string",
+            "enum": [
+              "legendary",
+              "trip",
+              "solid",
+              "skip"
+            ],
+            "description": "Editorial verdict. Closed set. legendary = Legendary, trip = Worth A Trip, solid = Solid, skip = Skip It. Never averaged: one reviewer's judgment stands as written."
+          },
+          "price": {
+            "type": "string",
+            "enum": [
+              "$",
+              "$$",
+              "$$$"
+            ],
+            "description": "Price tier for the burger as paid on the visit. Closed set. $ = under $11, $$ = $12–21, $$$ = $22 and up."
+          },
+          "burger": {
+            "type": "string",
+            "maxGraphemes": 2000,
+            "maxLength": 8000,
+            "description": "The Burger. What's on it, what's made in-house, how it was cooked. Required: a review without the burger is not a review.",
+            "minGraphemes": 1,
+            "minLength": 1
+          },
+          "take": {
+            "type": "string",
+            "maxGraphemes": 2000,
+            "maxLength": 8000,
+            "description": "The Take. Why it earned the rating: value, sides, the visit. Required: a rating without reasoning is a score, not a review.",
+            "minGraphemes": 1,
+            "minLength": 1
+          },
+          "bskyPost": {
+            "type": "string",
+            "format": "at-uri",
+            "description": "Optional. AT-URI of a Bluesky post crossposted from this review. Absent when the reviewer declined to crosspost. The review is canonical; the post is a share of it."
+          },
+          "photo": {
+            "type": "blob",
+            "accept": [
+              "image/jpeg",
+              "image/png",
+              "image/webp"
+            ],
+            "maxSize": 2000000,
+            "description": "Photo of the burger from that visit. Required: the record is the evidence."
+          },
+          "photoAlt": {
+            "type": "string",
+            "maxGraphemes": 1000,
+            "maxLength": 4000,
+            "description": "Alt text describing the photo. Required: a photo nobody can read is half a review.",
+            "minGraphemes": 1,
+            "minLength": 1
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "datetime",
+            "description": "Client-declared timestamp of when the review was written."
+          }
+        }
+      }
+    },
+    "geo": {
+      "type": "object",
+      "description": "Coordinates, stored as strings per ATGeo convention (the atproto data model does not support floats).",
+      "required": [
+        "latitude",
+        "longitude"
+      ],
+      "properties": {
+        "latitude": {
+          "type": "string",
+          "description": "Decimal degrees as a string, e.g. '45.5535'."
+        },
+        "longitude": {
+          "type": "string",
+          "description": "Decimal degrees as a string, e.g. '-122.6762'."
+        }
+      }
+    },
+    "address": {
+      "type": "object",
+      "description": "Structured postal address of the restaurant.",
+      "properties": {
+        "street": {
+          "type": "string",
+          "maxGraphemes": 200,
+          "maxLength": 800
+        },
+        "locality": {
+          "type": "string",
+          "maxGraphemes": 100,
+          "maxLength": 400,
+          "description": "City."
+        },
+        "region": {
+          "type": "string",
+          "maxGraphemes": 100,
+          "maxLength": 400,
+          "description": "State or province."
+        },
+        "country": {
+          "type": "string",
+          "maxGraphemes": 100,
+          "maxLength": 400,
+          "description": "Country name or code."
+        },
+        "postalCode": {
+          "type": "string",
+          "maxGraphemes": 20,
+          "maxLength": 80
+        }
+      }
+    }
+  }
+}
