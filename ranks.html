@@ -34,26 +34,21 @@
   .rk-lead { font-size:15px; color:var(--text-2); line-height:1.7; max-width:600px; margin-bottom:8px; }
   .rk-lead b { color:var(--text); }
 
-  /* "You are here" banner (only shown when signed in) */
-  .rk-you { display:none; margin:30px 0 0; background:var(--ground-selected); border:1px solid var(--border); border-left:3px solid var(--presence); padding:16px 18px; }
-  .rk-you.show { display:flex; align-items:center; gap:14px; }
-  .rk-you-badge { width:42px; height:42px; border-radius:8px; background:var(--inset); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:22px; line-height:1; flex-shrink:0; font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif; }
-  .rk-you-text { font-size:13px; color:var(--text-2); line-height:1.5; }
-  .rk-you-text b { color:var(--text); }
-  .rk-you-next { color:var(--presence); }
-
   .rk-ladder { margin-top:40px; display:flex; flex-direction:column; gap:1px; background:var(--border); border:1px solid var(--border); }
-  .rk-row { display:flex; align-items:center; gap:18px; background:var(--surface); padding:20px 22px; position:relative; }
-  .rk-row.here { background:var(--ground-selected); }
-  .rk-badge { width:48px; height:48px; border-radius:8px; background:var(--inset); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:26px; line-height:1; flex-shrink:0; font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif; }
-  .rk-badge.none { font-family:'Bebas Neue',sans-serif; font-size:22px; color:var(--text-3); }
+  .rk-row { display:flex; align-items:center; gap:18px; background:var(--surface); padding:20px 22px; position:relative; border-left:4px solid transparent; }
+  .rk-row.here { background:var(--ground-selected); border-left:4px solid var(--amber); padding-left:18px; }
+  .rk-badge { width:48px; height:48px; border-radius:8px; background:var(--inset); display:flex; align-items:center; justify-content:center; font-size:26px; line-height:1; flex-shrink:0; font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif; }
+  .rk-badge.locked { border:1px dashed var(--border); filter:grayscale(1) opacity(0.45); }
+  .rk-badge.earned { border:1px solid rgba(255,157,46,0.4); }
+  .rk-badge.here { border:2px solid var(--amber); }
+  .rk-badge.reveal { border:2px solid var(--legendary); }
   .rk-info { flex:1; min-width:0; }
   .rk-name { font-family:'Bebas Neue',sans-serif; font-size:24px; letter-spacing:1px; color:var(--text); line-height:1; }
-  .rk-row.here .rk-name { color:var(--presence); }
+  .rk-row.here .rk-name { color:var(--amber); }
   .rk-desc { font-size:13px; color:var(--text-2); line-height:1.55; margin-top:4px; }
+  .rk-next-line { font-size:12px; color:var(--presence); margin-top:5px; }
   .rk-thresh { font-family:'Bebas Neue',sans-serif; font-size:18px; letter-spacing:1px; color:var(--amber); flex-shrink:0; text-align:right; }
   .rk-thresh span { display:block; font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:1px; text-transform:uppercase; color:var(--text-3); margin-top:2px; }
-  .rk-here-tag { position:absolute; top:10px; right:14px; font-size:9px; letter-spacing:1.5px; text-transform:uppercase; color:var(--presence); }
 
   .rk-section { margin-top:42px; padding-top:28px; border-top:1px solid var(--border); }
   .rk-head { font-family:'Bebas Neue',sans-serif; font-size:24px; letter-spacing:1.5px; color:var(--amber); margin-bottom:16px; }
@@ -102,19 +97,13 @@
 <div class="rk-wrap">
   <div class="eyebrow">◈ Recognition</div>
   <h1 class="rk-title">Ranks</h1>
-  <p class="rk-lead">Ranks track what you've put into the database. Every live review moves you up. <b>The top rank comes with something the others don't — you'll know it when you get there.</b></p>
-
-  <!-- "You are here" — filled in by JS when signed in -->
-  <div class="rk-you" id="rkYou">
-    <div class="rk-you-badge" id="rkYouBadge">⚡&#xFE0F;</div>
-    <div class="rk-you-text" id="rkYouText"></div>
-  </div>
+  <p class="rk-lead">Ranks track what you've contributed to the database. Every live review moves you up. <b>The top rank comes with something the others don't — you'll know it when you get there.</b></p>
 
   <div class="rk-ladder" id="rkLadder"></div>
 
   <div class="rk-section">
     <div class="rk-head">How it works</div>
-    <p class="rk-text">Post a review and the moment it's indexed, it counts. Your reviews live on your own Bluesky profile under your DID, so <b>your rank follows you, not us.</b> Delete one and it stops counting — the number always reflects what's actually live.</p>
+    <p class="rk-text">Post a review and the moment it's indexed, it counts. Your reviews live on your own Bluesky profile under your DID.</b></p>
   </div>
 
   <div class="rk-section">
@@ -138,33 +127,28 @@
     const mine=(typeof myReviews==="function")?myReviews(state):[];
     const count = state.signedIn ? mine.length : null;
     const current = count!=null ? rankFor(count) : null;
+    const nx = count!=null ? nextRank(count) : null;
     document.getElementById('rkLadder').innerHTML = RANKS.map(r=>{
       const here = current && current.name===r.name;
-      const badge = r.badge
-        ? '<div class="rk-badge">'+r.badge+'</div>'
-        : '<div class="rk-badge none">—</div>';
+      const top = r.name==='Burger Master';
+      let state_ = 'earned';
+      if(count!=null){
+        if(top) state_ = count>=r.min ? 'reveal' : 'locked';
+        else if(here) state_ = 'here';
+        else state_ = count>=r.min ? 'earned' : 'locked';
+      }
+      const badge = '<div class="rk-badge '+state_+'">'+r.badge+'</div>';
       const thresh = r.min===0 ? '' : r.min+'<span>review'+(r.min>1?'s':'')+'</span>';
+      const name = here ? r.name+' — you are here' : r.name;
+      const nextLine = here
+        ? '<div class="rk-next-line">'+(nx ? (nx.min-count)+' more to '+nx.name+'.' : 'Top of the ladder.')+'</div>'
+        : '';
       return '<div class="rk-row'+(here?' here':'')+'">'+
-        (here?'<span class="rk-here-tag">You are here</span>':'')+
         badge+
-        '<div class="rk-info"><div class="rk-name">'+r.name+'</div><div class="rk-desc">'+r.desc+'</div></div>'+
+        '<div class="rk-info"><div class="rk-name">'+name+'</div><div class="rk-desc">'+r.desc+'</div>'+nextLine+'</div>'+
         '<div class="rk-thresh">'+thresh+'</div>'+
       '</div>';
     }).join('');
-
-    // "You are here" banner
-    const you=document.getElementById('rkYou');
-    if(state.signedIn && current){
-      const nx=nextRank(count);
-      document.getElementById('rkYouBadge').textContent = current.badge || '◦';
-      document.getElementById('rkYouText').innerHTML =
-        'You\u2019re <b>'+current.name+'</b> with <b>'+count+'</b> review'+(count===1?'':'s')+'. '+
-        (nx ? '<span class="rk-you-next">'+(nx.min-count)+' more to '+nx.name+'.</span>'
-            : '<span class="rk-you-next">Top of the ladder.</span>');
-      you.classList.add('show');
-    } else {
-      you.classList.remove('show');
-    }
   }
 
   // Re-render the ladder whenever auth resolves (so "You are here" appears once known).
