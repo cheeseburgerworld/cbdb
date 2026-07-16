@@ -6,7 +6,6 @@
    RATING, reviews, myReviews, bskyWebUrl, and cbdbSignOut).
 
    This module injects its own CSS + markup, then wires the behavior.
-   Do NOT duplicate drawer code into pages — edit it here only.
    ============================================================ */
 (function(){
   'use strict';
@@ -15,7 +14,7 @@
   // Climbs by approved-review count; each tier earns an emoji badge,
   // building the burger as you go: 🥬 → 🧀 → 🍔 → ⚡
   const RANKS = [
-    { min:0,  name:'Guest',         desc:'Signed in. Nothing posted yet.' },
+    { min:0,  name:'Guest',         badge:'🍽️', desc:'Signed in. Nothing posted yet.' },
     { min:1,  name:'Reviewer',      badge:'🥬', desc:'One review live. You\u2019ve contributed to the database.' },
     { min:10, name:'Regular',       badge:'🧀', desc:'Ten reviews. You\u2019re a regular here now.' },
     { min:25, name:'Editor',        badge:'🍔', desc:'Twenty-five reviews in. Your palate is dialed.' },
