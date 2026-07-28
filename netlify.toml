@@ -1,10 +1,18 @@
 # CB⚡DB — Netlify configuration
 
-# Serve the OAuth client metadata as JSON
+# Serve the OAuth client metadata as JSON (not a download)
 [[headers]]
   for = "/oauth/client-metadata.json"
   [headers.values]
     Content-Type = "application/json"
+
+# Serve lexicons as JSON at their canonical URL —
+# e.g. https://cheeseburger.world/lexicons/world/cheeseburger/review.json
+[[headers]]
+  for = "/lexicons/*"
+  [headers.values]
+    Content-Type = "application/json"
+    Access-Control-Allow-Origin = "*"
 
 [build]
   edge_functions = "netlify/functions"
