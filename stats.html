@@ -218,6 +218,8 @@ input[type=file]::file-selector-button { background:var(--border); color:var(--t
 .bar-fill { height:100%; width:0; transition:width .5s; }
 .bar-n { font-family:'Bebas Neue',sans-serif; font-size:18px; color:var(--text); min-width:32px; text-align:right; }
 .city-row { display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:1px solid var(--raised); }
+.show-all { display:block; width:100%; background:none; border:1px solid var(--border); color:var(--text-2); font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:0.5px; padding:10px; margin-top:12px; cursor:pointer; }
+.show-all:hover { border-color:var(--amber); color:var(--amber); }
 .city-name { font-size:14px; color:var(--text); flex:0 0 150px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .city-track { flex:1; height:8px; background:var(--inset); }
 .city-fill { height:100%; background:var(--amber); }
@@ -347,13 +349,29 @@ const max=Math.max(...Object.values(counts),1);
 const set=(bar,n,key)=>{ document.getElementById(n).textContent=counts[key]; document.getElementById(bar).style.width=(counts[key]/max*100)+'%'; };
 set('barLegendary','nLegendary','legendary'); set('barTrip','nTrip','trip');
 set('barSolid','nSolid','solid'); set('barSkip','nSkip','skip');
-// by city
+// by city — top 10 by default, "Show all" reveals the rest
 const byCity={}; reviews.forEach(r=>{ byCity[r.loc]=(byCity[r.loc]||0)+1; });
 const cityMax=Math.max(...Object.values(byCity),1);
-document.getElementById('cityList').innerHTML=Object.entries(byCity).sort((a,b)=>b[1]-a[1]).map(([c,n])=>
-'<div class="city-row"><span class="city-name">'+c+'</span><div class="city-track"><div class="city-fill" style="width:'+(n/cityMax*100)+'%"></div></div><span class="city-n">'+n+'</span></div>').join('');
+const cityRanked=Object.entries(byCity).sort((a,b)=>b[1]-a[1]);
+const CITY_CAP=10;
+function cityRowHtml([c,n]){
+  return '<div class="city-row"><span class="city-name">'+c+'</span><div class="city-track"><div class="city-fill" style="width:'+(n/cityMax*100)+'%"></div></div><span class="city-n">'+n+'</span></div>';
+}
+function renderCities(showAll){
+  const list=showAll?cityRanked:cityRanked.slice(0,CITY_CAP);
+  let html=list.map(cityRowHtml).join('');
+  if(cityRanked.length>CITY_CAP){
+    html+= showAll
+      ? '<button class="show-all" id="cityToggle">Show less</button>'
+      : '<button class="show-all" id="cityToggle">Show all '+cityRanked.length+' cities →</button>';
+  }
+  document.getElementById('cityList').innerHTML=html;
+  const t=document.getElementById('cityToggle');
+  if(t) t.addEventListener('click',()=>renderCities(!showAll));
+}
+renderCities(false);
 // leaderboard
-const lb=Object.entries(byHandle).sort((a,b)=>b[1].n-a[1].n);
+const lb=Object.entries(byHandle).sort((a,b)=>b[1].n-a[1].n).slice(0,10);
 document.getElementById('leaderboard').innerHTML = lb.length ? lb.map(([h,info],i)=>{
   const initial=(h||'?').charAt(0).toUpperCase();
   const av = info.avatar
