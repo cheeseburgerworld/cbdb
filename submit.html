@@ -381,7 +381,6 @@
     }catch(e){ }
   }
   async function postReview(){
-    const t=document.getElementById('toast');
     const on=document.getElementById('xpost').checked;
     const f=document.getElementById('reviewForm');
     const get=n=>f.elements[n]?f.elements[n].value.trim():'';
@@ -392,96 +391,73 @@
     }
 
     const btn=f.querySelector('.submit-btn'); if(btn){ btn.disabled=true; btn.textContent='Posting…'; }
-    let photoUrl='', bskyUri='';
     try{
       const restaurant=get('restaurant'), loc=get('location');
-      const tier=get('tier'), glyph=state.ratingGlyph||'';
-      const burgerText=get('burger'), valueText=get('value');
-      const header=restaurant+'\n'+loc+'\n'+glyph+'\n'+tier+'\n\n';
-      const tail='\n\n#CBDB';
-      const fixed=graphemes(header)+graphemes(tail);
-      let body=burgerText+(valueText?'\n\n'+valueText:'');
-      const budget=300-fixed;
-      if(graphemes(body)>budget) body=[...body].slice(0,budget-1).join('')+'…';
-      const text=header+body+tail;
-      const tagStart=new TextEncoder().encode(header+body+'\n\n').length;
-      const tagEnd=new TextEncoder().encode(text).length;
-      const facets=[{
-        index:{ byteStart:tagStart+1, byteEnd:tagEnd },
-        features:[{ $type:'app.bsky.richtext.facet#tag', tag:'CBDB' }]
-      }];
-      let embed;
+
+      // ── Step 1: Photo is required (the review record requires it) ──
       const photoInput=f.elements['photo'];
-      if(photoInput && photoInput.files[0]){
-        const file=photoInput.files[0];
-        try{
-          const prepared=await prepareImage(file);
-          // Convert Uint8Array to base64 for transport to the proxy function
-          const base64 = bytesToBase64(prepared.bytes);
-          const up = await window.cbdbAuth.proxyAction('uploadBlob', {
-            data: base64,
-            mimeType: 'image/jpeg',
-          });
-          const blob = up.blob;
-          const imageRecord={ image:blob, alt:get('alt')||restaurant };
-          if(prepared.width && prepared.height){ imageRecord.aspectRatio={ width:prepared.width, height:prepared.height }; }
-          embed={ $type:'app.bsky.embed.images', images:[imageRecord] };
-          const cid = (blob.ref && (blob.ref.$link || blob.ref.toString())) || '';
-          photoUrl = cid ? 'https://cdn.bsky.app/img/feed_fullsize/plain/'+state.did+'/'+cid+'@jpeg' : '';
-        }catch(upErr){
-          console.error('Image upload failed — posting review without photo:', upErr);
-          embed=undefined; photoUrl='';
-          alert('Heads up: the photo could not be uploaded, so your review will post without it. You can add a photo by editing the post on Bluesky.');
-        }
+      if(!photoInput || !photoInput.files[0]){
+        alert('A photo of the burger is required.');
+        return;
       }
-      const postPayload = { text, facets, createdAt:new Date().toISOString() };
-      if(embed) postPayload.embed = embed;
-      const rt = await window.cbdbAuth.proxyAction('post', postPayload);
-      bskyUri = rt.uri;
-      let lat=null, lng=null;
-      async function geo(q){
+      const prepared = await prepareImage(photoInput.files[0]);
+      const base64   = bytesToBase64(prepared.bytes);
+      const up = await window.cbdbAuth.proxyAction('uploadBlob', {
+        data: base64,
+        mimeType: 'image/jpeg',
+      });
+      const blobRef = up.blob;
+      const aspectRatio = (prepared.width && prepared.height)
+        ? { width: prepared.width, height: prepared.height }
+        : null;
+
+      // ── Step 2: Optional geocode (same as before) ──
+      let geo=null;
+      async function geocode(q){
         const r=await fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&q='+encodeURIComponent(q),
                             { headers:{ 'Accept':'application/json' } });
         const j=await r.json();
         return (j && j[0]) ? { lat:parseFloat(j[0].lat), lng:parseFloat(j[0].lon) } : null;
       }
       try{
-        let hit = await geo(restaurant+', '+loc);
-        if(!hit) hit = await geo(loc);
-        if(hit){ lat=hit.lat; lng=hit.lng; }
+        let hit = await geocode(restaurant+', '+loc);
+        if(!hit) hit = await geocode(loc);
+        if(hit){ geo={ latitude:String(hit.lat), longitude:String(hit.lng) }; }
       }catch(geoErr){ console.warn('Geocode failed (review still saves, no map pin):', geoErr); }
-      const row={
-        author_did: state.did,
-        bsky_uri: bskyUri,
-        bsky_post_uri: bskyUri,
-        restaurant, location: loc,
-        lat, lng,
-        style: get('style'),
-        price_tier: tier,
-        rating: state.rating,
-        burger: get('burger'),
-        value_experience: get('value'),
-        photo_url: photoUrl,
-        photo_alt: get('alt'),
-        agreed_at: state.agreedAt
-      };
+
+      // ── Step 3: One server call — record to PDS + crosspost + index ──
+      // The server writes the world.cheeseburger.review record to the
+      // reviewer's own PDS, optionally crossposts to Bluesky, and indexes
+      // into Supabase. The review lives in the reviewer's repo; CBDB
+      // indexes it. We index it. We don't own it.
+      const result = await window.cbdbAuth.proxyAction('createReview', {
+        blobRef,
+        restaurant,
+        location:    loc,
+        style:       get('style'),
+        rating:      state.rating,
+        price:       get('tier'),
+        burger:      get('burger'),
+        take:        get('value'),
+        photoAlt:    get('alt')||restaurant,
+        aspectRatio,
+        geo,
+        crosspost:   on,
+        agreedAt:    state.agreedAt,
+      });
+
+      // Keep contributor profile fresh (handle/avatar can change)
       await fetch(CBDB_SUPABASE_URL+'/rest/v1/contributors', {
         method:'POST',
         headers:{ apikey:CBDB_SUPABASE_ANON, Authorization:'Bearer '+CBDB_SUPABASE_ANON,
                   'Content-Type':'application/json', Prefer:'resolution=merge-duplicates' },
         body: JSON.stringify({ did:state.did, handle:state.handle, display_name:state.displayName, avatar:state.avatar||null })
-      });
-      const res=await fetch(CBDB_SUPABASE_URL+'/rest/v1/reviews', {
-        method:'POST',
-        headers:{ apikey:CBDB_SUPABASE_ANON, Authorization:'Bearer '+CBDB_SUPABASE_ANON,
-                  'Content-Type':'application/json', Prefer:'return=minimal' },
-        body: JSON.stringify(row)
-      });
-      if(!res.ok){ console.warn('Supabase insert failed', await res.text()); }
+      }).catch(()=>{});
+
       f.reset();
       document.querySelectorAll('.rating-opt').forEach(o=>{o.classList.remove('sel');o.setAttribute('aria-checked','false');});
       state.rating=null; state.ratingGlyph=null; state.photoURL=null;
-      const bskyUrl=(typeof bskyWebUrl==='function')?bskyWebUrl(bskyUri, state.handle):'';
+      const bskyUrl=(result.bskyPostUri && typeof bskyWebUrl==='function')?bskyWebUrl(result.bskyPostUri, state.handle):'';
       showPosted(restaurant, bskyUrl);
     }catch(e){
       alert('Something went wrong posting your review: '+(e.message||e));
@@ -528,6 +504,10 @@
     for(const name of ['restaurant','location','style','tier','burger','value']){
       const el=f.elements[name];
       if(el && !el.value.trim()){ flagMissing(el); return; }
+    }
+    if(!f.elements['photo'] || !f.elements['photo'].files[0]){
+      alert('A photo of the burger is required.');
+      return;
     }
     if(!state.rating){alert('Pick a rating.');return;}
     if(!state.agreedAt){document.getElementById('guidelinesModal').classList.add('show');return;}
