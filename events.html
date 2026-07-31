@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Burger Week 2026 — CB⚡DB</title>
-<meta name="description" content="Portland Mercury's Burger Week, Aug 10–16. Post your reviews to CB⚡DB the usual way — tagged #CBDB — and they count toward the leaderboard and a Burger Week badge.">
-<meta property="og:title" content="Burger Week 2026 — CB⚡DB">
-<meta property="og:description" content="Portland Mercury's Burger Week, Aug 10–16. Post your reviews to CB⚡DB the usual way — tagged #CBDB — and they count toward the leaderboard and a Burger Week badge.">
+<title>Portland Burger Week 2026 — CB⚡DB</title>
+<meta name="description" content="Portland Burger Week 2026, Aug 10–16. Post your reviews to CB⚡DB the usual way and they count toward the leaderboard and a Burger Week badge.">
+<meta property="og:title" content="Portland Burger Week 2026 — CB⚡DB">
+<meta property="og:description" content="Portland Burger Week 2026, Aug 10–16. Post your reviews to CB⚡DB the usual way and they count toward the leaderboard and a Burger Week badge.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://cheeseburger.world/events.html">
 <meta name="twitter:card" content="summary">
@@ -75,27 +75,41 @@
   .bw-stat-num { font-family:var(--font-display); font-size:38px; color:var(--text); line-height:1; }
   .bw-stat-lab { font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-3); margin-top:6px; }
 
+  /* ── BADGE TILES — same recipe as .rk-badge in ranks.html, extended
+     with a small overlay emoji for the two-emoji trophy tiers. ── */
+  .bw-tile { position:relative; display:flex; align-items:center; justify-content:center;
+             background:var(--inset); border-radius:8px; flex-shrink:0;
+             font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif; }
+  .bw-tile.locked { border:1px dashed var(--border); filter:grayscale(1) opacity(0.45); }
+  .bw-tile.earned { border:1px solid rgba(255,157,46,0.4); }
+  .bw-tile.earned.rare { border:2px solid var(--amber); }
+  .bw-tile .overlay { position:absolute; bottom:-3px; right:-3px; background:var(--surface);
+                       border:1px solid var(--border); border-radius:50%;
+                       display:flex; align-items:center; justify-content:center; line-height:1; }
+
   /* ── BADGE (compact) ── */
   .bw-badge-row { display:flex; align-items:center; gap:16px; background:var(--surface); border:1px solid var(--border); padding:16px 20px; margin-top:20px; }
-  .bw-badge-icon { width:44px; height:44px; border-radius:9px; background:var(--inset); display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0; font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif; }
-  .bw-badge-icon.locked { border:1px dashed var(--border); filter:grayscale(1) opacity(0.45); }
-  .bw-badge-icon.earned { border:2px solid var(--apex); }
+  .bw-badge-row .bw-tile { width:44px; height:44px; font-size:22px; }
   .bw-badge-info { flex:1; min-width:0; }
   .bw-badge-name { font-family:var(--font-display); font-size:17px; letter-spacing:0.5px; color:var(--text); line-height:1; }
   .bw-badge-status { font-size:12px; color:var(--text-2); margin-top:4px; line-height:1.5; }
   .bw-badge-status b { color:var(--apex); }
 
-  /* ── TROPHY CASE (prominent) ── */
-  .bw-trophy-case { position:relative; margin-top:16px; padding:36px 24px; text-align:center; background:radial-gradient(ellipse at center top, rgba(91,217,75,0.10), transparent 70%), var(--surface); border:1px solid var(--border); overflow:hidden; }
-  .bw-trophy-case.earned { border-color:var(--legendary); box-shadow:0 0 0 1px var(--legendary), 0 0 40px rgba(91,217,75,0.15); }
-  .bw-trophy-icon { width:96px; height:96px; margin:0 auto 16px; border-radius:16px; background:var(--inset); display:flex; align-items:center; justify-content:center; font-size:52px; font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif; }
-  .bw-trophy-icon.locked { border:1px dashed var(--border); filter:grayscale(1) opacity(0.4); }
-  .bw-trophy-icon.earned { border:2px solid var(--legendary); }
-  .bw-trophy-name { font-family:var(--font-display); font-size:32px; letter-spacing:1px; color:var(--text); line-height:1; margin-bottom:6px; }
-  .bw-trophy-case.earned .bw-trophy-name { color:var(--legendary); }
-  .bw-trophy-rule { font-size:11px; letter-spacing:0.5px; color:var(--text-3); text-transform:uppercase; margin-bottom:14px; }
-  .bw-trophy-status { font-size:14px; color:var(--text-2); line-height:1.6; max-width:420px; margin:0 auto; }
-  .bw-trophy-status b { color:var(--legendary); }
+  /* ── TROPHY CASE (prominent, two slots: Champion + Winner) ── */
+  .bw-case { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:20px; }
+  .bw-case-item { background:var(--surface); border:1px solid var(--border); padding:24px 20px; text-align:center; }
+  .bw-case-item.earned { border-color:var(--apex); }
+  .bw-case-item.winner.earned { border-color:var(--amber); }
+  .bw-case .bw-tile { width:80px; height:80px; font-size:40px; margin:0 auto 14px; border-radius:14px; }
+  .bw-case .bw-tile .overlay { width:26px; height:26px; font-size:15px; }
+  .bw-case-name { font-family:var(--font-display); font-size:19px; letter-spacing:0.5px; color:var(--text); line-height:1.15; margin-bottom:4px; }
+  .bw-case-item.earned .bw-case-name { color:var(--apex); }
+  .bw-case-item.winner.earned .bw-case-name { color:var(--amber); }
+  .bw-case-rule { font-size:11px; letter-spacing:0.5px; color:var(--text-3); text-transform:uppercase; margin-bottom:12px; }
+  .bw-case-status { font-size:13px; color:var(--text-2); line-height:1.6; }
+  .bw-case-status b { color:var(--apex); }
+  .bw-case-item.winner .bw-case-status b { color:var(--amber); }
+  @media (max-width:560px) { .bw-case { grid-template-columns:1fr; } }
 
   .bw-case-cta { margin-top:20px; text-align:center; }
 
@@ -143,7 +157,7 @@
 <div class="bw-hero">
   <div class="bw-eyebrow"><a id="bwEyebrow" href="#" target="_blank" rel="noopener" style="color:inherit">Covering Portland Mercury's Burger Week →</a></div>
   <h1 class="bw-title">BURGER<br>WEEK</h1>
-  <p class="bw-sub">One week, one city, a lot of burgers. Eat at a participating spot, post your review here, and it counts toward the leaderboard and your Burger Week badge.</p>
+  <p class="bw-sub">One week, 124 restaurants, one city. Eat at a participating spot, post your review here, and it counts toward the leaderboard and your badge.</p>
   <div class="bw-status" id="bwStatus"><span class="dot"></span><span id="bwStatusText">Loading dates…</span></div>
   <div class="bw-cta">
     <a class="bw-btn primary" href="submit.html">Post a Review</a>
@@ -169,14 +183,14 @@
       <div class="bw-step">
         <div class="bw-step-n">03</div>
         <div class="bw-step-t">It counts automatically</div>
-        <div class="bw-step-d">One review earns the badge. Three spots — or a single Legendary call — earns the trophy. Shows up in the case below.</div>
+        <div class="bw-step-d">One review earns the badge. Three earns Champion. Seven — a review a day — earns Winner.</div>
       </div>
     </div>
   </div>
 
   <div class="bw-section" id="restaurants">
     <div class="bw-head">Participating restaurants</div>
-    <p class="bw-text" id="bwRestoIntro">124 spots across Portland. Reviewed ones are marked below.</p>
+    <p class="bw-text" id="bwRestoIntro">114 spots across Portland. Reviewed ones are marked below.</p>
     <input type="text" id="bwFilter" class="bw-filter" placeholder="Filter by name or neighborhood…" oninput="renderRestaurants()">
     <div id="bwGrid"></div>
     <p class="bw-empty-d" id="bwFilterEmpty" style="display:none; text-align:center; margin-top:16px;">No matches. Try a different spelling.</p>
@@ -196,9 +210,9 @@
     <div class="bw-head">Your badge</div>
     <p class="bw-text">Post one review of a participating restaurant during the week and it's yours.</p>
     <div class="bw-badge-row">
-      <div class="bw-badge-icon locked" id="bwBadgeIcon">🏅</div>
+      <div class="bw-tile locked" id="bwBadgeIcon"><span>🏅</span></div>
       <div class="bw-badge-info">
-        <div class="bw-badge-name">Burger Week Badge</div>
+        <div class="bw-badge-name">PDX Burger Week 2026</div>
         <div class="bw-badge-status" id="bwBadgeStatus">Sign in to track your progress.</div>
       </div>
     </div>
@@ -206,12 +220,20 @@
 
   <div class="bw-section">
     <div class="bw-head">Trophy case</div>
-    <p class="bw-text">Cover <b id="bwThreshText">3</b> different participating spots — or already be a <b>Burger Master</b> — and it's yours.</p>
-    <div class="bw-trophy-case" id="bwTrophyCase">
-      <div class="bw-trophy-icon locked" id="bwTrophyIcon">🏆</div>
-      <div class="bw-trophy-name">Trophy</div>
-      <div class="bw-trophy-rule" id="bwTrophyRule">3 spots, or Burger Master rank</div>
-      <div class="bw-trophy-status" id="bwTrophyStatus">Sign in to track your progress.</div>
+    <p class="bw-text">Post <b id="bwChampionThreshText">3</b> Burger Week reviews for Champion. Post <b id="bwWinnerThreshText">7</b> — a review a day — for Winner.</p>
+    <div class="bw-case">
+      <div class="bw-case-item champion" id="bwChampionCase">
+        <div class="bw-tile locked" id="bwChampionIcon"><span>🏆</span><span class="overlay">🍔</span></div>
+        <div class="bw-case-name">Champion</div>
+        <div class="bw-case-rule" id="bwChampionRule">3 Burger Week reviews</div>
+        <div class="bw-case-status" id="bwChampionStatus">Sign in to track your progress.</div>
+      </div>
+      <div class="bw-case-item winner" id="bwWinnerCase">
+        <div class="bw-tile locked" id="bwWinnerIcon"><span>🏆</span><span class="overlay">⚡</span></div>
+        <div class="bw-case-name">Winner</div>
+        <div class="bw-case-rule" id="bwWinnerRule">7 Burger Week reviews</div>
+        <div class="bw-case-status" id="bwWinnerStatus">Sign in to track your progress.</div>
+      </div>
     </div>
     <div class="bw-case-cta"><a class="bw-btn primary" href="submit.html">Post a Review</a></div>
   </div>
@@ -221,18 +243,19 @@
 <!-- PROFILE DRAWER (shared) -->
 
 <script src="cbdb-config.js"></script>
-<script src="burger-week-data.js"></script>
+<script src="events-data.js"></script>
 <script type="module" src="auth.js"></script>
 <script src="auth-bridge.js"></script>
 <script src="drawer.js"></script>
 <script>
   const state = (window.__cbdb_state = window.__cbdb_state || {signedIn:false,handle:null,displayName:null});
+  const EV = EVENTS[ACTIVE_EVENT_ID];
 
   /* ---- Status line: before / during / after the event window ---- */
   function renderStatus(){
     const now = new Date();
-    const start = new Date(BURGER_WEEK.start + 'T00:00:00');
-    const end   = new Date(BURGER_WEEK.end + 'T23:59:59');
+    const start = new Date(EV.start + 'T00:00:00');
+    const end   = new Date(EV.end + 'T23:59:59');
     const el = document.getElementById('bwStatusText');
     if(now < start){
       const days = Math.ceil((start - now) / 86400000);
@@ -244,20 +267,21 @@
     }
   }
   function fmtRange(){
-    const s = new Date(BURGER_WEEK.start + 'T00:00:00');
-    const e = new Date(BURGER_WEEK.end + 'T00:00:00');
+    const s = new Date(EV.start + 'T00:00:00');
+    const e = new Date(EV.end + 'T00:00:00');
     const opts = { month:'short', day:'numeric' };
     return s.toLocaleDateString('en-US',opts) + '–' + e.toLocaleDateString('en-US',opts);
   }
 
-  /* ---- Restaurant grid ---- */
+  /* ---- Restaurant grid (display only — reviewed status still checks the
+     stored event tag, just paired with name-matching to know WHICH card) ---- */
   function renderRestaurants(){
-    const all = bwGroupedRestaurants();
+    const all = evGroupedRestaurants(ACTIVE_EVENT_ID);
     const grid = document.getElementById('bwGrid');
     const intro = document.getElementById('bwRestoIntro');
     const emptyMsg = document.getElementById('bwFilterEmpty');
-    if(!BURGER_WEEK.restaurants.length){
-      intro.textContent = 'The list drops when Portland Mercury finalizes it. Check back soon.';
+    if(!EV.restaurants.length){
+      intro.textContent = 'The list drops when it\'s finalized. Check back soon.';
       grid.innerHTML = '<div class="bw-empty"><div class="bw-empty-t">List coming soon</div><div class="bw-empty-d">We\'ll post here — and on Bluesky — the moment it\'s final.</div></div>';
       emptyMsg.style.display = 'none';
       return;
@@ -267,11 +291,11 @@
     const list = q ? all.filter(g =>
       g.name.toLowerCase().includes(q) || g.locations.some(l => (l.neighborhood||'').toLowerCase().includes(q))
     ) : all;
-    // A chain shows "Reviewed" the moment ANY of its locations has a
-    // counted entry in the window — matches the same logic the trophy
-    // count uses (one chain = one spot, regardless of which venue).
+    // A chain shows "Reviewed" if any event-tagged review's restaurant
+    // name maps to it. The event tag (not a date window) is what makes
+    // this count; the name match just picks which card lights up.
     const reviewedChains = new Set(
-      reviews.filter(r => bwInWindow(r.createdAt) && bwIsParticipant(r.name)).map(r => bwChainKeyFor(r.name))
+      reviews.filter(r => r.event === ACTIVE_EVENT_ID).map(r => evChainKeyFor(ACTIVE_EVENT_ID, r.name))
     );
     grid.className = 'bw-grid';
     if(!list.length){
@@ -297,76 +321,93 @@
     }).join('');
   }
 
-  /* ---- Counter strip + leaderboard ---- */
+  /* ---- Counter strip + leaderboard — straight counts of event-tagged
+     reviews, same as the badge/trophy logic (no distinct-spot dedup). ---- */
   function renderStats(){
-    const entries = bwEntries(reviews);
+    const entries = reviews.filter(r => r.event === ACTIVE_EVENT_ID);
     document.getElementById('bwStatEntries').textContent = entries.length;
-    document.getElementById('bwStatSpots').textContent = new Set(entries.map(r=>bwChainKeyFor(r.name))).size;
+    document.getElementById('bwStatSpots').textContent = new Set(entries.map(r=>evChainKeyFor(ACTIVE_EVENT_ID, r.name))).size;
     const byHandle = {};
     entries.forEach(r=>{
       const h = r.by || 'unknown';
-      byHandle[h] = byHandle[h] || new Set();
-      byHandle[h].add(bwChainKeyFor(r.name));
+      byHandle[h] = (byHandle[h] || 0) + 1;
     });
     const people = Object.keys(byHandle);
     document.getElementById('bwStatPeople').textContent = people.length;
-    const ranked = people.map(h=>({handle:h, count:byHandle[h].size})).sort((a,b)=>b.count-a.count).slice(0,5);
+    const ranked = people.map(h=>({handle:h, count:byHandle[h]})).sort((a,b)=>b.count-a.count).slice(0,5);
     const lb = document.getElementById('bwLeaderboard');
     lb.innerHTML = ranked.length ? ranked.map((p,i)=>
-      '<div class="bw-lb-row"><div class="bw-lb-rank">'+(i+1)+'</div><div class="bw-lb-handle">@'+p.handle+'</div><div class="bw-lb-count">'+p.count+'<span> spot'+(p.count===1?'':'s')+'</span></div></div>'
+      '<div class="bw-lb-row"><div class="bw-lb-rank">'+(i+1)+'</div><div class="bw-lb-handle">@'+p.handle+'</div><div class="bw-lb-count">'+p.count+'<span> review'+(p.count===1?'':'s')+'</span></div></div>'
     ).join('') : '<div class="bw-lb-row"><div class="bw-lb-handle" style="color:var(--text-3)">No entries yet — be the first.</div></div>';
   }
 
-  /* ---- Your badge ---- */
+  /* ---- Badge & trophy — simple counts of THIS event's tagged reviews.
+     1 review = badge. 3 reviews = trophy. No distinct-restaurant dedup,
+     no rating involved, exactly per spec. ---- */
   function renderBadge(){
-    const need = BURGER_WEEK.trophyThreshold;
-    document.getElementById('bwThreshText').textContent = need;
-    document.getElementById('bwTrophyRule').textContent = need + ' spots, or Burger Master rank';
+    document.getElementById('bwChampionThreshText').textContent = EV.championThreshold;
+    document.getElementById('bwWinnerThreshText').textContent = EV.winnerThreshold;
+    document.getElementById('bwChampionRule').textContent = EV.championThreshold + ' Burger Week reviews';
+    document.getElementById('bwWinnerRule').textContent = EV.winnerThreshold + ' Burger Week reviews';
 
     const badgeIcon = document.getElementById('bwBadgeIcon');
     const badgeStatus = document.getElementById('bwBadgeStatus');
-    const trophyCase = document.getElementById('bwTrophyCase');
-    const trophyIcon = document.getElementById('bwTrophyIcon');
-    const trophyStatus = document.getElementById('bwTrophyStatus');
+    const championCase = document.getElementById('bwChampionCase');
+    const championIcon = document.getElementById('bwChampionIcon');
+    const championStatus = document.getElementById('bwChampionStatus');
+    const winnerCase = document.getElementById('bwWinnerCase');
+    const winnerIcon = document.getElementById('bwWinnerIcon');
+    const winnerStatus = document.getElementById('bwWinnerStatus');
 
     if(!state.signedIn){
-      badgeIcon.className = 'bw-badge-icon locked';
+      badgeIcon.className = 'bw-tile locked';
       badgeStatus.textContent = 'Sign in to track your progress.';
-      trophyIcon.className = 'bw-trophy-icon locked';
-      trophyCase.classList.remove('earned');
-      trophyStatus.textContent = 'Sign in to track your progress.';
+      championIcon.className = 'bw-tile locked';
+      championCase.classList.remove('earned');
+      championStatus.textContent = 'Sign in to track your progress.';
+      winnerIcon.className = 'bw-tile locked';
+      winnerCase.classList.remove('earned');
+      winnerStatus.textContent = 'Sign in to track your progress.';
       return;
     }
 
-    const covered = bwCoverageFor(reviews, state).size;
-    const topRank = bwHasTopRank(state);
-    const tier = bwTier(reviews, state);
+    const count = evEntriesFor(state, ACTIVE_EVENT_ID).length;
 
-    // Badge — earned the moment there's 1 counted entry.
-    if(covered >= 1){
-      badgeIcon.className = 'bw-badge-icon earned';
-      badgeStatus.innerHTML = '<b>Earned.</b> '+covered+' spot'+(covered===1?'':'s')+' reviewed.';
+    // Badge — earned the moment there's 1 tagged review.
+    if(evHasBadge(state, ACTIVE_EVENT_ID)){
+      badgeIcon.className = 'bw-tile earned';
+      badgeStatus.innerHTML = '<b>Earned.</b> '+count+' review'+(count===1?'':'s')+' posted.';
     } else {
-      badgeIcon.className = 'bw-badge-icon locked';
+      badgeIcon.className = 'bw-tile locked';
       badgeStatus.textContent = 'Post your first Burger Week review to earn it.';
     }
 
-    // Trophy — spot-count threshold or already Burger Master.
-    if(tier === 'trophy'){
-      trophyIcon.className = 'bw-trophy-icon earned';
-      trophyCase.classList.add('earned');
-      trophyStatus.innerHTML = topRank && covered < need
-        ? '<b>Earned.</b> Your Burger Master rank did it.'
-        : '<b>Earned.</b> '+covered+' spots reviewed.';
+    // Champion — flat review-count threshold.
+    if(evHasChampion(state, ACTIVE_EVENT_ID)){
+      championIcon.className = 'bw-tile earned';
+      championCase.classList.add('earned');
+      championStatus.innerHTML = '<b>Earned.</b> '+count+' reviews posted.';
     } else {
-      trophyIcon.className = 'bw-trophy-icon locked';
-      trophyCase.classList.remove('earned');
-      const left = need - covered;
-      trophyStatus.textContent = covered + ' of '+need+' spots reviewed. '+left+' more — or reaching Burger Master — gets you there.';
+      championIcon.className = 'bw-tile locked';
+      championCase.classList.remove('earned');
+      const left = EV.championThreshold - count;
+      championStatus.textContent = count + ' of '+EV.championThreshold+' reviews posted. '+left+' more to go.';
+    }
+
+    // Winner — ultra rare, playful copy on earn.
+    if(evHasWinner(state, ACTIVE_EVENT_ID)){
+      winnerIcon.className = 'bw-tile earned rare';
+      winnerCase.classList.add('earned');
+      winnerStatus.innerHTML = '<b>'+EV.tierDisplay.winner.playfulCopy+'</b>';
+    } else {
+      winnerIcon.className = 'bw-tile locked';
+      winnerCase.classList.remove('earned');
+      const left = EV.winnerThreshold - count;
+      winnerStatus.textContent = count + ' of '+EV.winnerThreshold+' reviews posted. '+left+' more to go.';
     }
   }
 
-  document.getElementById('bwEyebrow').href = BURGER_WEEK.hostUrl;
+  document.getElementById('bwEyebrow').href = EV.hostUrl;
 
   function renderAll(){
     renderStatus();
