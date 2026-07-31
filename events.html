@@ -77,16 +77,8 @@
   .bw-tile.earned { border:1px solid rgba(255,157,46,0.4); }
   .bw-tile.earned.rare { border:2px solid var(--amber); }
 
-  /* ── BADGE (compact) ── */
-  .bw-badge-row { display:flex; align-items:center; gap:16px; background:var(--surface); border:1px solid var(--border); padding:16px 20px; margin-top:20px; }
-  .bw-badge-row .bw-tile { width:44px; height:44px; font-size:22px; }
-  .bw-badge-info { flex:1; min-width:0; }
-  .bw-badge-name { font-family:var(--font-display); font-size:17px; letter-spacing:0.5px; color:var(--text); line-height:1; }
-  .bw-badge-status { font-size:12px; color:var(--text-2); margin-top:4px; line-height:1.5; }
-  .bw-badge-status b { color:var(--apex); }
-
-  /* ── TROPHY CASE (prominent, two slots: Champion + Winner) ── */
-  .bw-case { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:20px; }
+  /* ── BADGE CASE (single unified 3-slot grid: Badge / Champion / Winner) ── */
+  .bw-case { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:20px; }
   .bw-case-item { background:var(--surface); border:1px solid var(--border); padding:24px 20px; text-align:center; }
   .bw-case-item.earned { border-color:var(--apex); }
   .bw-case-item.winner.earned { border-color:var(--amber); }
@@ -98,7 +90,7 @@
   .bw-case-status { font-size:13px; color:var(--text-2); line-height:1.6; }
   .bw-case-status b { color:var(--apex); }
   .bw-case-item.winner .bw-case-status b { color:var(--amber); }
-  @media (max-width:560px) { .bw-case { grid-template-columns:1fr; } }
+  @media (max-width:640px) { .bw-case { grid-template-columns:1fr; } }
 
   .bw-case-cta { margin-top:20px; text-align:center; }
 
@@ -146,7 +138,7 @@
   <div class="bw-eyebrow"><a id="bwEyebrow" href="#" target="_blank" rel="noopener" style="color:inherit">Covering Portland Mercury's Burger Week →</a></div>
   <h1 class="bw-title">BURGER<br>WEEK</h1>
   <p class="bw-sub">One week, 124 restaurants, one city. Eat at a participating spot, post your review here, and help others know what's worth a trip — and what's worth skipping.</p>
-  <p class="bw-sub-note">Use the exact restaurant name from the list below — add your city if it repeats — so it counts. Name the burger in your review so people know what to order.</p>
+  <p class="bw-sub-note">Use the exact restaurant name from the list below so it counts. Name the burger in your review — it'll help others even after it's off the menu.</p>
   <div class="bw-status" id="bwStatus"><span class="dot"></span><span id="bwStatusText">Loading dates…</span></div>
   <div class="bw-cta">
     <a class="bw-btn primary" href="submit.html">Post a Review</a>
@@ -175,16 +167,15 @@
   </div>
 
   <div class="bw-section">
-    <div class="bw-head">Badges</div>
-    <p class="bw-text">Post one review for the badge. <b id="bwChampionThreshText">3</b> for Champion. <b id="bwWinnerThreshText">7</b> — a review a day — for Winner.</p>
-    <div class="bw-badge-row">
-      <div class="bw-tile locked" id="bwBadgeIcon"><span>🏅</span></div>
-      <div class="bw-badge-info">
-        <div class="bw-badge-name">PDX Burger Week 2026</div>
-        <div class="bw-badge-status" id="bwBadgeStatus">Sign in to track your progress.</div>
+    <div class="bw-head">Eat burgers. Earn badges.</div>
+    <p class="bw-text">Post a review of a participating restaurant during the week and earn a special Burger Week 2026 badge. Post 3 and earn a trophy. Post 7 and win the event (unofficially, of course).</p>
+    <div class="bw-case three">
+      <div class="bw-case-item" id="bwBadgeCase">
+        <div class="bw-tile locked" id="bwBadgeIcon"><span>🏅</span></div>
+        <div class="bw-case-name">Badge</div>
+        <div class="bw-case-rule">1 Burger Week review</div>
+        <div class="bw-case-status" id="bwBadgeStatus">Sign in to track your progress.</div>
       </div>
-    </div>
-    <div class="bw-case">
       <div class="bw-case-item champion" id="bwChampionCase">
         <div class="bw-tile locked" id="bwChampionIcon"><span>🏆</span></div>
         <div class="bw-case-name">Champion</div>
@@ -319,11 +310,10 @@
      1 review = badge. 3 reviews = trophy. No distinct-restaurant dedup,
      no rating involved, exactly per spec. ---- */
   function renderBadge(){
-    document.getElementById('bwChampionThreshText').textContent = EV.championThreshold;
-    document.getElementById('bwWinnerThreshText').textContent = EV.winnerThreshold;
     document.getElementById('bwChampionRule').textContent = EV.championThreshold + ' Burger Week reviews';
     document.getElementById('bwWinnerRule').textContent = EV.winnerThreshold + ' Burger Week reviews';
 
+    const badgeCase = document.getElementById('bwBadgeCase');
     const badgeIcon = document.getElementById('bwBadgeIcon');
     const badgeStatus = document.getElementById('bwBadgeStatus');
     const championCase = document.getElementById('bwChampionCase');
@@ -335,6 +325,7 @@
 
     if(!state.signedIn){
       badgeIcon.className = 'bw-tile locked';
+      badgeCase.classList.remove('earned');
       badgeStatus.textContent = 'Sign in to track your progress.';
       championIcon.className = 'bw-tile locked';
       championCase.classList.remove('earned');
@@ -350,9 +341,11 @@
     // Badge — earned the moment there's 1 tagged review.
     if(evHasBadge(state, ACTIVE_EVENT_ID)){
       badgeIcon.className = 'bw-tile earned';
+      badgeCase.classList.add('earned');
       badgeStatus.innerHTML = '<b>Earned.</b> '+count+' review'+(count===1?'':'s')+' posted.';
     } else {
       badgeIcon.className = 'bw-tile locked';
+      badgeCase.classList.remove('earned');
       badgeStatus.textContent = 'Post your first Burger Week review to earn it.';
     }
 
