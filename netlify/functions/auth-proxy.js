@@ -21,7 +21,7 @@ import {
   refreshAccessToken,
   SESSION_COOKIE,
 } from '../_auth-utils.js';
-import { issuerRequest, getIssuerDid } from './_badge-issuer.js';
+import { issuerRequest, getIssuerDid } from '../_badge-issuer.js';
 
 // ─── Active event tagging (evergreen gamification) ────────────────────────
 // When a review's restaurant + createdAt match a currently-active event,
