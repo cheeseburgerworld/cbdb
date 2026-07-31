@@ -150,7 +150,7 @@
 
   <div class="bw-section" id="restaurants">
     <div class="bw-head">Participating restaurants</div>
-    <p class="bw-text" id="bwRestoIntro">114 spots across Portland. Reviewed ones are marked below.</p>
+    <p class="bw-text" id="bwRestoIntro">114 unique burgers across Portland. Reviewed ones are marked below.</p>
     <input type="text" id="bwFilter" class="bw-filter" placeholder="Filter by name or neighborhood…" oninput="renderRestaurants()">
     <div id="bwGrid"></div>
     <p class="bw-empty-d" id="bwFilterEmpty" style="display:none; text-align:center; margin-top:16px;">No matches. Try a different spelling.</p>
@@ -240,7 +240,7 @@
       emptyMsg.style.display = 'none';
       return;
     }
-    intro.textContent = all.length + ' spots across Portland. Reviewed ones are marked below.';
+    intro.textContent = all.length + ' unique burgers across Portland. Reviewed ones are marked below.';
     const q = (document.getElementById('bwFilter').value || '').trim().toLowerCase();
     const list = q ? all.filter(g =>
       g.name.toLowerCase().includes(q) || g.locations.some(l => (l.neighborhood||'').toLowerCase().includes(q))
