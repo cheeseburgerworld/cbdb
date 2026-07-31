@@ -26,6 +26,7 @@
   .bw-eyebrow { font-size:12px; letter-spacing:2px; text-transform:uppercase; color:var(--apex); margin-bottom:18px; }
   .bw-title { font-family:var(--font-display); font-size:72px; line-height:0.95; letter-spacing:1.5px; color:var(--text); margin-bottom:16px; }
   .bw-sub { font-size:15px; color:var(--text-2); line-height:1.7; max-width:580px; margin:0 auto 22px; }
+  .bw-sub-note { font-size:12px; color:var(--text-3); line-height:1.6; max-width:520px; margin:-8px auto 22px; }
   .bw-sub b { color:var(--text); }
   .bw-status { display:inline-flex; align-items:center; gap:8px; background:var(--surface); border:1px solid var(--border); padding:9px 18px; font-size:12px; letter-spacing:0.5px; color:var(--text-2); margin-bottom:28px; }
   .bw-status .dot { width:8px; height:8px; border-radius:50%; background:var(--presence); flex-shrink:0; }
@@ -41,14 +42,6 @@
   .bw-head { font-family:var(--font-display); font-size:26px; letter-spacing:1.5px; color:var(--amber); margin-bottom:16px; }
   .bw-text { font-size:14px; color:var(--text-2); line-height:1.75; max-width:640px; }
   .bw-text b { color:var(--text); }
-
-  /* ── HOW IT WORKS ── */
-  .bw-steps { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--border); border:1px solid var(--border); margin-top:20px; }
-  .bw-step { background:var(--surface); padding:22px 20px; }
-  .bw-step-n { font-family:var(--font-display); font-size:34px; color:var(--apex); line-height:1; margin-bottom:10px; }
-  .bw-step-t { font-family:var(--font-display); font-size:19px; letter-spacing:0.5px; color:var(--text); margin-bottom:6px; }
-  .bw-step-d { font-size:13px; color:var(--text-2); line-height:1.6; }
-  .bw-step-d code { background:var(--inset); padding:1px 6px; border:1px solid var(--border); color:var(--amber); font-size:12px; }
 
   /* ── RESTAURANT GRID ── */
   .bw-filter { width:100%; margin-top:16px; background:var(--inset); border:1px solid var(--border); color:var(--text); font-family:var(--font-body); font-size:14px; padding:12px 14px; }
@@ -83,9 +76,6 @@
   .bw-tile.locked { border:1px dashed var(--border); filter:grayscale(1) opacity(0.45); }
   .bw-tile.earned { border:1px solid rgba(255,157,46,0.4); }
   .bw-tile.earned.rare { border:2px solid var(--amber); }
-  .bw-tile .overlay { position:absolute; bottom:-3px; right:-3px; background:var(--surface);
-                       border:1px solid var(--border); border-radius:50%;
-                       display:flex; align-items:center; justify-content:center; line-height:1; }
 
   /* ── BADGE (compact) ── */
   .bw-badge-row { display:flex; align-items:center; gap:16px; background:var(--surface); border:1px solid var(--border); padding:16px 20px; margin-top:20px; }
@@ -101,7 +91,6 @@
   .bw-case-item.earned { border-color:var(--apex); }
   .bw-case-item.winner.earned { border-color:var(--amber); }
   .bw-case .bw-tile { width:80px; height:80px; font-size:40px; margin:0 auto 14px; border-radius:14px; }
-  .bw-case .bw-tile .overlay { width:26px; height:26px; font-size:15px; }
   .bw-case-name { font-family:var(--font-display); font-size:19px; letter-spacing:0.5px; color:var(--text); line-height:1.15; margin-bottom:4px; }
   .bw-case-item.earned .bw-case-name { color:var(--apex); }
   .bw-case-item.winner.earned .bw-case-name { color:var(--amber); }
@@ -124,7 +113,6 @@
 
   @media (max-width:700px) {
     .bw-title { font-size:46px; }
-    .bw-steps { grid-template-columns:1fr; }
     .bw-stats { grid-template-columns:1fr; }
   }
 
@@ -147,8 +135,8 @@
     <div class="tabs">
       <a class="tab" href="database.html">Database</a>
       <a class="tab" href="map.html">Map</a>
-      <a class="tab tab-bw active" href="events.html">Burger Week<span class="tab-dot"></span></a>
       <a class="tab" href="submit.html">Post a Review</a>
+      <a class="tab tab-bw active" href="events.html">Burger Week<span class="tab-dot"></span></a>
     </div>
   </div>
   <div class="nav-id" id="navId" onclick="openProfile()"><span class="dot out"></span>Not signed in</div>
@@ -157,7 +145,8 @@
 <div class="bw-hero">
   <div class="bw-eyebrow"><a id="bwEyebrow" href="#" target="_blank" rel="noopener" style="color:inherit">Covering Portland Mercury's Burger Week →</a></div>
   <h1 class="bw-title">BURGER<br>WEEK</h1>
-  <p class="bw-sub">One week, 124 restaurants, one city. Eat at a participating spot, post your review here, and it counts toward the leaderboard and your badge.</p>
+  <p class="bw-sub">One week, 124 restaurants, one city. Eat at a participating spot, post your review here, and help others know what's worth a trip — and what's worth skipping.</p>
+  <p class="bw-sub-note">Use the exact restaurant name from the list below — add your city if it repeats — so it counts. Name the burger in your review so people know what to order.</p>
   <div class="bw-status" id="bwStatus"><span class="dot"></span><span id="bwStatusText">Loading dates…</span></div>
   <div class="bw-cta">
     <a class="bw-btn primary" href="submit.html">Post a Review</a>
@@ -166,27 +155,6 @@
 </div>
 
 <div class="bw-wrap">
-
-  <div class="bw-section">
-    <div class="bw-head">How it works</div>
-    <div class="bw-steps">
-      <div class="bw-step">
-        <div class="bw-step-n">01</div>
-        <div class="bw-step-t">Eat somewhere on the list</div>
-        <div class="bw-step-d">Any participating restaurant, any day during Burger Week.</div>
-      </div>
-      <div class="bw-step">
-        <div class="bw-step-n">02</div>
-        <div class="bw-step-t">Post it like normal</div>
-        <div class="bw-step-d">Same form, same two paragraphs. Just make sure the restaurant name matches the list exactly. Posts to your Bluesky, tagged <code>#CBDB</code>.</div>
-      </div>
-      <div class="bw-step">
-        <div class="bw-step-n">03</div>
-        <div class="bw-step-t">It counts automatically</div>
-        <div class="bw-step-d">One review earns the badge. Three earns Champion. Seven — a review a day — earns Winner.</div>
-      </div>
-    </div>
-  </div>
 
   <div class="bw-section" id="restaurants">
     <div class="bw-head">Participating restaurants</div>
@@ -207,8 +175,8 @@
   </div>
 
   <div class="bw-section">
-    <div class="bw-head">Your badge</div>
-    <p class="bw-text">Post one review of a participating restaurant during the week and it's yours.</p>
+    <div class="bw-head">Badges</div>
+    <p class="bw-text">Post one review for the badge. <b id="bwChampionThreshText">3</b> for Champion. <b id="bwWinnerThreshText">7</b> — a review a day — for Winner.</p>
     <div class="bw-badge-row">
       <div class="bw-tile locked" id="bwBadgeIcon"><span>🏅</span></div>
       <div class="bw-badge-info">
@@ -216,20 +184,15 @@
         <div class="bw-badge-status" id="bwBadgeStatus">Sign in to track your progress.</div>
       </div>
     </div>
-  </div>
-
-  <div class="bw-section">
-    <div class="bw-head">Trophy case</div>
-    <p class="bw-text">Post <b id="bwChampionThreshText">3</b> Burger Week reviews for Champion. Post <b id="bwWinnerThreshText">7</b> — a review a day — for Winner.</p>
     <div class="bw-case">
       <div class="bw-case-item champion" id="bwChampionCase">
-        <div class="bw-tile locked" id="bwChampionIcon"><span>🏆</span><span class="overlay">🍔</span></div>
+        <div class="bw-tile locked" id="bwChampionIcon"><span>🏆</span></div>
         <div class="bw-case-name">Champion</div>
         <div class="bw-case-rule" id="bwChampionRule">3 Burger Week reviews</div>
         <div class="bw-case-status" id="bwChampionStatus">Sign in to track your progress.</div>
       </div>
       <div class="bw-case-item winner" id="bwWinnerCase">
-        <div class="bw-tile locked" id="bwWinnerIcon"><span>🏆</span><span class="overlay">⚡</span></div>
+        <div class="bw-tile locked" id="bwWinnerIcon"><span>⚡</span></div>
         <div class="bw-case-name">Winner</div>
         <div class="bw-case-rule" id="bwWinnerRule">7 Burger Week reviews</div>
         <div class="bw-case-status" id="bwWinnerStatus">Sign in to track your progress.</div>
@@ -307,12 +270,23 @@
     grid.innerHTML = list.map(g=>{
       const done = reviewedChains.has(g.name.trim().toLowerCase());
       const multi = g.locations.length > 1;
-      const body = multi
-        ? '<div class="bw-card-locs">' + g.locations.map(l =>
-            '<div class="bw-card-loc"><b>'+(l.neighborhood||l.name)+'</b>'+(l.entry?' — '+l.entry:'')+'</div>'
-          ).join('') + '</div>'
-        : (g.locations[0].neighborhood ? '<div class="bw-card-hood">'+g.locations[0].neighborhood+'</div>' : '') +
-          (g.locations[0].entry ? '<div class="bw-card-entry">'+g.locations[0].entry+'</div>' : '');
+      const sameEntry = multi && g.locations.every(l => l.entry === g.locations[0].entry);
+      let body;
+      if(!multi){
+        body = (g.locations[0].neighborhood ? '<div class="bw-card-hood">'+g.locations[0].neighborhood+'</div>' : '') +
+               (g.locations[0].entry ? '<div class="bw-card-entry">'+g.locations[0].entry+'</div>' : '');
+      } else if(sameEntry){
+        // Same dish at every location — list neighborhoods once, comma-separated,
+        // instead of repeating the burger name per line.
+        const hoods = g.locations.map(l => l.neighborhood).filter(Boolean).join(', ');
+        body = (hoods ? '<div class="bw-card-hood">'+hoods+'</div>' : '') +
+               (g.locations[0].entry ? '<div class="bw-card-entry">'+g.locations[0].entry+'</div>' : '');
+      } else {
+        // Different burgers per location (e.g. Papa Haydn) — keep the breakdown.
+        body = '<div class="bw-card-locs">' + g.locations.map(l =>
+          '<div class="bw-card-loc"><b>'+(l.neighborhood||l.name)+'</b>'+(l.entry?' — '+l.entry:'')+'</div>'
+        ).join('') + '</div>';
+      }
       return '<div class="bw-card">' +
         '<div class="bw-card-name">'+g.name+(multi?' <span class="bw-card-count">'+g.locations.length+' locations</span>':'')+'</div>' +
         body +
