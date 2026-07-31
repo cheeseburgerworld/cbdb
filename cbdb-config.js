@@ -45,7 +45,10 @@ function mapRow(r){
     did: r.author_did || (r.contributors && r.contributors.did) || '',
     by: (r.contributors && r.contributors.handle) || r.author_handle || '',
     // contributor avatar, if the contributors table stores one (nullable)
-    byAvatar: (r.contributors && r.contributors.avatar) || ''
+    byAvatar: (r.contributors && r.contributors.avatar) || '',
+    // Evergreen event tag (e.g. 'PDXBW26'), stamped server-side at write
+    // time in auth-proxy.js. null for reviews that aren't part of an event.
+    event: r.event || null
   };
 }
 
