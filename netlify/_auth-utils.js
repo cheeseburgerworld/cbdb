@@ -18,8 +18,8 @@
 //    advertise a PAR endpoint, and returns the real PDS endpoint and the
 //    auth server's issuer as distinct fields (the previous version
 //    conflated them under "pdsEndpoint").
-// 4. CBDB is now a confidential client (private_key_jwt), not a public
-//    one. Every PAR / token / refresh / revoke request is authenticated
+// 4. CBDB is now a confidential client (private_key_jwt)
+//    Every PAR / token / refresh / revoke request is authenticated
 //    with a signed client assertion, on top of the existing per-session
 //    DPoP proof — two independent, complementary proofs. Confirmed the
 //    exact assertion shape (aud = auth server issuer, not the specific
