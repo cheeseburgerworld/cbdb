@@ -1,0 +1,117 @@
+{
+  "lexicon": 1,
+  "id": "world.cheeseburger.event",
+  "defs": {
+    "main": {
+      "type": "record",
+      "description": "A time-boxed CBDB event (e.g. a city's Burger Week). Authored and owned by CBDB, stored on CBDB's own PDS — the canonical source of truth for the event's dates and participating restaurants. auth-proxy.js reads this record to tag reviews at write time instead of holding its own copy of the restaurant list.",
+      "key": "any",
+      "record": {
+        "type": "object",
+        "required": [
+          "name",
+          "slug",
+          "city",
+          "startsAt",
+          "endsAt",
+          "restaurants",
+          "createdAt"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxGraphemes": 200,
+            "maxLength": 800,
+            "description": "Display name, e.g. 'Portland Burger Week 2026'.",
+            "minGraphemes": 1,
+            "minLength": 1
+          },
+          "slug": {
+            "type": "string",
+            "maxGraphemes": 40,
+            "maxLength": 160,
+            "description": "Short event tag ID stamped on reviews, e.g. 'PDXBW26'. Also the record's rkey.",
+            "minGraphemes": 1,
+            "minLength": 1
+          },
+          "city": {
+            "type": "string",
+            "maxGraphemes": 100,
+            "maxLength": 400,
+            "description": "e.g. 'Portland, OR'.",
+            "minGraphemes": 1,
+            "minLength": 1
+          },
+          "host": {
+            "type": "string",
+            "maxGraphemes": 200,
+            "maxLength": 800,
+            "description": "Organizing publication or entity, e.g. 'Portland Mercury'."
+          },
+          "hostUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "Link to the host's own event page."
+          },
+          "startsAt": {
+            "type": "string",
+            "format": "datetime",
+            "description": "Event window start."
+          },
+          "endsAt": {
+            "type": "string",
+            "format": "datetime",
+            "description": "Event window end (inclusive)."
+          },
+          "restaurants": {
+            "type": "array",
+            "description": "Participating restaurant names. Matching is case-insensitive, whitespace-trimmed, against the `restaurant` field on a review.",
+            "items": {
+              "type": "string",
+              "maxGraphemes": 200,
+              "maxLength": 800
+            }
+          },
+          "badgeThreshold": {
+            "type": "integer",
+            "description": "Number of event-tagged reviews needed to earn the badge.",
+            "default": 1
+          },
+          "championThreshold": {
+            "type": "integer",
+            "description": "Number of event-tagged reviews needed to earn the champion tier.",
+            "default": 3
+          },
+          "winnerThreshold": {
+            "type": "integer",
+            "description": "Number of event-tagged reviews needed to earn the winner tier. Deliberately rare — designed to exceed the number of days in the event window."
+          },
+          "badgeDefinition": {
+            "type": "string",
+            "format": "at-uri",
+            "description": "AT-URI of the community.lexicon.badge.definition record for this event's badge tier."
+          },
+          "championDefinition": {
+            "type": "string",
+            "format": "at-uri",
+            "description": "AT-URI of the community.lexicon.badge.definition record for this event's champion tier."
+          },
+          "winnerDefinition": {
+            "type": "string",
+            "format": "at-uri",
+            "description": "AT-URI of the community.lexicon.badge.definition record for this event's winner tier."
+          },
+          "calendarEvent": {
+            "type": "string",
+            "format": "at-uri",
+            "description": "Optional. AT-URI of a community.lexicon.calendar.event record for this event, for discoverability in ATProto calendar apps."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "datetime"
+          }
+        }
+      }
+    }
+  }
+}
