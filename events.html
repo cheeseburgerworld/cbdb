@@ -25,8 +25,7 @@
   .bw-hero { max-width:760px; margin:0 auto; padding:70px 20px 40px; text-align:center; }
   .bw-eyebrow { font-size:12px; letter-spacing:2px; text-transform:uppercase; color:var(--apex); margin-bottom:18px; }
   .bw-title { font-family:var(--font-display); font-size:72px; line-height:0.95; letter-spacing:1.5px; color:var(--text); margin-bottom:16px; }
-  .bw-sub { font-size:15px; color:var(--text-2); line-height:1.7; max-width:580px; margin:0 auto 22px; }
-  .bw-sub-note { font-size:12px; color:var(--text-3); line-height:1.6; max-width:520px; margin:-8px auto 22px; }
+  .bw-sub { font-size:15px; color:var(--text-2); line-height:1.7; max-width:580px; margin:0 auto 26px; }
   .bw-sub b { color:var(--text); }
   .bw-status { display:inline-flex; align-items:center; gap:8px; background:var(--surface); border:1px solid var(--border); padding:9px 18px; font-size:12px; letter-spacing:0.5px; color:var(--text-2); margin-bottom:28px; }
   .bw-status .dot { width:8px; height:8px; border-radius:50%; background:var(--presence); flex-shrink:0; }
@@ -36,13 +35,15 @@
   .bw-btn.primary { background:var(--amber); color:var(--text-on-amber); border-color:var(--amber); font-weight:600; }
   .bw-btn.primary:hover { background:var(--amber-hover); }
 
-  /* ── PRESENTED-BY CREDIT — integrated under the CTAs, not a warning banner ── */
-  .bw-presented { max-width:520px; margin:30px auto 0; padding-top:22px; border-top:1px solid var(--border);
-    display:flex; flex-direction:column; gap:7px; align-items:center;
-    font-size:12px; color:var(--text-3); line-height:1.6; text-align:center; }
-  .bw-presented b { color:var(--text-2); font-weight:600; }
-  .bw-presented a { color:var(--text-2); text-decoration:none; border-bottom:1px solid transparent; transition:color .12s, border-color .12s; }
-  .bw-presented a:hover { color:var(--amber); border-bottom-color:rgba(255,157,46,0.5); }
+  /* ── PRESENTED-BY CREDIT — clear attribution card, not a warning banner ── */
+  .bw-credit { max-width:560px; margin:34px auto 0; padding-top:26px; border-top:1px solid var(--border); text-align:center; }
+  .bw-credit-lead { font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-3); margin-bottom:8px; }
+  .bw-credit-body { font-size:14px; color:var(--text-2); line-height:1.6; margin-bottom:16px; }
+  .bw-credit-body b { color:var(--text); font-weight:600; }
+  .bw-credit-link { display:inline-flex; align-items:center; gap:7px; font-family:var(--font-body); font-size:13px;
+    text-decoration:none; padding:10px 18px; border:1px solid var(--border); color:var(--text);
+    background:var(--surface); transition:border-color .12s, color .12s; }
+  .bw-credit-link:hover { border-color:var(--amber); color:var(--amber); }
 
   /* ── SHARED SECTION WRAP ── */
   .bw-wrap { max-width:900px; margin:0 auto; padding:0 20px; }
@@ -52,15 +53,18 @@
   .bw-text b { color:var(--text); }
 
   /* ── RESTAURANT GRID ── */
+  .bw-howto { font-size:13px; color:var(--text-2); line-height:1.65; background:var(--inset); border:1px solid var(--border); border-left:2px solid var(--amber); padding:13px 16px; margin-top:16px; }
+  .bw-howto b { color:var(--text); }
   .bw-filter { width:100%; margin-top:16px; background:var(--inset); border:1px solid var(--border); color:var(--text); font-family:var(--font-body); font-size:14px; padding:12px 14px; }
   .bw-filter::placeholder { color:var(--text-3); }
   .bw-filter:focus { border-color:var(--amber); outline:none; }
   .bw-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:12px; margin-top:20px; }
   .bw-card { background:var(--surface); border:1px solid var(--border); padding:16px 18px; }
   .bw-card-name { font-family:var(--font-display); font-size:19px; letter-spacing:0.5px; color:var(--text); line-height:1.15; }
+  /* Readable "N locations" — plain mono, sits under the name, no cramped pill. */
+  .bw-card-count { display:block; font-family:var(--font-body); font-size:11px; font-weight:500; letter-spacing:0.5px; color:var(--amber); margin-top:5px; }
   .bw-card-hood { font-size:11px; color:var(--text-3); margin-top:4px; }
   .bw-card-entry { font-size:12px; color:var(--text-2); margin-top:8px; line-height:1.5; }
-  .bw-card-count { font-size:9px; letter-spacing:0.5px; text-transform:uppercase; color:var(--amber); background:var(--inset); border:1px solid var(--border); padding:2px 7px; border-radius:3px; vertical-align:middle; margin-left:6px; }
   .bw-card-locs { margin-top:8px; display:flex; flex-direction:column; gap:6px; }
   .bw-card-loc { font-size:12px; color:var(--text-2); line-height:1.5; }
   .bw-card-loc b { color:var(--text); font-weight:600; }
@@ -153,32 +157,20 @@
 <div class="bw-hero">
   <div class="bw-eyebrow">Portland, OR</div>
   <h1 class="bw-title">BURGER<br>WEEK</h1>
-  <p class="bw-sub">One week, 124 restaurants, one city. Eat at a participating spot, post your review here, and help others know what's worth checking out — and what's worth skipping.</p>
-  <p class="bw-sub-note">Use the exact restaurant name from the list below so it counts. Name the burger in your review — it'll help others even after it's off the menu.</p>
+  <p class="bw-sub">One week, one city, a whole lot of burgers. Eat at a participating spot, post your review here, and help others know what's worth checking out — and what's worth skipping.</p>
   <div class="bw-status" id="bwStatus"><span class="dot"></span><span id="bwStatusText">Loading dates…</span></div>
   <div class="bw-cta">
     <a class="bw-btn primary" href="submit.html">Post a Review</a>
     <a class="bw-btn" href="#restaurants">See Participating Spots</a>
   </div>
-  <div class="bw-presented">
-    <span>The event is <b>Portland Mercury's Burger Week</b> — independently covered here.</span>
-    <a id="bwEyebrow" href="#" target="_blank" rel="noopener">Official lineup &amp; map →</a>
+  <div class="bw-credit">
+    <div class="bw-credit-lead">The Event</div>
+    <div class="bw-credit-body"><b>Burger Week</b> is created and hosted by the <b>Portland Mercury</b>. CB⚡DB is an independent fan project covering it — not an official partner.</div>
+    <a class="bw-credit-link" id="bwEyebrow" href="#" target="_blank" rel="noopener">See the official lineup &amp; map on EverOut →</a>
   </div>
 </div>
 
 <div class="bw-wrap">
-
-  <div class="bw-section" id="restaurants">
-    <div class="bw-head">Participating restaurants</div>
-    <p class="bw-text" id="bwRestoIntro">114 unique burgers across Portland. Reviewed ones are marked below.</p>
-    <input type="text" id="bwFilter" class="bw-filter" placeholder="Filter by name or neighborhood…" oninput="renderRestaurants()">
-    <div id="bwGrid"></div>
-    <p class="bw-empty-d" id="bwFilterEmpty" style="display:none; text-align:center; margin-top:16px;">No matches. Try a different spelling.</p>
-    <div class="bw-showmore" id="bwShowMore" style="display:none;">
-      <button class="bw-showmore-btn" onclick="bwExpandAll()">Show all spots</button>
-      <span class="bw-showmore-count" id="bwShowMoreCount"></span>
-    </div>
-  </div>
 
   <div class="bw-section">
     <div class="bw-head">This week, so far</div>
@@ -188,6 +180,19 @@
       <div class="bw-stat"><div class="bw-stat-num" id="bwStatPeople">0</div><div class="bw-stat-lab">Contributors</div></div>
     </div>
     <div class="bw-lb" id="bwLeaderboard"></div>
+  </div>
+
+  <div class="bw-section" id="restaurants">
+    <div class="bw-head">Participating restaurants</div>
+    <p class="bw-text" id="bwRestoIntro">Reviewed spots are marked below.</p>
+    <div class="bw-howto"><b>Reviewing a spot?</b> Use the restaurant's exact name from this list so it counts toward your badge — and name the burger in your review, so it helps people even after it's off the menu.</div>
+    <input type="text" id="bwFilter" class="bw-filter" placeholder="Filter by name or neighborhood…" oninput="renderRestaurants()">
+    <div id="bwGrid"></div>
+    <p class="bw-empty-d" id="bwFilterEmpty" style="display:none; text-align:center; margin-top:16px;">No matches. Try a different spelling.</p>
+    <div class="bw-showmore" id="bwShowMore" style="display:none;">
+      <button class="bw-showmore-btn" onclick="bwExpandAll()">Show all spots</button>
+      <span class="bw-showmore-count" id="bwShowMoreCount"></span>
+    </div>
   </div>
 
   <div class="bw-section">
@@ -254,7 +259,7 @@
   /* ---- Restaurant grid (display only — reviewed status still checks the
      stored event tag, just paired with name-matching to know WHICH card).
      Show-more: filtered results always render in full; only the unfiltered
-     default view caps at BW_MOBILE_CAP so the mobile page isn't a 124-card
+     default view caps at BW_MOBILE_CAP so the mobile page isn't a long
      scroll wall on first load. ---- */
   let bwShowAll = false;               // once true, render the full list for the session
   const BW_MOBILE_CAP = 24;            // initial cards shown on the unfiltered default view
@@ -273,7 +278,7 @@
       if(showMore) showMore.style.display = 'none';
       return;
     }
-    intro.textContent = all.length + ' unique burgers across Portland. Reviewed ones are marked below.';
+    intro.textContent = all.length + ' unique burgers across the Portland area. Reviewed spots are marked below.';
     const q = (document.getElementById('bwFilter').value || '').trim().toLowerCase();
     const filtered = q ? all.filter(g =>
       g.name.toLowerCase().includes(q) || g.locations.some(l => (l.neighborhood||'').toLowerCase().includes(q))
@@ -317,8 +322,9 @@
           '<div class="bw-card-loc"><b>'+(l.neighborhood||l.name)+'</b>'+(l.entry?' — '+l.entry:'')+'</div>'
         ).join('') + '</div>';
       }
+      const countLine = multi ? '<span class="bw-card-count">'+g.locations.length+' locations</span>' : '';
       return '<div class="bw-card">' +
-        '<div class="bw-card-name">'+g.name+(multi?' <span class="bw-card-count">'+g.locations.length+' locations</span>':'')+'</div>' +
+        '<div class="bw-card-name">'+g.name+'</div>' + countLine +
         body +
         '<div class="bw-card-chip'+(done?' reviewed':'')+'">'+(done?'✓ Reviewed':'Not yet reviewed')+'</div>' +
       '</div>';
