@@ -10,152 +10,133 @@
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://cheeseburger.world/events.html">
 <meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9A%A1%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="cbdb-theme.css">
 <style>
-:root{
-  --bg:#1a1815; --bg2:#211e1a; --bg3:#26221d; --line:#38332b;
-  --ink:#F5F4F2; --ink-dim:#C3BDB2; --ink-faint:#948D80;
-  --amber:#FF9D2E;
-  --legendary:#5BD94B; --trip:#FFC72C; --solid:#E8843C; --skip:#6B4A2F;
-  --badge1:#B08862; --badge2:#FFC72C; --badge3:#FF1F8F;
-}
-*{box-sizing:border-box;margin:0;padding:0;}
-body{
-  background:var(--bg); color:var(--ink);
-  font-family:'IBM Plex Mono',monospace;
-  min-height:100vh;
-}
-h1,h2,.disp{font-family:'Bebas Neue',sans-serif; letter-spacing:1px;}
-a{color:inherit;}
+  a.logo { text-decoration:none; }
+  a.tab { text-decoration:none; display:inline-block; }
+  .tab-bw { position:relative; }
+  .tab-bw .tab-dot { position:absolute; top:5px; right:6px; width:6px; height:6px; border-radius:50%; background:var(--apex); }
 
-/* ── NAV (matches site) ── */
-.nav{display:flex; align-items:center; justify-content:space-between; gap:16px;
-  padding:16px 24px; border-bottom:1px solid var(--line); background:var(--bg2);}
-.nav-left{display:flex; align-items:center; gap:28px; min-width:0;}
-a.logo{font-family:'Bebas Neue',sans-serif; font-size:22px; letter-spacing:2px; text-decoration:none; color:var(--ink); flex-shrink:0;}
-.bolt{color:var(--legendary);}
-.tabs{display:flex; gap:2px; overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none;}
-.tabs::-webkit-scrollbar{display:none;}
-a.tab{font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:0.5px;
-  padding:8px 13px; text-decoration:none; color:var(--ink-dim); border-radius:3px; white-space:nowrap; flex:0 0 auto;
-  transition:color .12s,background .12s;}
-a.tab:hover{color:var(--ink);}
-a.tab.active{color:var(--amber); background:rgba(255,157,46,0.08);}
-.nav-id{font-size:11px; color:var(--ink-faint); cursor:pointer; display:flex; align-items:center; gap:6px; white-space:nowrap; flex-shrink:0;}
-.dot{width:6px; height:6px; border-radius:50%; background:var(--ink-faint); display:inline-block;}
-.dot.in{background:var(--legendary);}
+  /* ── HERO ── */
+  .bw-hero { max-width:760px; margin:0 auto; padding:70px 20px 40px; text-align:center; }
+  .bw-eyebrow { font-size:12px; letter-spacing:2px; text-transform:uppercase; color:var(--apex); margin-bottom:18px; }
+  .bw-title { font-family:var(--font-display); font-size:72px; line-height:0.95; letter-spacing:1.5px; color:var(--text); margin-bottom:16px; }
+  .bw-sub { font-size:15px; color:var(--text-2); line-height:1.7; max-width:580px; margin:0 auto 22px; }
+  .bw-sub-note { font-size:12px; color:var(--text-3); line-height:1.6; max-width:520px; margin:-8px auto 22px; }
+  .bw-sub b { color:var(--text); }
+  .bw-status { display:inline-flex; align-items:center; gap:8px; background:var(--surface); border:1px solid var(--border); padding:9px 18px; font-size:12px; letter-spacing:0.5px; color:var(--text-2); margin-bottom:28px; }
+  .bw-status .dot { width:8px; height:8px; border-radius:50%; background:var(--presence); flex-shrink:0; }
+  .bw-cta { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+  .bw-btn { font-family:var(--font-body); font-size:14px; text-decoration:none; padding:13px 24px; border:1px solid var(--border); color:var(--text); background:var(--surface); }
+  .bw-btn:hover { border-color:var(--amber); color:var(--text); }
+  .bw-btn.primary { background:var(--amber); color:var(--text-on-amber); border-color:var(--amber); font-weight:600; }
+  .bw-btn.primary:hover { background:var(--amber-hover); }
 
-/* ── HERO ── */
-.hero{
-  position:relative; overflow:hidden;
-  border-bottom:1px solid var(--line);
-  background:
-    radial-gradient(1200px 400px at 50% -120px, rgba(255,157,46,0.10), transparent 70%),
-    var(--bg);
-}
-.hero-inner{max-width:900px; margin:0 auto; padding:60px 24px 44px; text-align:center; position:relative; z-index:2;}
-.eyebrow{font-size:11px; letter-spacing:2.5px; color:var(--amber); margin-bottom:16px; text-transform:uppercase;}
-.hero h1{font-size:clamp(56px,13vw,120px); line-height:0.86; margin-bottom:16px; text-shadow:0 2px 30px rgba(0,0,0,0.4);}
-.hero .dates{
-  display:inline-block; font-size:12px; letter-spacing:2px; color:var(--ink);
-  border:1px solid var(--line); border-radius:100px; padding:7px 18px; margin-bottom:24px;
-  background:var(--bg2);
-}
-.hero .dates .sep{color:var(--amber); margin:0 8px;}
-.hero .lede{font-size:15px; color:var(--ink-dim); line-height:1.75; max-width:620px; margin:0 auto 30px;}
-.hero-cta{display:flex; gap:12px; justify-content:center; flex-wrap:wrap;}
-.hero-btn{font-family:'IBM Plex Mono',monospace; font-size:13px; letter-spacing:0.5px;
-  padding:14px 28px; border-radius:3px; text-decoration:none; transition:opacity .12s, border-color .12s;}
-.hero-btn.primary{background:var(--amber); color:#1a1815; font-weight:600;}
-.hero-btn.secondary{border:1px solid var(--line); color:var(--ink);}
-.hero-btn.secondary:hover{border-color:var(--ink-faint);}
-.hero-btn.primary:hover{opacity:0.88;}
+  /* ── PRESENTED-BY CREDIT — integrated under the CTAs, not a warning banner ── */
+  .bw-presented { max-width:520px; margin:30px auto 0; padding-top:22px; border-top:1px solid var(--border);
+    display:flex; flex-direction:column; gap:7px; align-items:center;
+    font-size:12px; color:var(--text-3); line-height:1.6; text-align:center; }
+  .bw-presented b { color:var(--text-2); font-weight:600; }
+  .bw-presented a { color:var(--text-2); text-decoration:none; border-bottom:1px solid transparent; transition:color .12s, border-color .12s; }
+  .bw-presented a:hover { color:var(--amber); border-bottom-color:rgba(255,157,46,0.5); }
 
-/* Presented-by strip — integrated, not a warning banner.
-   Reads as a proud credit line, part of the hero composition. */
-.presented{
-  margin-top:34px; padding-top:22px; border-top:1px solid var(--line);
-  display:flex; align-items:center; justify-content:center; gap:10px; flex-wrap:wrap;
-  font-size:12px; color:var(--ink-faint); letter-spacing:0.3px;
-}
-.presented .lbl{text-transform:uppercase; letter-spacing:1.5px; font-size:10px; color:var(--ink-faint);}
-.presented a{
-  color:var(--ink-dim); text-decoration:none;
-  border-bottom:1px solid transparent; transition:color .12s, border-color .12s;
-}
-.presented a:hover{color:var(--amber); border-bottom-color:rgba(255,157,46,0.5);}
-.presented .divider{color:var(--line);}
+  /* ── SHARED SECTION WRAP ── */
+  .bw-wrap { max-width:900px; margin:0 auto; padding:0 20px; }
+  .bw-section { margin-top:48px; padding-top:32px; border-top:1px solid var(--border); }
+  .bw-head { font-family:var(--font-display); font-size:26px; letter-spacing:1.5px; color:var(--amber); margin-bottom:16px; }
+  .bw-text { font-size:14px; color:var(--text-2); line-height:1.75; max-width:640px; }
+  .bw-text b { color:var(--text); }
 
-/* ── LIVE STATS ── */
-.stats-strip{max-width:900px; margin:0 auto; padding:32px 24px 0;
-  display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:transparent;}
-.stat-cell{background:var(--bg2); border:1px solid var(--line); padding:22px 16px; text-align:center; border-radius:4px;}
-.stat-cell:nth-child(2){border-left:none; border-right:none; border-radius:0;}
-.stat-cell:first-child{border-radius:4px 0 0 4px;}
-.stat-cell:last-child{border-radius:0 4px 4px 0;}
-.stat-cell .num{font-family:'Bebas Neue',sans-serif; font-size:40px; color:var(--amber); line-height:1;}
-.stat-cell .lab{font-size:11px; color:var(--ink-faint); letter-spacing:1px; margin-top:6px; text-transform:uppercase;}
+  /* ── RESTAURANT GRID ── */
+  .bw-filter { width:100%; margin-top:16px; background:var(--inset); border:1px solid var(--border); color:var(--text); font-family:var(--font-body); font-size:14px; padding:12px 14px; }
+  .bw-filter::placeholder { color:var(--text-3); }
+  .bw-filter:focus { border-color:var(--amber); outline:none; }
+  .bw-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:12px; margin-top:20px; }
+  .bw-card { background:var(--surface); border:1px solid var(--border); padding:16px 18px; }
+  .bw-card-name { font-family:var(--font-display); font-size:19px; letter-spacing:0.5px; color:var(--text); line-height:1.15; }
+  .bw-card-hood { font-size:11px; color:var(--text-3); margin-top:4px; }
+  .bw-card-entry { font-size:12px; color:var(--text-2); margin-top:8px; line-height:1.5; }
+  .bw-card-count { font-size:9px; letter-spacing:0.5px; text-transform:uppercase; color:var(--amber); background:var(--inset); border:1px solid var(--border); padding:2px 7px; border-radius:3px; vertical-align:middle; margin-left:6px; }
+  .bw-card-locs { margin-top:8px; display:flex; flex-direction:column; gap:6px; }
+  .bw-card-loc { font-size:12px; color:var(--text-2); line-height:1.5; }
+  .bw-card-loc b { color:var(--text); font-weight:600; }
+  .bw-card-chip { display:inline-block; margin-top:10px; font-size:10px; letter-spacing:0.5px; text-transform:uppercase; padding:3px 9px; border:1px solid var(--border); color:var(--text-3); }
+  .bw-card-chip.reviewed { border-color:var(--presence); color:var(--presence); }
+  .bw-empty { background:var(--surface); border:1px dashed var(--border); padding:32px 24px; text-align:center; margin-top:20px; }
+  .bw-empty-t { font-family:var(--font-display); font-size:22px; color:var(--text); margin-bottom:8px; }
+  .bw-empty-d { font-size:13px; color:var(--text-2); }
 
-/* ── SECTIONS ── */
-.section{max-width:900px; margin:0 auto; padding:48px 24px 0;}
-.section:last-of-type{padding-bottom:56px;}
-.section-title{font-family:'Bebas Neue',sans-serif; font-size:30px; letter-spacing:1px; margin-bottom:4px;}
-.section-sub{font-size:12px; color:var(--ink-faint); margin-bottom:20px; line-height:1.6;}
-.section-sub a{color:var(--ink-dim); text-decoration:none; border-bottom:1px solid rgba(195,189,178,0.3);}
-.section-sub a:hover{color:var(--amber); border-bottom-color:rgba(255,157,46,0.5);}
+  /* ── SHOW-MORE (mobile scroll relief) ── */
+  .bw-showmore { text-align:center; margin-top:22px; }
+  .bw-showmore-btn { font-family:var(--font-body); font-size:13px; text-decoration:none; padding:12px 22px; border:1px solid var(--border); color:var(--text-2); background:var(--surface); cursor:pointer; transition:border-color .12s, color .12s; }
+  .bw-showmore-btn:hover { border-color:var(--amber); color:var(--text); }
+  .bw-showmore-count { display:block; font-size:11px; color:var(--text-3); margin-top:8px; }
+  .bw-showmore-count a { color:var(--text-2); border-bottom:1px solid rgba(255,157,46,0.3); text-decoration:none; }
+  .bw-showmore-count a:hover { color:var(--amber); border-bottom-color:rgba(255,157,46,0.6); }
 
-/* Restaurant search + list */
-.rest-search{width:100%; background:var(--bg2); border:1px solid var(--line); color:var(--ink);
-  font-family:'IBM Plex Mono',monospace; font-size:13px; padding:12px 14px; border-radius:3px; margin-bottom:16px;}
-.rest-search::placeholder{color:var(--ink-faint);}
-.rest-search:focus{outline:none; border-color:var(--amber);}
-.rest-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:10px;}
-.rest-card{background:var(--bg2); border:1px solid var(--line); border-radius:4px; padding:14px 16px;
-  display:flex; align-items:center; justify-content:space-between; gap:10px;}
-.rest-name{font-size:13px; color:var(--ink);}
-.rest-status{font-size:11px; letter-spacing:0.5px; padding:3px 9px; border-radius:12px; white-space:nowrap;}
-.rest-status.reviewed{background:rgba(91,217,75,0.12); color:var(--legendary);}
-.rest-status.open{background:rgba(148,141,128,0.10); color:var(--ink-faint);}
-.rest-empty{font-size:12px; color:var(--ink-faint); padding:24px 0; text-align:center;}
+  /* ── COUNTER STRIP ── */
+  .bw-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--border); border:1px solid var(--border); margin-top:20px; }
+  .bw-stat { background:var(--surface); padding:20px; text-align:center; }
+  .bw-stat-num { font-family:var(--font-display); font-size:38px; color:var(--text); line-height:1; }
+  .bw-stat-lab { font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-3); margin-top:6px; }
 
-/* Badges */
-.badge-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:12px;}
-.badge-card{background:var(--bg2); border:1px solid var(--line); border-radius:4px;
-  padding:24px 16px; text-align:center; position:relative;}
-.badge-card.earned{border-color:rgba(255,157,46,0.4);}
-.badge-glyph{font-size:32px; margin-bottom:10px; display:block; line-height:1;}
-.badge-name{font-family:'Bebas Neue',sans-serif; font-size:22px; letter-spacing:1px; margin-bottom:4px;}
-.badge-req{font-size:11px; color:var(--ink-faint); margin-bottom:14px;}
-.badge-progress{font-size:11px; color:var(--ink-dim); border-top:1px solid var(--line); padding-top:12px; letter-spacing:0.3px;}
-.badge-card[data-tier="1"] .badge-name{color:var(--badge1);}
-.badge-card[data-tier="2"] .badge-name{color:var(--badge2);}
-.badge-card[data-tier="3"] .badge-name{color:var(--badge3);}
+  /* ── BADGE TILES — same recipe as .rk-badge in ranks.html, extended
+     with a small overlay emoji for the two-emoji trophy tiers. ── */
+  .bw-tile { position:relative; display:flex; align-items:center; justify-content:center;
+             background:var(--inset); border-radius:8px; flex-shrink:0;
+             font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif; }
+  .bw-tile.locked { border:1px dashed var(--border); filter:grayscale(1) opacity(0.45); }
+  .bw-tile.earned { border:1px solid rgba(255,157,46,0.4); }
+  .bw-tile.earned.rare { border:2px solid var(--amber); }
 
-.rules-box{background:var(--bg2); border:1px solid var(--line); border-radius:4px; padding:20px 22px;
-  font-size:13px; color:var(--ink-dim); line-height:1.75;}
-.rules-box strong{color:var(--ink);}
+  /* ── BADGE CASE (single unified 3-slot grid: Badge / Champion / Winner) ── */
+  .bw-case { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:20px; }
+  .bw-case-item { background:var(--surface); border:1px solid var(--border); padding:24px 20px; text-align:center; }
+  .bw-case-item.earned { border-color:var(--apex); }
+  .bw-case-item.winner.earned { border-color:var(--amber); }
+  .bw-case .bw-tile { width:80px; height:80px; font-size:40px; margin:0 auto 14px; border-radius:14px; }
+  .bw-case-name { font-family:var(--font-display); font-size:19px; letter-spacing:0.5px; color:var(--text); line-height:1.15; margin-bottom:4px; }
+  .bw-case-item.earned .bw-case-name { color:var(--apex); }
+  .bw-case-item.winner.earned .bw-case-name { color:var(--amber); }
+  .bw-case-rule { font-size:11px; letter-spacing:0.5px; color:var(--text-3); text-transform:uppercase; margin-bottom:12px; }
+  .bw-case-status { font-size:13px; color:var(--text-2); line-height:1.6; }
+  .bw-case-status b { color:var(--apex); }
+  .bw-case-item.winner .bw-case-status b { color:var(--amber); }
+  @media (max-width:640px) { .bw-case { grid-template-columns:1fr; } }
 
-/* ── FOOTER (matches site) ── */
-.site-footer{border-top:1px solid var(--line); background:var(--bg2); margin-top:0; padding:22px 24px;}
-.footer-inner{max-width:1100px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;}
-.footer-links{display:flex; align-items:center; gap:20px; flex-wrap:wrap;}
-.footer-links a{font-size:12px; letter-spacing:0.5px; color:var(--ink-dim); text-decoration:none;}
-.footer-links a:hover{color:var(--amber);}
-.footer-copy{font-size:11px; color:var(--ink-faint);}
+  .bw-case-cta { margin-top:20px; text-align:center; }
 
-@media (max-width:640px){
-  .stats-strip{grid-template-columns:1fr; gap:10px;}
-  .stat-cell, .stat-cell:nth-child(2), .stat-cell:first-child, .stat-cell:last-child{border-radius:4px; border-left:1px solid var(--line); border-right:1px solid var(--line);}
-  .badge-grid{grid-template-columns:1fr;}
-  .rest-grid{grid-template-columns:1fr;}
-  .footer-inner{flex-direction:column; align-items:flex-start;}
-}
+  /* ── LEADERBOARD ── */
+  .bw-lb { margin-top:20px; display:flex; flex-direction:column; gap:1px; background:var(--border); border:1px solid var(--border); }
+  .bw-lb-row { display:flex; align-items:center; gap:14px; background:var(--surface); padding:14px 18px; }
+  .bw-lb-rank { font-family:var(--font-display); font-size:20px; color:var(--text-3); width:24px; flex-shrink:0; }
+  .bw-lb-row:first-child .bw-lb-rank { color:var(--apex); }
+  .bw-lb-handle { font-size:13px; color:var(--bsky); flex:1; min-width:0; }
+  .bw-lb-count { font-family:var(--font-display); font-size:18px; color:var(--text); }
+  .bw-lb-count span { font-size:10px; letter-spacing:0.5px; text-transform:uppercase; color:var(--text-3); font-family:var(--font-body); margin-left:4px; }
+
+  @media (max-width:700px) {
+    .bw-title { font-size:46px; }
+    .bw-stats { grid-template-columns:1fr; }
+  }
+
+  .site-footer { border-top:1px solid var(--border); background:var(--surface); margin-top:60px; padding:22px 20px; }
+  .footer-inner { max-width:1100px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+  .footer-links { display:flex; align-items:center; gap:20px; flex-wrap:wrap; }
+  .footer-links a { font-family:var(--font-body); font-size:12px; letter-spacing:0.5px; color:var(--text-2); text-decoration:none; }
+  .footer-links a:hover { color:var(--amber); }
+  .footer-copy { font-size:11px; color:var(--text-3); }
+  @media (max-width:760px) {
+    .footer-inner { flex-direction:column; align-items:flex-start; gap:14px; }
+    .drawer { width:100%; max-width:100%; }
+  }
 </style>
 </head>
 <body>
-
 <div class="nav">
   <div class="nav-left">
     <a class="logo" href="index.html">CB<span class="bolt">⚡</span>DB</a>
@@ -163,98 +144,304 @@ a.tab.active{color:var(--amber); background:rgba(255,157,46,0.08);}
       <a class="tab" href="database.html">Database</a>
       <a class="tab" href="map.html">Map</a>
       <a class="tab" href="submit.html">Post a Review</a>
-      <a class="tab active" href="events.html">Burger Week</a>
+      <a class="tab tab-bw active" href="events.html">Burger Week<span class="tab-dot"></span></a>
     </div>
   </div>
   <div class="nav-id" id="navId" onclick="openProfile()"><span class="dot out"></span>Not signed in</div>
 </div>
 
-<div class="hero">
-  <div class="hero-inner">
-    <div class="eyebrow">◈ Portland, OR</div>
-    <h1>BURGER<br>WEEK</h1>
-    <div class="dates">AUG 10 <span class="sep">→</span> 16, 2026</div>
-    <p class="lede">One week, 120+ restaurants, one city. Eat at a participating spot, post your review here, and help others know what's worth checking out — and what's worth skipping. Use the exact restaurant name from the list below so it counts. Name the burger in your review — it'll help others even after it's off the menu.</p>
-    <div class="hero-cta">
-      <a class="hero-btn primary" href="submit.html">Post a Review</a>
-      <a class="hero-btn secondary" href="#restaurants">See Participating Spots</a>
-    </div>
-
-    <!-- Presented-by: reads as a credit line, integrated into the hero -->
-    <div class="presented">
-      <span class="lbl">The Event</span>
-      <span class="divider">·</span>
-      <span>Portland Mercury's Burger Week — independently covered here.</span>
-      <span class="divider">·</span>
-      <a href="https://everout.com/portland/events/the-portland-mercurys-burger-week-2026/e222750/" target="_blank" rel="noopener">Official lineup &amp; map →</a>
-    </div>
+<div class="bw-hero">
+  <div class="bw-eyebrow">Portland, OR</div>
+  <h1 class="bw-title">BURGER<br>WEEK</h1>
+  <p class="bw-sub">One week, 124 restaurants, one city. Eat at a participating spot, post your review here, and help others know what's worth checking out — and what's worth skipping.</p>
+  <p class="bw-sub-note">Use the exact restaurant name from the list below so it counts. Name the burger in your review — it'll help others even after it's off the menu.</p>
+  <div class="bw-status" id="bwStatus"><span class="dot"></span><span id="bwStatusText">Loading dates…</span></div>
+  <div class="bw-cta">
+    <a class="bw-btn primary" href="submit.html">Post a Review</a>
+    <a class="bw-btn" href="#restaurants">See Participating Spots</a>
+  </div>
+  <div class="bw-presented">
+    <span>The event is <b>Portland Mercury's Burger Week</b> — independently covered here.</span>
+    <a id="bwEyebrow" href="#" target="_blank" rel="noopener">Official lineup &amp; map →</a>
   </div>
 </div>
 
-<div class="stats-strip">
-  <div class="stat-cell"><div class="num" id="statReviews">—</div><div class="lab">Reviews Posted</div></div>
-  <div class="stat-cell"><div class="num" id="statSpots">—</div><div class="lab">Spots Covered</div></div>
-  <div class="stat-cell"><div class="num" id="statContributors">—</div><div class="lab">Contributors</div></div>
-</div>
+<div class="bw-wrap">
 
-<div class="section" id="restaurants">
-  <div class="section-title">Participating Restaurants</div>
-  <div class="section-sub">120+ one-of-a-kind burgers across Portland. Reviewed ones are marked below. Full official list at <a href="https://everout.com/portland/events/the-portland-mercurys-burger-week-2026/e222750/" target="_blank" rel="noopener">Portland Mercury / EverOut</a>.</div>
-  <input class="rest-search" id="restSearch" type="text" placeholder="Search restaurants…" oninput="renderRestaurants()">
-  <div class="rest-grid" id="restGrid"></div>
-  <div class="rest-empty" id="restEmpty" style="display:none;">No matches. Try a different spelling.</div>
-</div>
-
-<div class="section">
-  <div class="section-title">Eat Burgers. Earn Badges.</div>
-  <div class="section-sub">Post a review of a participating restaurant during the week and earn a special Burger Week 2026 badge. Post 3 and earn a trophy. Post 7 and win the event (unofficially, of course).</div>
-  <div class="badge-grid">
-    <div class="badge-card" data-tier="1" id="badgeCard1">
-      <span class="badge-glyph">🏅</span>
-      <div class="badge-name">Badge</div>
-      <div class="badge-req">1 Burger Week review</div>
-      <div class="badge-progress" id="badgeProgress1">Sign in to track your progress.</div>
-    </div>
-    <div class="badge-card" data-tier="2" id="badgeCard2">
-      <span class="badge-glyph">🏆</span>
-      <div class="badge-name">Champion</div>
-      <div class="badge-req">3 Burger Week reviews</div>
-      <div class="badge-progress" id="badgeProgress2">Sign in to track your progress.</div>
-    </div>
-    <div class="badge-card" data-tier="3" id="badgeCard3">
-      <span class="badge-glyph">⚡</span>
-      <div class="badge-name">Winner</div>
-      <div class="badge-req">7 Burger Week reviews</div>
-      <div class="badge-progress" id="badgeProgress3">Sign in to track your progress.</div>
+  <div class="bw-section" id="restaurants">
+    <div class="bw-head">Participating restaurants</div>
+    <p class="bw-text" id="bwRestoIntro">114 unique burgers across Portland. Reviewed ones are marked below.</p>
+    <input type="text" id="bwFilter" class="bw-filter" placeholder="Filter by name or neighborhood…" oninput="renderRestaurants()">
+    <div id="bwGrid"></div>
+    <p class="bw-empty-d" id="bwFilterEmpty" style="display:none; text-align:center; margin-top:16px;">No matches. Try a different spelling.</p>
+    <div class="bw-showmore" id="bwShowMore" style="display:none;">
+      <button class="bw-showmore-btn" onclick="bwExpandAll()">Show all spots</button>
+      <span class="bw-showmore-count" id="bwShowMoreCount"></span>
     </div>
   </div>
-</div>
 
-<div class="section">
-  <div class="rules-box">
-    <strong>How it works:</strong> Post reviews the usual way — tagged #CBDB on Bluesky, indexed here automatically. Any review of a participating Burger Week restaurant posted between Aug 10–16 counts toward your badge progress and this page's leaderboard. Everything here is editorial judgment, never averaged — one reviewer's verdict stands as written.
+  <div class="bw-section">
+    <div class="bw-head">This week, so far</div>
+    <div class="bw-stats" id="bwStats">
+      <div class="bw-stat"><div class="bw-stat-num" id="bwStatEntries">0</div><div class="bw-stat-lab">Reviews Posted</div></div>
+      <div class="bw-stat"><div class="bw-stat-num" id="bwStatSpots">0</div><div class="bw-stat-lab">Spots Covered</div></div>
+      <div class="bw-stat"><div class="bw-stat-num" id="bwStatPeople">0</div><div class="bw-stat-lab">Contributors</div></div>
+    </div>
+    <div class="bw-lb" id="bwLeaderboard"></div>
   </div>
+
+  <div class="bw-section">
+    <div class="bw-head">Eat burgers. Earn badges.</div>
+    <p class="bw-text">Post a review of a participating restaurant during the week and earn a special Burger Week 2026 badge. Post 3 and earn a trophy. Post 7 and win the event (unofficially, of course).</p>
+    <div class="bw-case three">
+      <div class="bw-case-item" id="bwBadgeCase">
+        <div class="bw-tile locked" id="bwBadgeIcon"><span>🏅</span></div>
+        <div class="bw-case-name">Badge</div>
+        <div class="bw-case-rule">1 Burger Week review</div>
+        <div class="bw-case-status" id="bwBadgeStatus">Sign in to track your progress.</div>
+      </div>
+      <div class="bw-case-item champion" id="bwChampionCase">
+        <div class="bw-tile locked" id="bwChampionIcon"><span>🏆</span></div>
+        <div class="bw-case-name">Champion</div>
+        <div class="bw-case-rule" id="bwChampionRule">3 Burger Week reviews</div>
+        <div class="bw-case-status" id="bwChampionStatus">Sign in to track your progress.</div>
+      </div>
+      <div class="bw-case-item winner" id="bwWinnerCase">
+        <div class="bw-tile locked" id="bwWinnerIcon"><span>⚡</span></div>
+        <div class="bw-case-name">Winner</div>
+        <div class="bw-case-rule" id="bwWinnerRule">7 Burger Week reviews</div>
+        <div class="bw-case-status" id="bwWinnerStatus">Sign in to track your progress.</div>
+      </div>
+    </div>
+    <div class="bw-case-cta"><a class="bw-btn primary" href="submit.html">Post a Review</a></div>
+  </div>
+
 </div>
 
 <!-- PROFILE DRAWER (shared) -->
-<div class="drawer-bg" id="drawerBg" onclick="closeProfile()"></div>
-<div class="drawer" id="drawer">
-  <div class="drawer-head">
-    <div class="drawer-id">
-      <img class="p-avatar" id="pAvatar" alt="">
-      <div><div class="p-name" id="pName">—</div><div class="p-handle" id="pHandle">—</div></div>
-    </div>
-    <button class="drawer-x" onclick="closeProfile()">×</button>
-  </div>
-  <div class="p-stats">
-    <div class="p-stat"><div class="p-num" id="pCount">0</div><div class="p-lab">Reviews</div></div>
-    <div class="p-stat"><div class="p-num" id="pCities">0</div><div class="p-lab">Cities</div></div>
-  </div>
-  <div class="p-hist-label">Your reviews</div>
-  <div class="p-history" id="pHistory"></div>
-  <div class="p-signout"><button class="signout-link" onclick="cbdbSignOut()">Sign out</button></div>
-</div>
 
+<script src="cbdb-config.js"></script>
+<script src="events-data.js"></script>
+<script type="module" src="auth.js"></script>
+<script src="auth-bridge.js"></script>
+<script src="drawer.js"></script>
+<script>
+  const state = (window.__cbdb_state = window.__cbdb_state || {signedIn:false,handle:null,displayName:null});
+  const EV = EVENTS[ACTIVE_EVENT_ID];
+
+  /* ---- Status line: before / during / after the event window ---- */
+  function renderStatus(){
+    const now = new Date();
+    const start = new Date(EV.start + 'T00:00:00');
+    const end   = new Date(EV.end + 'T23:59:59');
+    const el = document.getElementById('bwStatusText');
+    if(now < start){
+      const days = Math.ceil((start - now) / 86400000);
+      el.textContent = 'Starts in ' + days + ' day' + (days===1?'':'s') + ' — ' + fmtRange();
+    } else if(now <= end){
+      el.textContent = 'Live now — ' + fmtRange();
+    } else {
+      el.textContent = fmtRange() + ' — wrapped';
+    }
+  }
+  function fmtRange(){
+    const s = new Date(EV.start + 'T00:00:00');
+    const e = new Date(EV.end + 'T00:00:00');
+    const opts = { month:'short', day:'numeric' };
+    return s.toLocaleDateString('en-US',opts) + '–' + e.toLocaleDateString('en-US',opts);
+  }
+
+  /* ---- Restaurant grid (display only — reviewed status still checks the
+     stored event tag, just paired with name-matching to know WHICH card).
+     Show-more: filtered results always render in full; only the unfiltered
+     default view caps at BW_MOBILE_CAP so the mobile page isn't a 124-card
+     scroll wall on first load. ---- */
+  let bwShowAll = false;               // once true, render the full list for the session
+  const BW_MOBILE_CAP = 24;            // initial cards shown on the unfiltered default view
+  function bwExpandAll(){ bwShowAll = true; renderRestaurants(); }
+
+  function renderRestaurants(){
+    const all = evGroupedRestaurants(ACTIVE_EVENT_ID);
+    const grid = document.getElementById('bwGrid');
+    const intro = document.getElementById('bwRestoIntro');
+    const emptyMsg = document.getElementById('bwFilterEmpty');
+    const showMore = document.getElementById('bwShowMore');
+    if(!EV.restaurants.length){
+      intro.textContent = 'The list drops when it\'s finalized. Check back soon.';
+      grid.innerHTML = '<div class="bw-empty"><div class="bw-empty-t">List coming soon</div><div class="bw-empty-d">We\'ll post here — and on Bluesky — the moment it\'s final.</div></div>';
+      emptyMsg.style.display = 'none';
+      if(showMore) showMore.style.display = 'none';
+      return;
+    }
+    intro.textContent = all.length + ' unique burgers across Portland. Reviewed ones are marked below.';
+    const q = (document.getElementById('bwFilter').value || '').trim().toLowerCase();
+    const filtered = q ? all.filter(g =>
+      g.name.toLowerCase().includes(q) || g.locations.some(l => (l.neighborhood||'').toLowerCase().includes(q))
+    ) : all;
+
+    // Filtered results always show in full — search should feel complete.
+    // Only the unfiltered default view gets capped. "Show all spots" lifts it.
+    const capped = (!q && !bwShowAll) ? filtered.slice(0, BW_MOBILE_CAP) : filtered;
+
+    // A chain shows "Reviewed" if any event-tagged review's restaurant
+    // name maps to it. The event tag (not a date window) is what makes
+    // this count; the name match just picks which card lights up.
+    const reviewedChains = new Set(
+      reviews.filter(r => r.event === ACTIVE_EVENT_ID).map(r => evChainKeyFor(ACTIVE_EVENT_ID, r.name))
+    );
+    grid.className = 'bw-grid';
+    if(!filtered.length){
+      grid.innerHTML = '';
+      emptyMsg.style.display = 'block';
+      if(showMore) showMore.style.display = 'none';
+      return;
+    }
+    emptyMsg.style.display = 'none';
+    grid.innerHTML = capped.map(g=>{
+      const done = reviewedChains.has(g.name.trim().toLowerCase());
+      const multi = g.locations.length > 1;
+      const sameEntry = multi && g.locations.every(l => l.entry === g.locations[0].entry);
+      let body;
+      if(!multi){
+        body = (g.locations[0].neighborhood ? '<div class="bw-card-hood">'+g.locations[0].neighborhood+'</div>' : '') +
+               (g.locations[0].entry ? '<div class="bw-card-entry">'+g.locations[0].entry+'</div>' : '');
+      } else if(sameEntry){
+        // Same dish at every location — list neighborhoods once, comma-separated,
+        // instead of repeating the burger name per line.
+        const hoods = g.locations.map(l => l.neighborhood).filter(Boolean).join(', ');
+        body = (hoods ? '<div class="bw-card-hood">'+hoods+'</div>' : '') +
+               (g.locations[0].entry ? '<div class="bw-card-entry">'+g.locations[0].entry+'</div>' : '');
+      } else {
+        // Different burgers per location (e.g. Papa Haydn) — keep the breakdown.
+        body = '<div class="bw-card-locs">' + g.locations.map(l =>
+          '<div class="bw-card-loc"><b>'+(l.neighborhood||l.name)+'</b>'+(l.entry?' — '+l.entry:'')+'</div>'
+        ).join('') + '</div>';
+      }
+      return '<div class="bw-card">' +
+        '<div class="bw-card-name">'+g.name+(multi?' <span class="bw-card-count">'+g.locations.length+' locations</span>':'')+'</div>' +
+        body +
+        '<div class="bw-card-chip'+(done?' reviewed':'')+'">'+(done?'✓ Reviewed':'Not yet reviewed')+'</div>' +
+      '</div>';
+    }).join('');
+
+    // Show-more control: only when the default view is actually capping cards.
+    if(showMore){
+      const hidden = filtered.length - capped.length;
+      if(hidden > 0){
+        showMore.style.display = 'block';
+        document.getElementById('bwShowMoreCount').innerHTML =
+          'Showing '+capped.length+' of '+filtered.length+' spots · <a href="'+EV.hostUrl+'" target="_blank" rel="noopener">full official list on EverOut →</a>';
+      } else {
+        showMore.style.display = 'none';
+      }
+    }
+  }
+
+  /* ---- Counter strip + leaderboard — straight counts of event-tagged
+     reviews, same as the badge/trophy logic (no distinct-spot dedup). ---- */
+  function renderStats(){
+    const entries = reviews.filter(r => r.event === ACTIVE_EVENT_ID);
+    document.getElementById('bwStatEntries').textContent = entries.length;
+    document.getElementById('bwStatSpots').textContent = new Set(entries.map(r=>evChainKeyFor(ACTIVE_EVENT_ID, r.name))).size;
+    const byHandle = {};
+    entries.forEach(r=>{
+      const h = r.by || 'unknown';
+      byHandle[h] = (byHandle[h] || 0) + 1;
+    });
+    const people = Object.keys(byHandle);
+    document.getElementById('bwStatPeople').textContent = people.length;
+    const ranked = people.map(h=>({handle:h, count:byHandle[h]})).sort((a,b)=>b.count-a.count).slice(0,5);
+    const lb = document.getElementById('bwLeaderboard');
+    lb.innerHTML = ranked.length ? ranked.map((p,i)=>
+      '<div class="bw-lb-row"><div class="bw-lb-rank">'+(i+1)+'</div><div class="bw-lb-handle">@'+p.handle+'</div><div class="bw-lb-count">'+p.count+'<span> review'+(p.count===1?'':'s')+'</span></div></div>'
+    ).join('') : '<div class="bw-lb-row"><div class="bw-lb-handle" style="color:var(--text-3)">No entries yet — be the first.</div></div>';
+  }
+
+  /* ---- Badge & trophy — simple counts of THIS event's tagged reviews.
+     1 review = badge. 3 reviews = trophy. No distinct-restaurant dedup,
+     no rating involved, exactly per spec. ---- */
+  function renderBadge(){
+    document.getElementById('bwChampionRule').textContent = EV.championThreshold + ' Burger Week reviews';
+    document.getElementById('bwWinnerRule').textContent = EV.winnerThreshold + ' Burger Week reviews';
+
+    const badgeCase = document.getElementById('bwBadgeCase');
+    const badgeIcon = document.getElementById('bwBadgeIcon');
+    const badgeStatus = document.getElementById('bwBadgeStatus');
+    const championCase = document.getElementById('bwChampionCase');
+    const championIcon = document.getElementById('bwChampionIcon');
+    const championStatus = document.getElementById('bwChampionStatus');
+    const winnerCase = document.getElementById('bwWinnerCase');
+    const winnerIcon = document.getElementById('bwWinnerIcon');
+    const winnerStatus = document.getElementById('bwWinnerStatus');
+
+    if(!state.signedIn){
+      badgeIcon.className = 'bw-tile locked';
+      badgeCase.classList.remove('earned');
+      badgeStatus.textContent = 'Sign in to track your progress.';
+      championIcon.className = 'bw-tile locked';
+      championCase.classList.remove('earned');
+      championStatus.textContent = 'Sign in to track your progress.';
+      winnerIcon.className = 'bw-tile locked';
+      winnerCase.classList.remove('earned');
+      winnerStatus.textContent = 'Sign in to track your progress.';
+      return;
+    }
+
+    const count = evEntriesFor(state, ACTIVE_EVENT_ID).length;
+
+    // Badge — earned the moment there's 1 tagged review.
+    if(evHasBadge(state, ACTIVE_EVENT_ID)){
+      badgeIcon.className = 'bw-tile earned';
+      badgeCase.classList.add('earned');
+      badgeStatus.innerHTML = '<b>Earned.</b> '+count+' review'+(count===1?'':'s')+' posted.';
+    } else {
+      badgeIcon.className = 'bw-tile locked';
+      badgeCase.classList.remove('earned');
+      badgeStatus.textContent = 'Post your first Burger Week review to earn it.';
+    }
+
+    // Champion — flat review-count threshold.
+    if(evHasChampion(state, ACTIVE_EVENT_ID)){
+      championIcon.className = 'bw-tile earned';
+      championCase.classList.add('earned');
+      championStatus.innerHTML = '<b>Earned.</b> '+count+' reviews posted.';
+    } else {
+      championIcon.className = 'bw-tile locked';
+      championCase.classList.remove('earned');
+      const left = EV.championThreshold - count;
+      championStatus.textContent = count + ' of '+EV.championThreshold+' reviews posted. '+left+' more to go.';
+    }
+
+    // Winner — ultra rare, playful copy on earn.
+    if(evHasWinner(state, ACTIVE_EVENT_ID)){
+      winnerIcon.className = 'bw-tile earned rare';
+      winnerCase.classList.add('earned');
+      winnerStatus.innerHTML = '<b>'+EV.tierDisplay.winner.playfulCopy+'</b>';
+    } else {
+      winnerIcon.className = 'bw-tile locked';
+      winnerCase.classList.remove('earned');
+      const left = EV.winnerThreshold - count;
+      winnerStatus.textContent = count + ' of '+EV.winnerThreshold+' reviews posted. '+left+' more to go.';
+    }
+  }
+
+  document.getElementById('bwEyebrow').href = EV.hostUrl;
+
+  function renderAll(){
+    renderStatus();
+    renderRestaurants();
+    renderStats();
+    renderBadge();
+  }
+
+  window.addEventListener('cbdb-auth', renderAll);
+  window.addEventListener('cbdb-reviews-loaded', renderAll);
+  renderStatus();
+  renderRestaurants();
+  (async()=>{ await loadReviews(); renderAll(); })();
+</script>
+
+<!-- FOOTER -->
 <footer class="site-footer">
   <div class="footer-inner">
     <div class="footer-links">
@@ -266,127 +453,5 @@ a.tab.active{color:var(--amber); background:rgba(255,157,46,0.08);}
     <div class="footer-copy">© 2026 Cheeseburger World LLC</div>
   </div>
 </footer>
-
-<script src="cbdb-config.js"></script>
-<script type="module" src="auth.js"></script>
-<script src="auth-bridge.js"></script>
-<script>
-/* ============================================================
-   Burger Week page logic.
-   Reads the shared `reviews` array (populated by cbdb-config.js's
-   loadReviews()) and cross-references against BURGER_WEEK_RESTAURANTS
-   + the event date range. No fallback data — if the fetch fails,
-   stats/list show empty rather than fake numbers.
-   ============================================================ */
-
-const BURGER_WEEK_START = new Date('2026-08-10T00:00:00-07:00');
-const BURGER_WEEK_END   = new Date('2026-08-16T23:59:59-07:00');
-
-// TODO: paste the full official participating-restaurant list here.
-// Source: https://everout.com/portland/events/the-portland-mercurys-burger-week-2026/e222750/
-// Keep names exact to what Mercury/EverOut publish so contributor
-// submissions ("use the exact restaurant name") line up 1:1.
-const BURGER_WEEK_RESTAURANTS = [
-  // { name: "Example Burger Co." },
-];
-
-// Normalize for tolerant matching: lowercase, collapse whitespace,
-// strip trailing punctuation and common suffixes. Guards against a
-// stray space or missing period silently breaking a badge.
-function normName(s){
-  return (s || '')
-    .toLowerCase()
-    .replace(/&/g, 'and')
-    .replace(/[.'’,]/g, '')
-    .replace(/\s+/g, ' ')
-    .trim();
-}
-const BW_NORMED = new Set(BURGER_WEEK_RESTAURANTS.map(r => normName(r.name)));
-
-function isBurgerWeekReview(r){
-  if(!r.createdAt) return false;
-  const d = new Date(r.createdAt);
-  if(d < BURGER_WEEK_START || d > BURGER_WEEK_END) return false;
-  return BW_NORMED.has(normName(r.name));
-}
-
-function renderStats(){
-  const bw = reviews.filter(isBurgerWeekReview);
-  const spots = new Set(bw.map(r => normName(r.name)));
-  const contributors = new Set(bw.map(r => r.did || r.by));
-  document.getElementById('statReviews').textContent = bw.length;
-  document.getElementById('statSpots').textContent = spots.size;
-  document.getElementById('statContributors').textContent = contributors.size;
-}
-
-function renderRestaurants(){
-  const grid = document.getElementById('restGrid');
-  const empty = document.getElementById('restEmpty');
-  const q = normName(document.getElementById('restSearch').value);
-
-  const reviewedNames = new Set(
-    reviews.filter(isBurgerWeekReview).map(r => normName(r.name))
-  );
-
-  if(!BURGER_WEEK_RESTAURANTS.length){
-    grid.innerHTML = '';
-    empty.style.display = 'block';
-    empty.textContent = 'Restaurant list loading — check back soon.';
-    return;
-  }
-
-  const filtered = BURGER_WEEK_RESTAURANTS.filter(r => normName(r.name).includes(q));
-
-  if(!filtered.length){
-    grid.innerHTML = '';
-    empty.style.display = 'block';
-    empty.textContent = 'No matches. Try a different spelling.';
-    return;
-  }
-  empty.style.display = 'none';
-  grid.innerHTML = filtered.map(r => {
-    const reviewed = reviewedNames.has(normName(r.name));
-    return `<div class="rest-card">
-      <span class="rest-name">${r.name}</span>
-      <span class="rest-status ${reviewed ? 'reviewed' : 'open'}">${reviewed ? '✓ Reviewed' : 'Open'}</span>
-    </div>`;
-  }).join('');
-}
-
-function renderBadgeProgress(){
-  const st = window.__cbdb_state;
-  if(!st || !st.signedIn){
-    ['1','2','3'].forEach(t => {
-      document.getElementById('badgeProgress'+t).textContent = 'Sign in to track your progress.';
-      document.getElementById('badgeCard'+t).classList.remove('earned');
-    });
-    return;
-  }
-  const mine = reviews.filter(isBurgerWeekReview).filter(r =>
-    (r.did && r.did === st.did) || (r.by && r.by === st.handle)
-  );
-  const n = mine.length;
-  [[1,1],[2,3],[3,7]].forEach(([tier, need]) => {
-    const el = document.getElementById('badgeProgress'+tier);
-    const card = document.getElementById('badgeCard'+tier);
-    if(n >= need){
-      el.textContent = `Unlocked — ${n} posted`;
-      card.classList.add('earned');
-    } else {
-      el.textContent = `${n} of ${need} — ${need - n} to go`;
-      card.classList.remove('earned');
-    }
-  });
-}
-
-window.addEventListener('cbdb-auth', renderBadgeProgress);
-
-(async () => {
-  await loadReviews();
-  renderStats();
-  renderRestaurants();
-  renderBadgeProgress();
-})();
-</script>
 </body>
 </html>
