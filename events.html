@@ -49,12 +49,12 @@
   .bw-wrap { max-width:900px; margin:0 auto; padding:0 20px; }
   .bw-section { margin-top:48px; padding-top:32px; border-top:1px solid var(--border); }
   .bw-head { font-family:var(--font-display); font-size:26px; letter-spacing:1.5px; color:var(--amber); margin-bottom:16px; }
-  .bw-text { font-size:14px; color:var(--text-2); line-height:1.75; max-width:640px; text-wrap:pretty; }
+  .bw-text { font-size:14px; color:var(--text-2); line-height:1.75; max-width:760px; text-wrap:pretty; }
   .bw-text b { color:var(--text); }
 
   /* ── RESTAURANT GRID ── */
-  .bw-howto { font-size:13px; color:var(--text-2); line-height:1.65; background:var(--inset); border:1px solid var(--border); border-left:2px solid var(--amber); padding:13px 16px; margin-top:16px; }
-  .bw-howto b { color:var(--text); }
+  .bw-howto { font-size:13px; color:var(--text-2); line-height:1.65; background:rgba(255,157,46,0.10); border:1px solid var(--amber); border-left:3px solid var(--amber); padding:13px 16px; margin-top:16px; }
+  .bw-howto b { color:var(--amber); }
   .bw-filter { width:100%; margin-top:16px; background:var(--inset); border:1px solid var(--border); color:var(--text); font-family:var(--font-body); font-size:14px; padding:12px 14px; }
   .bw-filter::placeholder { color:var(--text-3); }
   .bw-filter:focus { border-color:var(--amber); outline:none; }
@@ -278,7 +278,7 @@
       if(showMore) showMore.style.display = 'none';
       return;
     }
-    intro.innerHTML = all.length + ' unique burgers across the Portland area.<br>Reviewed spots are marked below.';
+    intro.textContent = all.length + ' unique burgers across the Portland area. Reviewed spots are marked below.';
     const q = (document.getElementById('bwFilter').value || '').trim().toLowerCase();
     const filtered = q ? all.filter(g =>
       g.name.toLowerCase().includes(q) || g.locations.some(l => (l.neighborhood||'').toLowerCase().includes(q))
