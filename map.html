@@ -316,6 +316,8 @@ body.review-open .map-filter, body.review-open .leaflet-control-zoom { display:n
 }
 a.logo { text-decoration:none; }
 a.tab { text-decoration:none; display:inline-block; }
+.tab-bw { position:relative; }
+.tab-bw .tab-dot { position:absolute; top:5px; right:6px; width:6px; height:6px; border-radius:50%; background:var(--apex); }
 /* ── FOOTER ── */
 .site-footer { border-top:1px solid var(--border); background:var(--surface); margin-top:40px; padding:22px 20px; }
 .footer-inner { max-width:1100px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; }
@@ -338,6 +340,7 @@ a.tab { text-decoration:none; display:inline-block; }
 <a class="tab" href="database.html">Database</a>
 <a class="tab active" href="map.html">Map</a>
 <a class="tab" href="submit.html">Post a Review</a>
+<a class="tab tab-bw" href="events.html">Burger Week<span class="tab-dot"></span></a>
 </div>
 </div>
 <div class="nav-id" id="navId" onclick="openProfile()"><span class="dot out"></span>Not signed in</div>
