@@ -278,7 +278,7 @@
       if(showMore) showMore.style.display = 'none';
       return;
     }
-    intro.textContent = all.length + ' unique burgers across the Portland area. Reviewed spots are marked below.';
+    intro.innerHTML = all.length + ' unique burgers across the Portland area.<br>Reviewed spots are marked below.';
     const q = (document.getElementById('bwFilter').value || '').trim().toLowerCase();
     const filtered = q ? all.filter(g =>
       g.name.toLowerCase().includes(q) || g.locations.some(l => (l.neighborhood||'').toLowerCase().includes(q))
