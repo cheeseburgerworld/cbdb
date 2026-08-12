@@ -82,12 +82,6 @@
   .bw-showmore-count a { color:var(--text-2); border-bottom:1px solid rgba(255,157,46,0.3); text-decoration:none; }
   .bw-showmore-count a:hover { color:var(--amber); border-bottom-color:rgba(255,157,46,0.6); }
 
-  /* ── COUNTER STRIP ── */
-  .bw-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--border); border:1px solid var(--border); margin-top:20px; }
-  .bw-stat { background:var(--surface); padding:20px; text-align:center; }
-  .bw-stat-num { font-family:var(--font-display); font-size:38px; color:var(--text); line-height:1; }
-  .bw-stat-lab { font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-3); margin-top:6px; }
-
   /* ── BADGE TILES — same recipe as .rk-badge in ranks.html, extended
      with a small overlay emoji for the two-emoji trophy tiers. ── */
   .bw-tile { position:relative; display:flex; align-items:center; justify-content:center;
@@ -114,18 +108,8 @@
 
   .bw-case-cta { margin-top:20px; text-align:center; }
 
-  /* ── LEADERBOARD ── */
-  .bw-lb { margin-top:20px; display:flex; flex-direction:column; gap:1px; background:var(--border); border:1px solid var(--border); }
-  .bw-lb-row { display:flex; align-items:center; gap:14px; background:var(--surface); padding:14px 18px; }
-  .bw-lb-rank { font-family:var(--font-display); font-size:20px; color:var(--text-3); width:24px; flex-shrink:0; }
-  .bw-lb-row:first-child .bw-lb-rank { color:var(--apex); }
-  .bw-lb-handle { font-size:13px; color:var(--bsky); flex:1; min-width:0; }
-  .bw-lb-count { font-family:var(--font-display); font-size:18px; color:var(--text); }
-  .bw-lb-count span { font-size:10px; letter-spacing:0.5px; text-transform:uppercase; color:var(--text-3); font-family:var(--font-body); margin-left:4px; }
-
   @media (max-width:700px) {
     .bw-title { font-size:46px; }
-    .bw-stats { grid-template-columns:1fr; }
   }
 
   .site-footer { border-top:1px solid var(--border); background:var(--surface); margin-top:60px; padding:22px 20px; }
@@ -171,16 +155,6 @@
 </div>
 
 <div class="bw-wrap">
-
-  <div class="bw-section">
-    <div class="bw-head">This week, so far</div>
-    <div class="bw-stats" id="bwStats">
-      <div class="bw-stat"><div class="bw-stat-num" id="bwStatEntries">0</div><div class="bw-stat-lab">Reviews Posted</div></div>
-      <div class="bw-stat"><div class="bw-stat-num" id="bwStatSpots">0</div><div class="bw-stat-lab">Spots Covered</div></div>
-      <div class="bw-stat"><div class="bw-stat-num" id="bwStatPeople">0</div><div class="bw-stat-lab">Contributors</div></div>
-    </div>
-    <div class="bw-lb" id="bwLeaderboard"></div>
-  </div>
 
   <div class="bw-section" id="restaurants">
     <div class="bw-head">Participating restaurants</div>
@@ -343,26 +317,6 @@
     }
   }
 
-  /* ---- Counter strip + leaderboard — straight counts of event-tagged
-     reviews, same as the badge/trophy logic (no distinct-spot dedup). ---- */
-  function renderStats(){
-    const entries = reviews.filter(r => r.event === ACTIVE_EVENT_ID);
-    document.getElementById('bwStatEntries').textContent = entries.length;
-    document.getElementById('bwStatSpots').textContent = new Set(entries.map(r=>evChainKeyFor(ACTIVE_EVENT_ID, r.name))).size;
-    const byHandle = {};
-    entries.forEach(r=>{
-      const h = r.by || 'unknown';
-      byHandle[h] = (byHandle[h] || 0) + 1;
-    });
-    const people = Object.keys(byHandle);
-    document.getElementById('bwStatPeople').textContent = people.length;
-    const ranked = people.map(h=>({handle:h, count:byHandle[h]})).sort((a,b)=>b.count-a.count).slice(0,5);
-    const lb = document.getElementById('bwLeaderboard');
-    lb.innerHTML = ranked.length ? ranked.map((p,i)=>
-      '<div class="bw-lb-row"><div class="bw-lb-rank">'+(i+1)+'</div><div class="bw-lb-handle">@'+p.handle+'</div><div class="bw-lb-count">'+p.count+'<span> review'+(p.count===1?'':'s')+'</span></div></div>'
-    ).join('') : '<div class="bw-lb-row"><div class="bw-lb-handle" style="color:var(--text-3)">No entries yet — be the first.</div></div>';
-  }
-
   /* ---- Badge & trophy — simple counts of THIS event's tagged reviews.
      1 review = badge. 3 reviews = trophy. No distinct-restaurant dedup,
      no rating involved, exactly per spec. ---- */
@@ -436,7 +390,6 @@
   function renderAll(){
     renderStatus();
     renderRestaurants();
-    renderStats();
     renderBadge();
   }
 
