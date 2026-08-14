@@ -82,6 +82,35 @@ const CBDB_FALLBACK_EVENT = {
   ],
 };
 
+// Chain-grouped spots are listed per location ("Papa Haydn (East)",
+// "MidCity SmashedBurger @ Level Beer 1", "Veggie Grill - Cedar Hills
+// Crossing") but events.html groups them and shows only the CHAIN name on
+// the card — so that's what people copy into the review. Strip the
+// location suffix to get an alias, and index both forms. Matching stays
+// scoped to the event's own list either way; the worst case is tagging a
+// review at a participating chain's non-participating location, which is
+// the right trade against silently dropping a legitimate entry.
+function chainAlias(lowerName) {
+  const alias = lowerName
+    .replace(/\s*\(.*\)\s*$/, '')   // "papa haydn (east)"        → "papa haydn"
+    .replace(/\s*@.*$/, '')         // "midcity … @ level beer 1" → "midcity …"
+    .replace(/\s+-\s+.*$/, '')      // "veggie grill - cedar …"   → "veggie grill"
+    .trim();
+  return alias.length >= 4 && alias !== lowerName ? alias : '';
+}
+
+function buildRestaurantSet(names) {
+  const set = new Set();
+  (names || []).forEach((raw) => {
+    const n = String(raw).trim().toLowerCase();
+    if (!n) return;
+    set.add(n);
+    const alias = chainAlias(n);
+    if (alias) set.add(alias);
+  });
+  return set;
+}
+
 let _eventCache = { record: null, fetchedAt: 0, restaurantSet: null };
 
 // Public (unauthenticated) read of CBDB's own event record from its PDS.
@@ -108,7 +137,7 @@ async function getActiveEvent(slug) {
   }
   try {
     const record = await fetchEventRecordFromPDS(slug);
-    const restaurantSet = new Set((record.restaurants || []).map(n => String(n).trim().toLowerCase()));
+    const restaurantSet = buildRestaurantSet(record.restaurants);
     _eventCache = { record, fetchedAt: now, restaurantSet };
     return record;
   } catch (err) {
@@ -122,7 +151,7 @@ async function getActiveEvent(slug) {
       _eventCache = {
         record: CBDB_FALLBACK_EVENT,
         fetchedAt: now - CBDB_EVENT_CACHE_TTL_MS + cooldown,
-        restaurantSet: new Set(CBDB_FALLBACK_EVENT.restaurants.map(n => n.toLowerCase())),
+        restaurantSet: buildRestaurantSet(CBDB_FALLBACK_EVENT.restaurants),
       };
     } else {
       // Had a good (now-stale) record — keep serving it, just push the
@@ -143,7 +172,12 @@ async function computeEventTag(restaurantName, createdAtIso) {
   const start = new Date(ev.startsAt || ev.start);
   const end   = new Date(ev.endsAt || ev.end);
   if (created < start || created > end) return null;
-  if (!_eventCache.restaurantSet.has(name)) return null;
+  if (!_eventCache.restaurantSet.has(name)) {
+    // Second pass: the submitted name may itself carry a location suffix
+    // the event record doesn't ("Papa Haydn (East)" vs. "Papa Haydn").
+    const alias = chainAlias(name);
+    if (!alias || !_eventCache.restaurantSet.has(alias)) return null;
+  }
   return ev.slug || CBDB_EVENT_SLUG;
 }
 
