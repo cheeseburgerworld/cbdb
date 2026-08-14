@@ -335,8 +335,26 @@ async function dispatch(sessionId, session, action, payload) {
     case 'post':         return doPost(sessionId, session, payload);
     case 'uploadBlob':   return doUploadBlob(sessionId, session, payload);
     case 'createReview': return doCreateReview(sessionId, session, payload);
+    case 'syncEventBadges': return doSyncEventBadges(session, payload);
     default:             throw new Error(`Unknown action: ${action}`);
   }
+}
+
+// ─── Re-issue event badges for the signed-in contributor ─────────────────────
+// Badge issuance normally fires once, at review-write time. A row whose
+// `event` tag was backfilled by hand — or a review that landed while badge
+// issuance was misconfigured — would otherwise never mint its award, since
+// nothing recounts after the fact. This action recounts the contributor's
+// event-tagged reviews and upserts every tier currently earned.
+//
+// Safe to call repeatedly: rkeys are deterministic and putRecord is an
+// upsert, so this converges rather than duplicating. The recipient DID is
+// ALWAYS taken from the verified session, never from the payload — this
+// cannot be used to mint a badge for someone else.
+async function doSyncEventBadges(session, payload) {
+  const eventSlug = String((payload && payload.event) || CBDB_EVENT_SLUG);
+  await issueEventBadgesIfEarned(session.did, eventSlug);
+  return { ok: true, did: session.did, event: eventSlug };
 }
 
 // ─── Resolve user's actual PDS from their DID document ───────────────────────
