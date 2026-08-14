@@ -73,7 +73,10 @@
   /* The frame: a top accent bar whose color = current tier. */
   .badge::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:var(--tier,var(--border)); }
   .badge.locked { opacity:0.55; }
-  .badge-tile { width:56px; height:56px; border-radius:10px; background:var(--inset); border:2px solid var(--tier,var(--border)); display:flex; align-items:center; justify-content:center; font-size:30px; line-height:1; margin-bottom:12px; font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif; }
+  .badge-tile { position:relative; width:56px; height:56px; border-radius:10px; background:var(--inset); border:2px solid var(--tier,var(--border)); display:flex; align-items:center; justify-content:center; font-size:30px; line-height:1; margin-bottom:12px; font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif; }
+  /* Second glyph for two-emoji event tiers (🏆 + 🍔 / ⚡) — same recipe as
+     the .bw-tile overlay on events.html, scaled down to the badge case. */
+  .badge-ov { position:absolute; right:-5px; bottom:-5px; font-size:19px; line-height:1; filter:drop-shadow(0 1px 2px rgba(0,0,0,0.65)); }
   .badge.locked .badge-tile { filter:grayscale(1) brightness(0.7); border-color:var(--border); }
   .badge-name { font-family:'Bebas Neue',sans-serif; font-size:18px; letter-spacing:0.8px; color:var(--text); line-height:1.1; }
   .badge-tier { font-size:10px; letter-spacing:1.5px; text-transform:uppercase; margin-top:5px; color:var(--tier,var(--text-3)); font-weight:600; }
@@ -197,6 +200,7 @@
      but on THIS page tapping the chip lands here, so the drawer is rarely opened. -->
 
 <script src="cbdb-config.js"></script>
+<script src="events-data.js"></script>
 <script type="module" src="auth.js"></script>
 <script src="auth-bridge.js"></script>
 <script src="drawer.js"></script>
@@ -249,6 +253,33 @@
      Each: { key, name, glyph, count, tier, unit, single? }. */
   function computeBadges(mine){
     const badges=[];
+
+    // ---- Event badges (Burger Week et al.) ----
+    // Reads ONLY the stored `event` tag stamped at write time — same
+    // evergreen rule as events.html. Thresholds and display names come
+    // from the EVENTS registry, so a new event needs zero changes here.
+    // An event the contributor never entered is hidden once it's no
+    // longer the active one; the active event always shows, locked, so
+    // there's something to chase.
+    if(typeof EVENTS === 'object' && EVENTS){
+      Object.keys(EVENTS).forEach(id=>{
+        const ev = EVENTS[id];
+        if(!ev || !ev.tierDisplay) return;
+        const n = mine.filter(r => r.event === id).length;
+        const isActive = (typeof ACTIVE_EVENT_ID !== 'undefined') && id === ACTIVE_EVENT_ID;
+        if(!n && !isActive) return;
+        let tier = null, disp = ev.tierDisplay.badge;
+        if(n >= ev.winnerThreshold){
+          disp = ev.tierDisplay.winner;   tier = { idx:3, color:TIER_COLORS[3], label:'Winner' };
+        } else if(n >= ev.championThreshold){
+          disp = ev.tierDisplay.champion; tier = { idx:2, color:TIER_COLORS[2], label:'Champion' };
+        } else if(n >= ev.badgeThreshold){
+          disp = ev.tierDisplay.badge;    tier = { idx:1, color:TIER_COLORS[1], label:'Earned' };
+        }
+        badges.push({ key:'event:'+id, name:disp.name, glyph:disp.emoji,
+          overlay: disp.overlay || '', count:n, unit:'reviews', tier });
+      });
+    }
 
     // ---- Globetrotter: distinct cities (RANGE ladder) ----
     const cityCount = new Set(mine.map(r=>(r.loc||'').trim()).filter(Boolean)).size;
@@ -310,7 +341,7 @@
       ? '<span class="badge-count">'+b.count+'</span> / '+b.target+' '+b.unit
       : '<span class="badge-count">'+b.count+'</span> '+b.unit;
     return '<div class="badge'+(earned?'':' locked')+'" style="--tier:'+tierColor+'">'+
-      '<div class="badge-tile">'+b.glyph+'</div>'+
+      '<div class="badge-tile">'+b.glyph+(b.overlay?'<span class="badge-ov">'+b.overlay+'</span>':'')+'</div>'+
       '<div class="badge-name">'+b.name+'</div>'+
       '<div class="badge-tier">'+tierLabel+'</div>'+
       '<div class="badge-prog">'+prog+'</div>'+
