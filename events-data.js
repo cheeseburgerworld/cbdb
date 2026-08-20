@@ -199,10 +199,19 @@ const EVENTS = {
   // PDXBW27: { id: 'PDXBW27', name: 'Portland Burger Week 2027', ... },
 };
 
-// Which event events.html currently spotlights. When Burger Week wraps
-// and you rebuild this page for the next event, this is the one line to
-// swap — every helper below works for any event id without changes.
-const ACTIVE_EVENT_ID = 'PDXBW26';
+// Which event is currently RUNNING. null = no live event; CB⚡DB is on
+// normal processing and nothing new gets tagged. This is the one line to
+// swap when the next event starts — every helper below works for any
+// event id without changes.
+//
+// Consequences of null, all of them intended:
+//   - profile.html stops showing a locked event tile to contributors who
+//     never entered; earned badges still render, permanently, off the
+//     stored tag (see the evergreen note at the top of this file).
+//   - events.html reads RECAP_EVENT_ID instead — it's a recap page now,
+//     pinned to PDXBW26 regardless of what's active.
+// PDXBW26 ran Aug 10–16, 2026 and is archived.
+const ACTIVE_EVENT_ID = null;
 
 /* ---- Evergreen gamification ----
    Reads ONLY the stored `event` tag on each review row. See the header
