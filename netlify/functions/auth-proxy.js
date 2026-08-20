@@ -43,6 +43,13 @@ import { issuerRequest, getIssuerDid } from '../_badge-issuer.js';
 
 const CBDB_ISSUER_DID = 'did:plc:lynstw6qgfcy5nek6i2rbqcs'; // @cheeseburger.world — CBDB's dedicated brand identity, issuer of events/badges (not a personal account)
 const CBDB_EVENT_SLUG = 'PDXBW26'; // matches the event record's rkey and `slug` field
+// Master switch. false = no live event: computeEventTag() returns null
+// immediately and no PDS round-trip happens on review writes. The date
+// window below would already reject post-event reviews on its own; this
+// skips the fetch entirely rather than paying for it on every write.
+// The slug above stays set so doSyncEventBadges() can still repair
+// badges for hand-backfilled rows. Flip to true when the next event opens.
+const CBDB_EVENT_ACTIVE = false;
 const CBDB_EVENT_CACHE_TTL_MS = 5 * 60 * 1000; // 5 min — balances PDS load vs. freshness if the list changes
 
 // Emergency fallback only — mirrors the event record as of setup time.
@@ -164,6 +171,7 @@ async function getActiveEvent(slug) {
 }
 
 async function computeEventTag(restaurantName, createdAtIso) {
+  if (!CBDB_EVENT_ACTIVE) return null;
   const name = String(restaurantName || '').trim().toLowerCase();
   if (!name) return null;
   const ev = await getActiveEvent(CBDB_EVENT_SLUG);
