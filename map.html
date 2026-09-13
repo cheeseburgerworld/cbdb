@@ -401,7 +401,7 @@ function paintSignedIn(){ /* handled by auth-bridge.js */ }
 paintSignedIn();
 const map = L.map('map',{zoomControl:false});
 L.control.zoom({ position:'topright' }).addTo(map);
-L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{attribution:'© OpenStreetMap © CARTO',subdomains:'abcd',maxZoom:19}).addTo(map);
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png?key=cb1_3jfn_1_5cd37c9e7dd209282cba998b',{attribution:'© OpenStreetMap © CARTO',subdomains:'abcd',maxZoom:19}).addTo(map);
 // Stack state: the reviews for the currently-open restaurant, and which one is showing.
 let stackReviews = [];
 let stackIndex = 0;
